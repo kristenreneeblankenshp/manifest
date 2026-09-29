@@ -1,0 +1,1196 @@
+{
+ "format": "manifest-workbench/1",
+ "meta": {
+  "source": "Manifest_Workbench_CISC-001_MOPS-003_RCC-004_MASR_Registry_Candidate_Pipeline_v0_4.xlsx",
+  "title": "MOPS-003 — RCC-004 MASR REGISTRY & CANDIDATE PIPELINE",
+  "workbook_version": "v0.4"
+ },
+ "audit": [],
+ "portfolio": [
+  {
+   "sleeve": "Strategic Anchors",
+   "symbol": "BRK.B",
+   "security": "Berkshire Hathaway Inc. Class B",
+   "security_type": "Equity",
+   "role": "Diversified capital-allocation anchor",
+   "target_weight": 0.0302,
+   "conviction_tier": "Unassigned",
+   "research_status": "Current"
+  },
+  {
+   "sleeve": "Strategic Anchors",
+   "symbol": "COST",
+   "security": "Costco Wholesale Corporation",
+   "security_type": "Equity",
+   "role": "Consumer-resilience anchor",
+   "target_weight": 0.0302,
+   "conviction_tier": "Unassigned",
+   "research_status": "Current"
+  },
+  {
+   "sleeve": "Strategic Anchors",
+   "symbol": "JNJ",
+   "security": "Johnson & Johnson",
+   "security_type": "Equity",
+   "role": "Healthcare and life-sciences resilience anchor",
+   "target_weight": 0.0302,
+   "conviction_tier": "Unassigned",
+   "research_status": "Current"
+  },
+  {
+   "sleeve": "Strategic Anchors",
+   "symbol": "MSFT",
+   "security": "Microsoft Corporation",
+   "security_type": "Equity",
+   "role": "Enterprise technology and AI platform anchor",
+   "target_weight": 0.0302,
+   "conviction_tier": "Unassigned",
+   "research_status": "Current"
+  },
+  {
+   "sleeve": "Strategic Anchors",
+   "symbol": "V",
+   "security": "Visa Inc.",
+   "security_type": "Equity",
+   "role": "Global payments infrastructure anchor",
+   "target_weight": 0.0288,
+   "conviction_tier": "Unassigned",
+   "research_status": "Current"
+  },
+  {
+   "sleeve": "Strategic Anchors",
+   "symbol": "GOOGL",
+   "security": "Alphabet Inc. Class A",
+   "security_type": "Equity",
+   "role": "Digital platform and AI anchor",
+   "target_weight": 0.0284,
+   "conviction_tier": "Unassigned",
+   "research_status": "Current"
+  },
+  {
+   "sleeve": "Strategic Anchors",
+   "symbol": "MA",
+   "security": "Mastercard Incorporated",
+   "security_type": "Equity",
+   "role": "Global payments infrastructure anchor",
+   "target_weight": 0.016,
+   "conviction_tier": "Unassigned",
+   "research_status": "Current"
+  },
+  {
+   "sleeve": "Strategic Anchors",
+   "symbol": "AAPL",
+   "security": "Apple Inc.",
+   "security_type": "Equity",
+   "role": "Consumer technology ecosystem anchor",
+   "target_weight": 0.0156,
+   "conviction_tier": "Unassigned",
+   "research_status": "Current"
+  },
+  {
+   "sleeve": "Strategic Anchors",
+   "symbol": "AMZN",
+   "security": "Amazon.com, Inc.",
+   "security_type": "Equity",
+   "role": "Cloud, commerce and logistics anchor",
+   "target_weight": 0.0155,
+   "conviction_tier": "Unassigned",
+   "research_status": "Current"
+  },
+  {
+   "sleeve": "Growth Compounders",
+   "symbol": "AVGO",
+   "security": "Broadcom Inc.",
+   "security_type": "Equity",
+   "role": "Semiconductor and infrastructure-software compounder",
+   "target_weight": 0.0302,
+   "conviction_tier": "Unassigned",
+   "research_status": "Current"
+  },
+  {
+   "sleeve": "Growth Compounders",
+   "symbol": "LLY",
+   "security": "Eli Lilly and Company",
+   "security_type": "Equity",
+   "role": "Healthcare innovation compounder",
+   "target_weight": 0.0302,
+   "conviction_tier": "Unassigned",
+   "research_status": "Current"
+  },
+  {
+   "sleeve": "Growth Compounders",
+   "symbol": "NVDA",
+   "security": "NVIDIA Corporation",
+   "security_type": "Equity",
+   "role": "AI compute growth engine",
+   "target_weight": 0.0268,
+   "conviction_tier": "Unassigned",
+   "research_status": "Current"
+  },
+  {
+   "sleeve": "Growth Compounders",
+   "symbol": "HD",
+   "security": "The Home Depot, Inc.",
+   "security_type": "Equity",
+   "role": "Housing and professional distribution compounder",
+   "target_weight": 0.0156,
+   "conviction_tier": "Unassigned",
+   "research_status": "Current"
+  },
+  {
+   "sleeve": "Growth Compounders",
+   "symbol": "META",
+   "security": "Meta Platforms, Inc.",
+   "security_type": "Equity",
+   "role": "Digital platform and AI compounder",
+   "target_weight": 0.0156,
+   "conviction_tier": "Unassigned",
+   "research_status": "Current"
+  },
+  {
+   "sleeve": "Growth Compounders",
+   "symbol": "ANET",
+   "security": "Arista Networks, Inc.",
+   "security_type": "Equity",
+   "role": "AI networking compounder",
+   "target_weight": 0.0155,
+   "conviction_tier": "Unassigned",
+   "research_status": "Current"
+  },
+  {
+   "sleeve": "Digital Infrastructure & AI",
+   "symbol": "PANW",
+   "security": "Palo Alto Networks, Inc.",
+   "security_type": "Equity",
+   "role": "Cybersecurity infrastructure leader",
+   "target_weight": 0.0199,
+   "conviction_tier": "Unassigned",
+   "research_status": "Current"
+  },
+  {
+   "sleeve": "Digital Infrastructure & AI",
+   "symbol": "AMAT",
+   "security": "Applied Materials, Inc.",
+   "security_type": "Equity",
+   "role": "Semiconductor equipment enabler",
+   "target_weight": 0.0156,
+   "conviction_tier": "Unassigned",
+   "research_status": "Current"
+  },
+  {
+   "sleeve": "Digital Infrastructure & AI",
+   "symbol": "CSCO",
+   "security": "Cisco Systems, Inc.",
+   "security_type": "Equity",
+   "role": "Enterprise networking and secure infrastructure",
+   "target_weight": 0.0156,
+   "conviction_tier": "Unassigned",
+   "research_status": "Current"
+  },
+  {
+   "sleeve": "Digital Infrastructure & AI",
+   "symbol": "KLAC",
+   "security": "KLA Corporation",
+   "security_type": "Equity",
+   "role": "Semiconductor process-control enabler",
+   "target_weight": 0.0156,
+   "conviction_tier": "Unassigned",
+   "research_status": "Current"
+  },
+  {
+   "sleeve": "Digital Infrastructure & AI",
+   "symbol": "MU",
+   "security": "Micron Technology, Inc.",
+   "security_type": "Equity",
+   "role": "Memory and AI data-cycle enabler",
+   "target_weight": 0.0156,
+   "conviction_tier": "Unassigned",
+   "research_status": "Current"
+  },
+  {
+   "sleeve": "Digital Infrastructure & AI",
+   "symbol": "ORCL",
+   "security": "Oracle Corporation",
+   "security_type": "Equity",
+   "role": "Enterprise cloud and database platform",
+   "target_weight": 0.0156,
+   "conviction_tier": "Unassigned",
+   "research_status": "Current"
+  },
+  {
+   "sleeve": "Digital Infrastructure & AI",
+   "symbol": "TXN",
+   "security": "Texas Instruments Incorporated",
+   "security_type": "Equity",
+   "role": "Analog semiconductor infrastructure",
+   "target_weight": 0.0156,
+   "conviction_tier": "Unassigned",
+   "research_status": "Current"
+  },
+  {
+   "sleeve": "Digital Infrastructure & AI",
+   "symbol": "VRT",
+   "security": "Vertiv Holdings Co.",
+   "security_type": "Equity",
+   "role": "Critical data-center infrastructure",
+   "target_weight": 0.0155,
+   "conviction_tier": "Unassigned",
+   "research_status": "Current"
+  },
+  {
+   "sleeve": "Industrials & Infrastructure",
+   "symbol": "DHR",
+   "security": "Danaher Corporation",
+   "security_type": "Equity",
+   "role": "Life-science tools and industrial quality",
+   "target_weight": 0.03,
+   "conviction_tier": "Unassigned",
+   "research_status": "Current"
+  },
+  {
+   "sleeve": "Industrials & Infrastructure",
+   "symbol": "RTX",
+   "security": "RTX Corporation",
+   "security_type": "Equity",
+   "role": "Aerospace and defense systems leader",
+   "target_weight": 0.0299,
+   "conviction_tier": "Unassigned",
+   "research_status": "Current"
+  },
+  {
+   "sleeve": "Industrials & Infrastructure",
+   "symbol": "DE",
+   "security": "Deere & Company",
+   "security_type": "Equity",
+   "role": "Precision agriculture and equipment leader",
+   "target_weight": 0.0177,
+   "conviction_tier": "Unassigned",
+   "research_status": "Current"
+  },
+  {
+   "sleeve": "Industrials & Infrastructure",
+   "symbol": "CAT",
+   "security": "Caterpillar Inc.",
+   "security_type": "Equity",
+   "role": "Heavy equipment and infrastructure leader",
+   "target_weight": 0.0156,
+   "conviction_tier": "Unassigned",
+   "research_status": "Current"
+  },
+  {
+   "sleeve": "Industrials & Infrastructure",
+   "symbol": "ETN",
+   "security": "Eaton Corporation plc",
+   "security_type": "Equity",
+   "role": "Electrification and power-management leader",
+   "target_weight": 0.0156,
+   "conviction_tier": "Unassigned",
+   "research_status": "Current"
+  },
+  {
+   "sleeve": "Industrials & Infrastructure",
+   "symbol": "GE",
+   "security": "GE Aerospace",
+   "security_type": "Equity",
+   "role": "Aerospace propulsion leader",
+   "target_weight": 0.0156,
+   "conviction_tier": "Unassigned",
+   "research_status": "Current"
+  },
+  {
+   "sleeve": "Industrials & Infrastructure",
+   "symbol": "PH",
+   "security": "Parker-Hannifin Corporation",
+   "security_type": "Equity",
+   "role": "Motion and control systems leader",
+   "target_weight": 0.0156,
+   "conviction_tier": "Unassigned",
+   "research_status": "Current"
+  },
+  {
+   "sleeve": "Industrials & Infrastructure",
+   "symbol": "TT",
+   "security": "Trane Technologies plc",
+   "security_type": "Equity",
+   "role": "Climate and building efficiency leader",
+   "target_weight": 0.0156,
+   "conviction_tier": "Unassigned",
+   "research_status": "Current"
+  },
+  {
+   "sleeve": "Industrials & Infrastructure",
+   "symbol": "UNP",
+   "security": "Union Pacific Corporation",
+   "security_type": "Equity",
+   "role": "Freight rail infrastructure",
+   "target_weight": 0.0155,
+   "conviction_tier": "Unassigned",
+   "research_status": "Current"
+  },
+  {
+   "sleeve": "Financial Infrastructure",
+   "symbol": "CME",
+   "security": "CME Group Inc.",
+   "security_type": "Equity",
+   "role": "Market infrastructure and derivatives exchange",
+   "target_weight": 0.0302,
+   "conviction_tier": "Unassigned",
+   "research_status": "Current"
+  },
+  {
+   "sleeve": "Financial Infrastructure",
+   "symbol": "MMC",
+   "security": "Marsh & McLennan Companies, Inc.",
+   "security_type": "Equity",
+   "role": "Risk, insurance and advisory infrastructure",
+   "target_weight": 0.02,
+   "conviction_tier": "Unassigned",
+   "research_status": "Current"
+  },
+  {
+   "sleeve": "Financial Infrastructure",
+   "symbol": "GS",
+   "security": "The Goldman Sachs Group, Inc.",
+   "security_type": "Equity",
+   "role": "Investment banking and capital markets",
+   "target_weight": 0.0156,
+   "conviction_tier": "Unassigned",
+   "research_status": "Current"
+  },
+  {
+   "sleeve": "Financial Infrastructure",
+   "symbol": "JPM",
+   "security": "JPMorgan Chase & Co.",
+   "security_type": "Equity",
+   "role": "Diversified banking and capital markets anchor",
+   "target_weight": 0.0156,
+   "conviction_tier": "Unassigned",
+   "research_status": "Current"
+  },
+  {
+   "sleeve": "Financial Infrastructure",
+   "symbol": "VFH",
+   "security": "Vanguard Financials ETF",
+   "security_type": "ETF",
+   "role": "Diversified financial-sector implementation ETF",
+   "target_weight": 0.0156,
+   "conviction_tier": "Unassigned",
+   "research_status": "Current"
+  },
+  {
+   "sleeve": "Healthcare Leadership",
+   "symbol": "VHT",
+   "security": "Vanguard Health Care ETF",
+   "security_type": "ETF",
+   "role": "Diversified healthcare implementation ETF",
+   "target_weight": 0.0206,
+   "conviction_tier": "Unassigned",
+   "research_status": "Current"
+  },
+  {
+   "sleeve": "Healthcare Leadership",
+   "symbol": "SYK",
+   "security": "Stryker Corporation",
+   "security_type": "Equity",
+   "role": "Medical technology leader",
+   "target_weight": 0.0155,
+   "conviction_tier": "Unassigned",
+   "research_status": "Current"
+  },
+  {
+   "sleeve": "Energy & Natural Resources",
+   "symbol": "LNG",
+   "security": "Cheniere Energy, Inc.",
+   "security_type": "Equity",
+   "role": "LNG export infrastructure",
+   "target_weight": 0.0302,
+   "conviction_tier": "Unassigned",
+   "research_status": "Current"
+  },
+  {
+   "sleeve": "Energy & Natural Resources",
+   "symbol": "VPU",
+   "security": "Vanguard Utilities ETF",
+   "security_type": "ETF",
+   "role": "Utilities and defensive infrastructure ETF",
+   "target_weight": 0.0302,
+   "conviction_tier": "Unassigned",
+   "research_status": "Current"
+  },
+  {
+   "sleeve": "Energy & Natural Resources",
+   "symbol": "XOM",
+   "security": "Exxon Mobil Corporation",
+   "security_type": "Equity",
+   "role": "Integrated energy leader",
+   "target_weight": 0.0256,
+   "conviction_tier": "Unassigned",
+   "research_status": "Current"
+  },
+  {
+   "sleeve": "Energy & Natural Resources",
+   "symbol": "CVX",
+   "security": "Chevron Corporation",
+   "security_type": "Equity",
+   "role": "Integrated energy leader",
+   "target_weight": 0.0156,
+   "conviction_tier": "Unassigned",
+   "research_status": "Current"
+  },
+  {
+   "sleeve": "Energy & Natural Resources",
+   "symbol": "VDE",
+   "security": "Vanguard Energy ETF",
+   "security_type": "ETF",
+   "role": "Diversified energy implementation ETF",
+   "target_weight": 0.0156,
+   "conviction_tier": "Unassigned",
+   "research_status": "Current"
+  },
+  {
+   "sleeve": "Income & Risk Management",
+   "symbol": "JEPI",
+   "security": "JPMorgan Equity Premium Income ETF",
+   "security_type": "ETF",
+   "role": "Diversified equity income and volatility moderation",
+   "target_weight": 0.0302,
+   "conviction_tier": "Unassigned",
+   "research_status": "Current"
+  },
+  {
+   "sleeve": "Income & Risk Management",
+   "symbol": "JEPQ",
+   "security": "JPMorgan Nasdaq Equity Premium Income ETF",
+   "security_type": "ETF",
+   "role": "Technology equity income implementation",
+   "target_weight": 0.0302,
+   "conviction_tier": "Unassigned",
+   "research_status": "Current"
+  },
+  {
+   "sleeve": "Income & Risk Management",
+   "symbol": "PFF",
+   "security": "iShares Preferred and Income Securities ETF",
+   "security_type": "ETF",
+   "role": "Preferred securities income diversification",
+   "target_weight": 0.0302,
+   "conviction_tier": "Unassigned",
+   "research_status": "Current"
+  }
+ ],
+ "conviction": [
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {}
+ ],
+ "pew004": [
+  {
+   "candidate_id": "CAND-001"
+  },
+  {
+   "candidate_id": "CAND-002"
+  },
+  {
+   "candidate_id": "CAND-003"
+  },
+  {
+   "candidate_id": "CAND-004"
+  },
+  {
+   "candidate_id": "CAND-005"
+  },
+  {
+   "candidate_id": "CAND-006"
+  },
+  {
+   "candidate_id": "CAND-007"
+  },
+  {
+   "candidate_id": "CAND-008"
+  },
+  {
+   "candidate_id": "CAND-009"
+  },
+  {
+   "candidate_id": "CAND-010"
+  },
+  {
+   "candidate_id": "CAND-011"
+  },
+  {
+   "candidate_id": "CAND-012"
+  },
+  {
+   "candidate_id": "CAND-013"
+  },
+  {
+   "candidate_id": "CAND-014"
+  },
+  {
+   "candidate_id": "CAND-015"
+  },
+  {
+   "candidate_id": "CAND-016"
+  },
+  {
+   "candidate_id": "CAND-017"
+  },
+  {
+   "candidate_id": "CAND-018"
+  },
+  {
+   "candidate_id": "CAND-019"
+  },
+  {
+   "candidate_id": "CAND-020"
+  }
+ ],
+ "evidence": [],
+ "miar": [
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {}
+ ],
+ "review": [],
+ "masr": [
+  {
+   "_linked": 0,
+   "record_class": "Certified Portfolio Holding",
+   "registry_status": "Active — Certified Holding",
+   "admission_basis": "Certified MFPDF / Founders Edition",
+   "committee_disposition": "Grandfathered — Certified Holding"
+  },
+  {
+   "_linked": 1,
+   "record_class": "Certified Portfolio Holding",
+   "registry_status": "Active — Certified Holding",
+   "admission_basis": "Certified MFPDF / Founders Edition",
+   "committee_disposition": "Grandfathered — Certified Holding"
+  },
+  {
+   "_linked": 2,
+   "record_class": "Certified Portfolio Holding",
+   "registry_status": "Active — Certified Holding",
+   "admission_basis": "Certified MFPDF / Founders Edition",
+   "committee_disposition": "Grandfathered — Certified Holding"
+  },
+  {
+   "_linked": 3,
+   "record_class": "Certified Portfolio Holding",
+   "registry_status": "Active — Certified Holding",
+   "admission_basis": "Certified MFPDF / Founders Edition",
+   "committee_disposition": "Grandfathered — Certified Holding"
+  },
+  {
+   "_linked": 4,
+   "record_class": "Certified Portfolio Holding",
+   "registry_status": "Active — Certified Holding",
+   "admission_basis": "Certified MFPDF / Founders Edition",
+   "committee_disposition": "Grandfathered — Certified Holding"
+  },
+  {
+   "_linked": 5,
+   "record_class": "Certified Portfolio Holding",
+   "registry_status": "Active — Certified Holding",
+   "admission_basis": "Certified MFPDF / Founders Edition",
+   "committee_disposition": "Grandfathered — Certified Holding"
+  },
+  {
+   "_linked": 6,
+   "record_class": "Certified Portfolio Holding",
+   "registry_status": "Active — Certified Holding",
+   "admission_basis": "Certified MFPDF / Founders Edition",
+   "committee_disposition": "Grandfathered — Certified Holding"
+  },
+  {
+   "_linked": 7,
+   "record_class": "Certified Portfolio Holding",
+   "registry_status": "Active — Certified Holding",
+   "admission_basis": "Certified MFPDF / Founders Edition",
+   "committee_disposition": "Grandfathered — Certified Holding"
+  },
+  {
+   "_linked": 8,
+   "record_class": "Certified Portfolio Holding",
+   "registry_status": "Active — Certified Holding",
+   "admission_basis": "Certified MFPDF / Founders Edition",
+   "committee_disposition": "Grandfathered — Certified Holding"
+  },
+  {
+   "_linked": 9,
+   "record_class": "Certified Portfolio Holding",
+   "registry_status": "Active — Certified Holding",
+   "admission_basis": "Certified MFPDF / Founders Edition",
+   "committee_disposition": "Grandfathered — Certified Holding"
+  },
+  {
+   "_linked": 10,
+   "record_class": "Certified Portfolio Holding",
+   "registry_status": "Active — Certified Holding",
+   "admission_basis": "Certified MFPDF / Founders Edition",
+   "committee_disposition": "Grandfathered — Certified Holding"
+  },
+  {
+   "_linked": 11,
+   "record_class": "Certified Portfolio Holding",
+   "registry_status": "Active — Certified Holding",
+   "admission_basis": "Certified MFPDF / Founders Edition",
+   "committee_disposition": "Grandfathered — Certified Holding"
+  },
+  {
+   "_linked": 12,
+   "record_class": "Certified Portfolio Holding",
+   "registry_status": "Active — Certified Holding",
+   "admission_basis": "Certified MFPDF / Founders Edition",
+   "committee_disposition": "Grandfathered — Certified Holding"
+  },
+  {
+   "_linked": 13,
+   "record_class": "Certified Portfolio Holding",
+   "registry_status": "Active — Certified Holding",
+   "admission_basis": "Certified MFPDF / Founders Edition",
+   "committee_disposition": "Grandfathered — Certified Holding"
+  },
+  {
+   "_linked": 14,
+   "record_class": "Certified Portfolio Holding",
+   "registry_status": "Active — Certified Holding",
+   "admission_basis": "Certified MFPDF / Founders Edition",
+   "committee_disposition": "Grandfathered — Certified Holding"
+  },
+  {
+   "_linked": 15,
+   "record_class": "Certified Portfolio Holding",
+   "registry_status": "Active — Certified Holding",
+   "admission_basis": "Certified MFPDF / Founders Edition",
+   "committee_disposition": "Grandfathered — Certified Holding"
+  },
+  {
+   "_linked": 16,
+   "record_class": "Certified Portfolio Holding",
+   "registry_status": "Active — Certified Holding",
+   "admission_basis": "Certified MFPDF / Founders Edition",
+   "committee_disposition": "Grandfathered — Certified Holding"
+  },
+  {
+   "_linked": 17,
+   "record_class": "Certified Portfolio Holding",
+   "registry_status": "Active — Certified Holding",
+   "admission_basis": "Certified MFPDF / Founders Edition",
+   "committee_disposition": "Grandfathered — Certified Holding"
+  },
+  {
+   "_linked": 18,
+   "record_class": "Certified Portfolio Holding",
+   "registry_status": "Active — Certified Holding",
+   "admission_basis": "Certified MFPDF / Founders Edition",
+   "committee_disposition": "Grandfathered — Certified Holding"
+  },
+  {
+   "_linked": 19,
+   "record_class": "Certified Portfolio Holding",
+   "registry_status": "Active — Certified Holding",
+   "admission_basis": "Certified MFPDF / Founders Edition",
+   "committee_disposition": "Grandfathered — Certified Holding"
+  },
+  {
+   "_linked": 20,
+   "record_class": "Certified Portfolio Holding",
+   "registry_status": "Active — Certified Holding",
+   "admission_basis": "Certified MFPDF / Founders Edition",
+   "committee_disposition": "Grandfathered — Certified Holding"
+  },
+  {
+   "_linked": 21,
+   "record_class": "Certified Portfolio Holding",
+   "registry_status": "Active — Certified Holding",
+   "admission_basis": "Certified MFPDF / Founders Edition",
+   "committee_disposition": "Grandfathered — Certified Holding"
+  },
+  {
+   "_linked": 22,
+   "record_class": "Certified Portfolio Holding",
+   "registry_status": "Active — Certified Holding",
+   "admission_basis": "Certified MFPDF / Founders Edition",
+   "committee_disposition": "Grandfathered — Certified Holding"
+  },
+  {
+   "_linked": 23,
+   "record_class": "Certified Portfolio Holding",
+   "registry_status": "Active — Certified Holding",
+   "admission_basis": "Certified MFPDF / Founders Edition",
+   "committee_disposition": "Grandfathered — Certified Holding"
+  },
+  {
+   "_linked": 24,
+   "record_class": "Certified Portfolio Holding",
+   "registry_status": "Active — Certified Holding",
+   "admission_basis": "Certified MFPDF / Founders Edition",
+   "committee_disposition": "Grandfathered — Certified Holding"
+  },
+  {
+   "_linked": 25,
+   "record_class": "Certified Portfolio Holding",
+   "registry_status": "Active — Certified Holding",
+   "admission_basis": "Certified MFPDF / Founders Edition",
+   "committee_disposition": "Grandfathered — Certified Holding"
+  },
+  {
+   "_linked": 26,
+   "record_class": "Certified Portfolio Holding",
+   "registry_status": "Active — Certified Holding",
+   "admission_basis": "Certified MFPDF / Founders Edition",
+   "committee_disposition": "Grandfathered — Certified Holding"
+  },
+  {
+   "_linked": 27,
+   "record_class": "Certified Portfolio Holding",
+   "registry_status": "Active — Certified Holding",
+   "admission_basis": "Certified MFPDF / Founders Edition",
+   "committee_disposition": "Grandfathered — Certified Holding"
+  },
+  {
+   "_linked": 28,
+   "record_class": "Certified Portfolio Holding",
+   "registry_status": "Active — Certified Holding",
+   "admission_basis": "Certified MFPDF / Founders Edition",
+   "committee_disposition": "Grandfathered — Certified Holding"
+  },
+  {
+   "_linked": 29,
+   "record_class": "Certified Portfolio Holding",
+   "registry_status": "Active — Certified Holding",
+   "admission_basis": "Certified MFPDF / Founders Edition",
+   "committee_disposition": "Grandfathered — Certified Holding"
+  },
+  {
+   "_linked": 30,
+   "record_class": "Certified Portfolio Holding",
+   "registry_status": "Active — Certified Holding",
+   "admission_basis": "Certified MFPDF / Founders Edition",
+   "committee_disposition": "Grandfathered — Certified Holding"
+  },
+  {
+   "_linked": 31,
+   "record_class": "Certified Portfolio Holding",
+   "registry_status": "Active — Certified Holding",
+   "admission_basis": "Certified MFPDF / Founders Edition",
+   "committee_disposition": "Grandfathered — Certified Holding"
+  },
+  {
+   "_linked": 32,
+   "record_class": "Certified Portfolio Holding",
+   "registry_status": "Active — Certified Holding",
+   "admission_basis": "Certified MFPDF / Founders Edition",
+   "committee_disposition": "Grandfathered — Certified Holding"
+  },
+  {
+   "_linked": 33,
+   "record_class": "Certified Portfolio Holding",
+   "registry_status": "Active — Certified Holding",
+   "admission_basis": "Certified MFPDF / Founders Edition",
+   "committee_disposition": "Grandfathered — Certified Holding"
+  },
+  {
+   "_linked": 34,
+   "record_class": "Certified Portfolio Holding",
+   "registry_status": "Active — Certified Holding",
+   "admission_basis": "Certified MFPDF / Founders Edition",
+   "committee_disposition": "Grandfathered — Certified Holding"
+  },
+  {
+   "_linked": 35,
+   "record_class": "Certified Portfolio Holding",
+   "registry_status": "Active — Certified Holding",
+   "admission_basis": "Certified MFPDF / Founders Edition",
+   "committee_disposition": "Grandfathered — Certified Holding"
+  },
+  {
+   "_linked": 36,
+   "record_class": "Certified Portfolio Holding",
+   "registry_status": "Active — Certified Holding",
+   "admission_basis": "Certified MFPDF / Founders Edition",
+   "committee_disposition": "Grandfathered — Certified Holding"
+  },
+  {
+   "_linked": 37,
+   "record_class": "Certified Portfolio Holding",
+   "registry_status": "Active — Certified Holding",
+   "admission_basis": "Certified MFPDF / Founders Edition",
+   "committee_disposition": "Grandfathered — Certified Holding"
+  },
+  {
+   "_linked": 38,
+   "record_class": "Certified Portfolio Holding",
+   "registry_status": "Active — Certified Holding",
+   "admission_basis": "Certified MFPDF / Founders Edition",
+   "committee_disposition": "Grandfathered — Certified Holding"
+  },
+  {
+   "_linked": 39,
+   "record_class": "Certified Portfolio Holding",
+   "registry_status": "Active — Certified Holding",
+   "admission_basis": "Certified MFPDF / Founders Edition",
+   "committee_disposition": "Grandfathered — Certified Holding"
+  },
+  {
+   "_linked": 40,
+   "record_class": "Certified Portfolio Holding",
+   "registry_status": "Active — Certified Holding",
+   "admission_basis": "Certified MFPDF / Founders Edition",
+   "committee_disposition": "Grandfathered — Certified Holding"
+  },
+  {
+   "_linked": 41,
+   "record_class": "Certified Portfolio Holding",
+   "registry_status": "Active — Certified Holding",
+   "admission_basis": "Certified MFPDF / Founders Edition",
+   "committee_disposition": "Grandfathered — Certified Holding"
+  },
+  {
+   "_linked": 42,
+   "record_class": "Certified Portfolio Holding",
+   "registry_status": "Active — Certified Holding",
+   "admission_basis": "Certified MFPDF / Founders Edition",
+   "committee_disposition": "Grandfathered — Certified Holding"
+  },
+  {
+   "_linked": 43,
+   "record_class": "Certified Portfolio Holding",
+   "registry_status": "Active — Certified Holding",
+   "admission_basis": "Certified MFPDF / Founders Edition",
+   "committee_disposition": "Grandfathered — Certified Holding"
+  },
+  {
+   "_linked": 44,
+   "record_class": "Certified Portfolio Holding",
+   "registry_status": "Active — Certified Holding",
+   "admission_basis": "Certified MFPDF / Founders Edition",
+   "committee_disposition": "Grandfathered — Certified Holding"
+  },
+  {
+   "_linked": 45,
+   "record_class": "Certified Portfolio Holding",
+   "registry_status": "Active — Certified Holding",
+   "admission_basis": "Certified MFPDF / Founders Edition",
+   "committee_disposition": "Grandfathered — Certified Holding"
+  },
+  {
+   "_linked": 46,
+   "record_class": "Certified Portfolio Holding",
+   "registry_status": "Active — Certified Holding",
+   "admission_basis": "Certified MFPDF / Founders Edition",
+   "committee_disposition": "Grandfathered — Certified Holding"
+  },
+  {
+   "ticker": "EMR",
+   "security": "Emerson Electric Co.",
+   "record_class": "Research Candidate",
+   "registry_status": "Candidate — Under Research",
+   "admission_basis": "Manifest Research",
+   "sleeve": "Industrials & Infrastructure",
+   "role": "Industrial automation and control-systems candidate",
+   "security_type": "Equity"
+  },
+  {
+   "ticker": "BA",
+   "security": "The Boeing Company",
+   "record_class": "Research Candidate",
+   "registry_status": "Candidate — Under Research",
+   "admission_basis": "Manifest Research",
+   "sleeve": "Industrials & Infrastructure",
+   "role": "Commercial aerospace manufacturing recovery candidate",
+   "security_type": "Equity"
+  },
+  {
+   "ticker": "HXL",
+   "security": "Hexcel Corporation",
+   "record_class": "Research Candidate",
+   "registry_status": "Candidate — Under Research",
+   "admission_basis": "Manifest Research",
+   "sleeve": "Industrials & Infrastructure",
+   "role": "Advanced composites and widebody aerospace supplier candidate",
+   "security_type": "Equity"
+  },
+  {
+   "ticker": "HUBB",
+   "security": "Hubbell Incorporated",
+   "record_class": "Research Candidate",
+   "registry_status": "Candidate — Under Research",
+   "admission_basis": "Manifest Research",
+   "sleeve": "Digital Infrastructure & AI",
+   "role": "Grid connection and electrical infrastructure candidate",
+   "security_type": "Equity"
+  },
+  {
+   "ticker": "RRX",
+   "security": "Regal Rexnord Corporation",
+   "record_class": "Research Candidate",
+   "registry_status": "Candidate — Under Research",
+   "admission_basis": "Manifest Research",
+   "sleeve": "Industrials & Infrastructure",
+   "role": "Industrial power-transmission and automation candidate",
+   "security_type": "Equity"
+  },
+  {
+   "ticker": "BKR",
+   "security": "Baker Hughes Company",
+   "record_class": "Research Candidate",
+   "registry_status": "Candidate — Under Research",
+   "admission_basis": "Manifest Research",
+   "sleeve": "Energy & Natural Resources",
+   "role": "Energy infrastructure and power-demand enabler candidate",
+   "security_type": "Equity"
+  },
+  {
+   "ticker": "LMT",
+   "security": "Lockheed Martin Corporation",
+   "record_class": "Research Candidate",
+   "registry_status": "Candidate — Under Research",
+   "admission_basis": "Manifest Research",
+   "sleeve": "Industrials & Infrastructure",
+   "role": "Defense manufacturing scarcity and backlog candidate",
+   "security_type": "Equity"
+  },
+  {
+   "ticker": "SWK",
+   "security": "Stanley Black & Decker, Inc.",
+   "record_class": "Research Candidate",
+   "registry_status": "Candidate — Under Research",
+   "admission_basis": "Manifest Research",
+   "sleeve": "Industrials & Infrastructure",
+   "role": "Manufacturing recovery and tools-cycle candidate",
+   "security_type": "Equity"
+  },
+  {
+   "ticker": "XYL",
+   "security": "Xylem Inc.",
+   "record_class": "Research Candidate",
+   "registry_status": "Candidate — Under Research",
+   "admission_basis": "Manifest Research",
+   "sleeve": "Industrials & Infrastructure",
+   "role": "Water infrastructure and scarcity-management candidate",
+   "security_type": "Equity"
+  }
+ ],
+ "pipeline": [
+  {
+   "candidate_id": "MCP-20260824-001",
+   "intake_date": "2026-08-24",
+   "ticker": "VRT",
+   "candidate_type": "Retention Review",
+   "comparison_group": "Manufacturing Revival — Barron's Roundtable",
+   "source": "Advisor Observation",
+   "stage": "Intake",
+   "owner": "Research Committee",
+   "due_date": "2026-09-23",
+   "thesis_summary": "Digital infrastructure power and thermal-management leadership; reassess valuation, growth durability, and portfolio overlap.",
+   "source_memo": "Barron's Aug. 21, 2026 manufacturing roundtable | https://www.barrons.com/articles/manufacturing-stocks-picks-roundtable-7c264514 | Source establishes consideration only; no Manifest validation or portfolio action."
+  },
+  {
+   "candidate_id": "MCP-20260824-002",
+   "intake_date": "2026-08-24",
+   "ticker": "EMR",
+   "candidate_type": "Research Candidate",
+   "comparison_group": "Manufacturing Revival — Barron's Roundtable",
+   "source": "Advisor Observation",
+   "stage": "Intake",
+   "owner": "Research Committee",
+   "due_date": "2026-09-23",
+   "thesis_summary": "Automation exposure across utilities, life sciences, and energy; assess quality, valuation, and sleeve role.",
+   "source_memo": "Barron's Aug. 21, 2026 manufacturing roundtable | https://www.barrons.com/articles/manufacturing-stocks-picks-roundtable-7c264514 | Source establishes consideration only; no Manifest validation or portfolio action."
+  },
+  {
+   "candidate_id": "MCP-20260824-003",
+   "intake_date": "2026-08-24",
+   "ticker": "HUBB",
+   "candidate_type": "Research Candidate",
+   "comparison_group": "Manufacturing Revival — Barron's Roundtable",
+   "source": "Advisor Observation",
+   "stage": "Intake",
+   "owner": "Research Committee",
+   "due_date": "2026-09-23",
+   "thesis_summary": "Grid picks-and-shovels candidate tied to data-center load interconnection and utility investment.",
+   "source_memo": "Barron's Aug. 21, 2026 manufacturing roundtable | https://www.barrons.com/articles/manufacturing-stocks-picks-roundtable-7c264514 | Source establishes consideration only; no Manifest validation or portfolio action."
+  },
+  {
+   "candidate_id": "MCP-20260824-004",
+   "intake_date": "2026-08-24",
+   "ticker": "RRX",
+   "candidate_type": "Research Candidate",
+   "comparison_group": "Manufacturing Revival — Barron's Roundtable",
+   "source": "Advisor Observation",
+   "stage": "Intake",
+   "owner": "Research Committee",
+   "due_date": "2026-09-23",
+   "thesis_summary": "Specialist industrial and data-center infrastructure candidate requiring full quality and valuation review.",
+   "source_memo": "Barron's Aug. 21, 2026 manufacturing roundtable | https://www.barrons.com/articles/manufacturing-stocks-picks-roundtable-7c264514 | Source establishes consideration only; no Manifest validation or portfolio action."
+  },
+  {
+   "candidate_id": "MCP-20260824-005",
+   "intake_date": "2026-08-24",
+   "ticker": "XYL",
+   "candidate_type": "Research Candidate",
+   "comparison_group": "Manufacturing Revival — Barron's Roundtable",
+   "source": "Advisor Observation",
+   "stage": "Intake",
+   "owner": "Research Committee",
+   "due_date": "2026-09-23",
+   "thesis_summary": "Water infrastructure candidate; Merrill coverage/status exception must be resolved before eligibility.",
+   "source_memo": "Barron's Aug. 21, 2026 manufacturing roundtable | https://www.barrons.com/articles/manufacturing-stocks-picks-roundtable-7c264514 | Source establishes consideration only; no Manifest validation or portfolio action."
+  },
+  {
+   "candidate_id": "MCP-20260824-006",
+   "intake_date": "2026-08-24",
+   "ticker": "BKR",
+   "candidate_type": "Research Candidate",
+   "comparison_group": "Manufacturing Revival — Barron's Roundtable",
+   "source": "Advisor Observation",
+   "stage": "Intake",
+   "owner": "Research Committee",
+   "due_date": "2026-09-23",
+   "thesis_summary": "Energy infrastructure candidate linked to power demand and energy-security capital spending.",
+   "source_memo": "Barron's Aug. 21, 2026 manufacturing roundtable | https://www.barrons.com/articles/manufacturing-stocks-picks-roundtable-7c264514 | Source establishes consideration only; no Manifest validation or portfolio action."
+  },
+  {
+   "candidate_id": "MCP-20260824-007",
+   "intake_date": "2026-08-24",
+   "ticker": "LMT",
+   "candidate_type": "Research Candidate",
+   "comparison_group": "Manufacturing Revival — Barron's Roundtable",
+   "source": "Advisor Observation",
+   "stage": "Intake",
+   "owner": "Research Committee",
+   "due_date": "2026-09-23",
+   "thesis_summary": "Defense manufacturing scarcity and long-duration backlog thesis; assess valuation and program concentration.",
+   "source_memo": "Barron's Aug. 21, 2026 manufacturing roundtable | https://www.barrons.com/articles/manufacturing-stocks-picks-roundtable-7c264514 | Source establishes consideration only; no Manifest validation or portfolio action."
+  },
+  {
+   "candidate_id": "MCP-20260824-008",
+   "intake_date": "2026-08-24",
+   "ticker": "BA",
+   "candidate_type": "Research Candidate",
+   "comparison_group": "Manufacturing Revival — Barron's Roundtable",
+   "source": "Advisor Observation",
+   "stage": "Intake",
+   "owner": "Research Committee",
+   "due_date": "2026-09-23",
+   "thesis_summary": "Commercial aerospace recovery candidate contingent on execution, certification, cash flow, and balance-sheet diligence.",
+   "source_memo": "Barron's Aug. 21, 2026 manufacturing roundtable | https://www.barrons.com/articles/manufacturing-stocks-picks-roundtable-7c264514 | Source establishes consideration only; no Manifest validation or portfolio action."
+  },
+  {
+   "candidate_id": "MCP-20260824-009",
+   "intake_date": "2026-08-24",
+   "ticker": "HXL",
+   "candidate_type": "Research Candidate",
+   "comparison_group": "Manufacturing Revival — Barron's Roundtable",
+   "source": "Advisor Observation",
+   "stage": "Intake",
+   "owner": "Research Committee",
+   "due_date": "2026-09-23",
+   "thesis_summary": "Widebody production-ramp supplier candidate; requires size, cyclicality, customer concentration, and Merrill review.",
+   "source_memo": "Barron's Aug. 21, 2026 manufacturing roundtable | https://www.barrons.com/articles/manufacturing-stocks-picks-roundtable-7c264514 | Source establishes consideration only; no Manifest validation or portfolio action."
+  },
+  {
+   "candidate_id": "MCP-20260824-010",
+   "intake_date": "2026-08-24",
+   "ticker": "SWK",
+   "candidate_type": "Research Candidate",
+   "comparison_group": "Manufacturing Revival — Barron's Roundtable",
+   "source": "Advisor Observation",
+   "stage": "Intake",
+   "owner": "Research Committee",
+   "due_date": "2026-09-23",
+   "thesis_summary": "Manufacturing-cycle recovery candidate requiring evidence on margins, balance sheet, demand, and competitive position.",
+   "source_memo": "Barron's Aug. 21, 2026 manufacturing roundtable | https://www.barrons.com/articles/manufacturing-stocks-picks-roundtable-7c264514 | Source establishes consideration only; no Manifest validation or portfolio action."
+  }
+ ]
+}
