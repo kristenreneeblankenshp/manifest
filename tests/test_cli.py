@@ -67,7 +67,7 @@ class CliTest(unittest.TestCase):
         self.assertIn('market_cap', out)
         code, _, err = self.run_cli('masr', 'show', 'NOPE')
         self.assertEqual(code, 1)
-        self.assertIn('No masr record', err)
+        self.assertIn('No MASR registry record', err)
 
     def test_edit_advance_history_audit(self):
         code, out, _ = self.run_cli('pipeline', 'set', 'MCP-20260824-002', 'due_date=2026-10-31')
@@ -89,6 +89,55 @@ class CliTest(unittest.TestCase):
         self.assertIn('MCP-20260929-001', out)
         self.assertIn('no RCC-004 MASR registry record for PWR', out)
         self.assertIn('Missing required: source (H), owner (AA), due_date (AB)', out)
+
+    def test_every_sheet_command_renders(self):
+        from manifest_workbench.views import SHEETS
+        for sheet, command, _ in SHEETS:
+            with self.subTest(sheet=sheet):
+                code, out, err = self.run_cli(*command.split())
+                self.assertEqual(code, 0, f'{command}: {err}')
+                self.assertTrue(out.strip())
+
+    def test_sheet_views(self):
+        for command, expected in (('cisc', 'NEXT REVIEW: Monday, Jul 27, 2026'),
+                                  ('decision-center', 'DEFER — COMPLETE DATA'),
+                                  ('pew', 'READY — NO CANDIDATES'),
+                                  ('validation', 'MONITOR — OUTSIDE PREFERRED RANGE'),
+                                  ('lab', 'certified baseline preserved'),
+                                  ('mandate', 'PEW-001-28'),
+                                  ('sleeves', 'SCENARIO TOTAL PASS'),
+                                  ('roles', '47 passed'),
+                                  ('controls', 'GREEN / STRONG ALIGNMENT'),
+                                  ('committee', 'Monte Carlo Enhancement'),
+                                  ('dashboard-data', 'Target Weight'),
+                                  ('doc', 'freeze-record')):
+            code, out, err = self.run_cli(command)
+            self.assertEqual(code, 0, err)
+            self.assertIn(expected, out, command)
+        code, out, _ = self.run_cli('cell', '13 Validation', 'J12')
+        self.assertIn("'NOT READY'", out)
+        code, _, err = self.run_cli('cell', '07', 'A6')
+        self.assertEqual(code, 1)
+        self.assertIn('not a formula cell', err)
+
+    def test_operating_edits(self):
+        code, out, _ = self.run_cli('decisions', 'add', 'decision=Review MU', 'committee_decision=yes',
+                                    'status=open')
+        self.assertIn('DC-004', out)
+        code, out, _ = self.run_cli('decision-center')
+        self.assertIn('Manual Committee Decisions       1', out)
+        code, out, _ = self.run_cli('scenario', 'set', 'NVDA', 'scenario_weight=4.5%', 'rationale=test')
+        self.assertIn('BAND EXCEPTION — COMMITTEE DECISION', out)
+        code, out, _ = self.run_cli('controls', 'set', 'previous_week_score=0.7')
+        self.assertIn('-0.08', out)
+        code, _, err = self.run_cli('mandate', 'set', 'PEW-001-09', 'status=PASS')
+        self.assertEqual(code, 1)
+        self.assertIn('calculated by formula', err)
+        code, out, _ = self.run_cli('intel-review', 'add', 'symbol=MU', 'reason=Memory cycle')
+        code, out, _ = self.run_cli('cisc')
+        self.assertIn('MU — Memory cycle', out)
+        code, out, _ = self.run_cli('intel-review', 'clear', '1')
+        self.assertIn('Cleared', out)
 
     def test_export(self):
         path = Path(self.tmp.name) / 'pipeline.csv'
@@ -116,7 +165,8 @@ class CliTest(unittest.TestCase):
             os.sys.stdin = old_stdin
         self.assertEqual(code, 0)
         text = out.getvalue()
-        self.assertIn('CHIEF INVESTMENT STEWARD CONSOLE', text)
+        self.assertIn('CHIEF INVESTMENT STEWARD CONSOLE (CISC)', text)
+        self.assertIn('5 · MANIFEST DECISION CENTER', text)
         self.assertIn('Evaluating as of 2026-08-24', text)
         self.assertIn('10 PASS / 0 BLOCKED', text)
 

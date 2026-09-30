@@ -1192,5 +1192,1439 @@
    "thesis_summary": "Manufacturing-cycle recovery candidate requiring evidence on margins, balance sheet, demand, and competitive position.",
    "source_memo": "Barron's Aug. 21, 2026 manufacturing roundtable | https://www.barrons.com/articles/manufacturing-stocks-picks-roundtable-7c264514 | Source establishes consideration only; no Manifest validation or portfolio action."
   }
- ]
+ ],
+ "controls": {
+  "report_date": "2026-07-26",
+  "console_id": "CISC-001",
+  "edition": "Founders Edition v1.0",
+  "data_status": "PROTOTYPE VALUES — LIVE INPUTS REQUIRED",
+  "previous_week_score": 0.58,
+  "confidence": 0.72,
+  "next_review": "2026-07-27",
+  "mwir_status": "Planned / not yet published",
+  "prototype_note": "Replace component scores and confidence in each weekly run."
+ },
+ "composite": [
+  {
+   "component": "Macro Regime",
+   "score": 0.6,
+   "weight": 0.15
+  },
+  {
+   "component": "Credit Conditions",
+   "score": 0.55,
+   "weight": 0.15
+  },
+  {
+   "component": "Liquidity & Policy",
+   "score": 0.45,
+   "weight": 0.1
+  },
+  {
+   "component": "Market Breadth",
+   "score": 0.65,
+   "weight": 0.1
+  },
+  {
+   "component": "Earnings & Fundamentals",
+   "score": 0.7,
+   "weight": 0.15
+  },
+  {
+   "component": "Valuation Discipline",
+   "score": 0.4,
+   "weight": 0.1
+  },
+  {
+   "component": "Portfolio Alignment",
+   "score": 0.75,
+   "weight": 0.15
+  },
+  {
+   "component": "Research Conviction",
+   "score": 0.8,
+   "weight": 0.1
+  }
+ ],
+ "intel-review": [
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {}
+ ],
+ "intel-events": [
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {}
+ ],
+ "intel-zacks": [
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {}
+ ],
+ "intel-merrill": [
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {}
+ ],
+ "intel-miar": [
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {}
+ ],
+ "intel-thesis": [
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {}
+ ],
+ "actions": [
+  {
+   "id": "OP-001",
+   "category": "Governance",
+   "action": "Freeze CISC-001 visual dashboard with five panels",
+   "owner": "Chief Investment Steward",
+   "due_date": "2026-07-26",
+   "priority": "High",
+   "status": "Completed",
+   "committee_decision": "No",
+   "linked_record": "CISC-001"
+  },
+  {
+   "id": "OP-002",
+   "category": "Operations",
+   "action": "Establish Manifest Workbench from canonical MFPDF",
+   "owner": "Portfolio Operations",
+   "due_date": "2026-07-26",
+   "priority": "High",
+   "status": "Completed",
+   "committee_decision": "No",
+   "linked_record": "CISC-001"
+  },
+  {
+   "id": "OP-003",
+   "category": "Data",
+   "action": "Load current actual portfolio weights",
+   "owner": "Portfolio Operations",
+   "due_date": "2026-07-27",
+   "priority": "High",
+   "status": "Open",
+   "committee_decision": "No",
+   "linked_record": "DC-SYS-001"
+  },
+  {
+   "id": "OP-004",
+   "category": "Research",
+   "action": "Populate current research intelligence",
+   "owner": "Research Division",
+   "due_date": "2026-07-27",
+   "priority": "High",
+   "status": "Open",
+   "committee_decision": "No",
+   "linked_record": "DC-SYS-003"
+  },
+  {
+   "id": "OP-005",
+   "category": "Publication",
+   "action": "Publish next MWIR",
+   "owner": "Publication Division",
+   "due_date": "2026-07-27",
+   "priority": "High",
+   "status": "Planned",
+   "committee_decision": "No",
+   "linked_record": "MWIR"
+  },
+  {
+   "id": "OP-006",
+   "category": "Analytics",
+   "action": "Run Monte Carlo on canonical Portfolio B",
+   "owner": "Portfolio Engineering",
+   "priority": "Medium",
+   "status": "Planned",
+   "committee_decision": "No",
+   "linked_record": "MFPDF v1.0"
+  },
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {}
+ ],
+ "priorities": [
+  {
+   "number": "1",
+   "priority": "Load current actual portfolio weights",
+   "owner": "Portfolio Operations",
+   "due_date": "2026-07-27",
+   "status": "Open"
+  },
+  {
+   "number": "2",
+   "priority": "Populate current research intelligence",
+   "owner": "Research Division",
+   "due_date": "2026-07-27",
+   "status": "Open"
+  },
+  {
+   "number": "3",
+   "priority": "Publish next MWIR",
+   "owner": "Publication Division",
+   "due_date": "2026-07-27",
+   "status": "Planned"
+  },
+  {
+   "number": "4",
+   "priority": "Run Monte Carlo on canonical Portfolio B",
+   "owner": "Portfolio Engineering",
+   "status": "Planned"
+  },
+  {
+   "number": "5",
+   "priority": "Assign conviction tiers",
+   "owner": "Stewardship Committee",
+   "status": "Planned"
+  },
+  {},
+  {},
+  {},
+  {},
+  {}
+ ],
+ "questions": [
+  {
+   "id": "Q1",
+   "question": "Are any actual weights outside certified bands?",
+   "evidence": "Current weights",
+   "owner": "Portfolio Operations",
+   "status": "Pending Data"
+  },
+  {
+   "id": "Q2",
+   "question": "Does MU require a conviction change?",
+   "evidence": "Current research",
+   "owner": "Research Division",
+   "status": "Open"
+  },
+  {
+   "id": "Q3",
+   "question": "Are any holdings carrying a Zacks #4 rating?",
+   "evidence": "Current Zacks file",
+   "owner": "Research Division",
+   "status": "Open"
+  },
+  {
+   "id": "Q4",
+   "question": "Are new candidates eligible for MASR review?",
+   "evidence": "Candidate dossiers",
+   "owner": "Research Division",
+   "status": "Open"
+  },
+  {
+   "id": "Q5",
+   "question": "Is any sleeve outside its target allocation?",
+   "evidence": "Current weights",
+   "owner": "Portfolio Engineering",
+   "status": "Pending Data"
+  },
+  {},
+  {},
+  {},
+  {},
+  {}
+ ],
+ "projects": [
+  {
+   "id": "P1",
+   "project": "Monte Carlo Enhancement",
+   "owner": "Portfolio Engineering",
+   "deliverable": "Institutional simulation engine",
+   "status": "In Progress"
+  },
+  {
+   "id": "P2",
+   "project": "Advisor Handbook",
+   "owner": "Manifest Academy",
+   "deliverable": "Operating handbook",
+   "status": "Planned"
+  },
+  {
+   "id": "P3",
+   "project": "Client Presentation",
+   "owner": "Publication Division",
+   "deliverable": "Client-ready deck",
+   "status": "Planned"
+  },
+  {
+   "id": "P4",
+   "project": "Casebook Development",
+   "owner": "Manifest Academy",
+   "deliverable": "Founders casebook",
+   "status": "Planned"
+  },
+  {
+   "id": "P5",
+   "project": "Library Expansion Plan",
+   "owner": "Editorial Board",
+   "deliverable": "Master library integration",
+   "status": "In Progress"
+  },
+  {},
+  {},
+  {},
+  {},
+  {}
+ ],
+ "publications": [
+  {
+   "publication": "MWIR",
+   "latest_issue": "Week ending Jul. 24, 2026",
+   "last_published": "2026-07-25",
+   "next_due": "2026-07-27",
+   "status": "Planned",
+   "owner": "Publication Division"
+  },
+  {
+   "publication": "MOR",
+   "latest_issue": "MOR-001",
+   "last_published": "2026-07-20",
+   "status": "Scheduled",
+   "owner": "Publication Division"
+  },
+  {
+   "publication": "MIRD",
+   "latest_issue": "Weekly risk dashboard",
+   "last_published": "2026-07-25",
+   "next_due": "2026-07-27",
+   "status": "Scheduled",
+   "owner": "Risk Division"
+  },
+  {
+   "publication": "MIPR",
+   "latest_issue": "Institutional portfolio review",
+   "status": "Not Started",
+   "owner": "Portfolio Division"
+  },
+  {},
+  {},
+  {},
+  {}
+ ],
+ "calendar": [
+  {
+   "date": "2026-07-27",
+   "event": "Monday workflow",
+   "cadence": "Weekly",
+   "authority": "Chief Investment Steward",
+   "status": "Scheduled"
+  },
+  {
+   "date": "2026-07-27",
+   "event": "MWIR publication",
+   "cadence": "Weekly",
+   "authority": "Publication Division",
+   "status": "Scheduled"
+  },
+  {
+   "event": "Monthly allocation review",
+   "cadence": "Monthly",
+   "authority": "Stewardship Committee",
+   "status": "TBD"
+  },
+  {
+   "event": "Quarterly engineering review",
+   "cadence": "Quarterly",
+   "authority": "Portfolio Engineering",
+   "status": "TBD"
+  },
+  {
+   "event": "MOR publication",
+   "cadence": "Monthly",
+   "authority": "Publication Division",
+   "status": "TBD"
+  },
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {}
+ ],
+ "certifications": [
+  {
+   "record": "Chief Investment Steward Console",
+   "version": "CISC-001 / v1.0",
+   "certified": "2026-07-26",
+   "review_cadence": "Event-driven",
+   "status": "Frozen",
+   "authority": "Chief Investment Steward"
+  },
+  {
+   "record": "Manifest Flagship Portfolio Definition File",
+   "version": "MFPDF v1.0",
+   "certified": "2026-07-20",
+   "review_cadence": "Quarterly + material event",
+   "status": "Certified",
+   "authority": "Stewardship Committee"
+  },
+  {
+   "record": "Manifest Visual Design System",
+   "version": "MVDS v1.0",
+   "certified": "2026-07-20",
+   "review_cadence": "Amendment only",
+   "status": "Frozen",
+   "authority": "Publication Committee"
+  },
+  {
+   "record": "Manifest Founders Edition",
+   "version": "v1.0",
+   "certified": "2026-07-19",
+   "review_cadence": "Constitutional amendment only",
+   "status": "Complete",
+   "authority": "Founding Authority"
+  },
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {}
+ ],
+ "decisions": [
+  {
+   "id": "DC-001",
+   "date_opened": "2026-07-26",
+   "category": "Governance",
+   "decision": "Freeze CISC-001 as the five-panel visual reference standard",
+   "evidence": "Approved console design plus Manifest Decision Center",
+   "recommendation": "Frozen as CISC-001 Founders Edition v1.0",
+   "authority": "Chief Investment Steward",
+   "owner": "Chief Investment Steward",
+   "due_date": "2026-07-26",
+   "committee_decision": "No",
+   "status": "Closed"
+  },
+  {
+   "id": "DC-002",
+   "date_opened": "2026-07-26",
+   "category": "Operations",
+   "decision": "Establish Manifest Workbench on the certified MFPDF foundation",
+   "evidence": "Canonical 47-position Portfolio B workbook",
+   "recommendation": "Implement workbench without altering certified target weights",
+   "authority": "Chief Investment Steward",
+   "owner": "Portfolio Operations",
+   "due_date": "2026-07-26",
+   "committee_decision": "No",
+   "status": "Closed"
+  },
+  {
+   "id": "DC-003",
+   "date_opened": "2026-07-26",
+   "category": "Data",
+   "decision": "Load current actual portfolio weights",
+   "evidence": "Certified Allocation column I is blank",
+   "recommendation": "Complete data update before live band review",
+   "authority": "Portfolio Operations",
+   "owner": "Portfolio Operations",
+   "due_date": "2026-07-27",
+   "committee_decision": "No",
+   "status": "Open"
+  },
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {}
+ ],
+ "mandate": [
+  {
+   "control_id": "PEW-001-01",
+   "domain": "Benchmark",
+   "objective": "Primary comparison standard",
+   "standard": "Russell 1000",
+   "classification": "Monitoring Control",
+   "operating_value": "Russell 1000",
+   "test": "All portfolio analytics compared to benchmark",
+   "status": "ACTIVE",
+   "authority": "Chief Investment Steward",
+   "effect": "Benchmark return, volatility, momentum and yield comparisons",
+   "notes": "Adopted allocation objective"
+  },
+  {
+   "control_id": "PEW-001-02",
+   "domain": "Risk",
+   "objective": "Volatility objective",
+   "standard": "Lower volatility than Russell 1000",
+   "classification": "Soft Objective",
+   "operating_value": "Analytics not loaded",
+   "test": "Rolling 3-year and 5-year realized volatility",
+   "status": "MONITOR — ANALYTICS REQUIRED",
+   "authority": "Portfolio Engineering",
+   "effect": "Scenario must demonstrate favorable risk profile before certification",
+   "notes": "Adopted allocation objective"
+  },
+  {
+   "control_id": "PEW-001-03",
+   "domain": "Return",
+   "objective": "Momentum objective",
+   "standard": "Higher momentum than Russell 1000",
+   "classification": "Soft Objective",
+   "operating_value": "Analytics not loaded",
+   "test": "Manifest momentum methodology versus benchmark",
+   "status": "MONITOR — ANALYTICS REQUIRED",
+   "authority": "Portfolio Engineering",
+   "effect": "Use empirical validation; do not optimize to a single period",
+   "notes": "Adopted allocation objective"
+  },
+  {
+   "control_id": "PEW-001-04",
+   "domain": "Income",
+   "objective": "Dividend-yield objective",
+   "standard": "Higher dividend yield than Russell 1000",
+   "classification": "Soft Objective",
+   "operating_value": "Analytics not loaded",
+   "test": "Portfolio yield versus benchmark yield",
+   "status": "MONITOR — ANALYTICS REQUIRED",
+   "authority": "Portfolio Engineering",
+   "effect": "Dividend growth preferred over static high yield",
+   "notes": "Adopted allocation objective"
+  },
+  {
+   "control_id": "PEW-001-05",
+   "domain": "Income",
+   "objective": "Annual portfolio income need",
+   "standard": "2.50% annual cash-flow objective",
+   "classification": "Hard Constraint",
+   "operating_value": 0.025,
+   "test": "Portfolio yield / distributable cash flow ≥ objective",
+   "status": "ACTIVE",
+   "authority": "Chief Investment Steward",
+   "effect": "Scenario income must be tested before certification",
+   "notes": "Client / portfolio guardrail"
+  },
+  {
+   "control_id": "PEW-001-06",
+   "domain": "Risk",
+   "objective": "Maximum acceptable drawdown",
+   "standard": "35% review ceiling; not a performance guarantee",
+   "classification": "Hard Constraint",
+   "operating_value": 0.35,
+   "test": "Empirical / Monte Carlo drawdown test",
+   "status": "ACTIVE",
+   "authority": "Chief Investment Steward",
+   "effect": "Failure requires redesign or explicit exception",
+   "notes": "Adopted risk guardrail"
+  },
+  {
+   "control_id": "PEW-001-07",
+   "domain": "Horizon",
+   "objective": "Investment horizon",
+   "standard": "Long-term institutional horizon",
+   "classification": "Governance Rule",
+   "operating_value": "5+ years",
+   "test": "Core holdings require durable long-horizon thesis",
+   "status": "ACTIVE",
+   "authority": "Stewardship Committee",
+   "effect": "Avoid short-term optimization of the core portfolio",
+   "notes": "Founders Edition doctrine"
+  },
+  {
+   "control_id": "PEW-001-08",
+   "domain": "Liquidity",
+   "objective": "Liquidity standard",
+   "standard": "Daily liquidity required",
+   "classification": "Hard Constraint",
+   "operating_value": "Daily",
+   "test": "All holdings must be publicly traded and operationally liquid",
+   "status": "PASS",
+   "authority": "Portfolio Operations",
+   "effect": "Illiquid alternatives are not eligible",
+   "notes": "Implementation standard"
+  },
+  {
+   "control_id": "PEW-001-09",
+   "domain": "Construction",
+   "objective": "Preferred equity-core position count",
+   "standard": "32–38 equities; controlled exception permitted",
+   "classification": "Preference",
+   "test": "Monitor current equity count against preferred range",
+   "authority": "Stewardship Committee",
+   "effect": "Above-range count requires concentration/complexity review",
+   "notes": "Frozen construction preference"
+  },
+  {
+   "control_id": "PEW-001-10",
+   "domain": "Construction",
+   "objective": "Operating equity ceiling",
+   "standard": "Maximum 41 equities without formal amendment",
+   "classification": "Hard Constraint",
+   "test": "Certified equity count ≤ 41",
+   "authority": "Chief Investment Steward",
+   "effect": "Exceeding ceiling blocks certification",
+   "notes": "Operating interpretation of ±2–3 tolerance"
+  },
+  {
+   "control_id": "PEW-001-11",
+   "domain": "Construction",
+   "objective": "Certified portfolio position count",
+   "standard": "47 positions in canonical Portfolio B",
+   "classification": "Governance Rule",
+   "test": "Position count must reconcile to MFPDF",
+   "authority": "MFPDF v1.0",
+   "effect": "Scenario begins from the certified 47-position baseline",
+   "notes": "Canonical workbook"
+  },
+  {
+   "control_id": "PEW-001-12",
+   "domain": "Construction",
+   "objective": "Certified target allocation",
+   "standard": "Portfolio target must total 100%",
+   "classification": "Hard Constraint",
+   "test": "SUM of certified targets = 100%",
+   "authority": "MFPDF v1.0",
+   "effect": "No scenario may be certified if effective weights do not total 100%",
+   "notes": "Canonical workbook"
+  },
+  {
+   "control_id": "PEW-001-13",
+   "domain": "Architecture",
+   "objective": "One security / one sleeve",
+   "standard": "Each security may belong to only one production sleeve",
+   "classification": "Hard Constraint",
+   "operating_value": "Certified baseline",
+   "test": "No duplicate symbol across sleeve assignments",
+   "status": "PASS",
+   "authority": "Stewardship Committee",
+   "effect": "Prevents double-counting of portfolio purpose",
+   "notes": "Frozen sleeve rule"
+  },
+  {
+   "control_id": "PEW-001-14",
+   "domain": "Architecture",
+   "objective": "Core-before-satellite",
+   "standard": "Core role must be established before implementation exposure",
+   "classification": "Governance Rule",
+   "operating_value": "Required",
+   "test": "Portfolio-role review precedes satellite allocation",
+   "status": "ACTIVE",
+   "authority": "Stewardship Committee",
+   "effect": "A security must have an explicit institutional function",
+   "notes": "Founders Edition doctrine"
+  },
+  {
+   "control_id": "PEW-001-15",
+   "domain": "Research",
+   "objective": "Five-year rule for core",
+   "standard": "Core eligibility requires a five-year operating / evidence record unless excepted",
+   "classification": "Governance Rule",
+   "operating_value": "Required",
+   "test": "Role Assignment documents evidence or exception",
+   "status": "ACTIVE",
+   "authority": "Research Committee",
+   "effect": "Exception requires written committee rationale",
+   "notes": "Frozen research rule"
+  },
+  {
+   "control_id": "PEW-001-16",
+   "domain": "Income",
+   "objective": "Dividend growth preference",
+   "standard": "Dividend growth favored over headline yield",
+   "classification": "Preference",
+   "operating_value": "Required preference",
+   "test": "Compare payout durability, FCF and operating earnings growth",
+   "status": "ACTIVE",
+   "authority": "Research Committee",
+   "effect": "Avoid yield-only selection",
+   "notes": "Frozen selection preference"
+  },
+  {
+   "control_id": "PEW-001-17",
+   "domain": "ETF / Income",
+   "objective": "Permitted implementation exposures",
+   "standard": "No mid/small cap, international or alternatives in this sleeve",
+   "classification": "Hard Constraint",
+   "operating_value": "Domestic large-cap / approved ETFs",
+   "test": "Candidate eligibility gate",
+   "status": "PASS — CERTIFIED BASELINE",
+   "authority": "Stewardship Committee",
+   "effect": "JEPI, JEPQ, PFF and approved Vanguard sector ETFs remain eligible",
+   "notes": "Frozen implementation directive"
+  },
+  {
+   "control_id": "PEW-001-18",
+   "domain": "Selection",
+   "objective": "Candidate market-cap preference",
+   "standard": "Large cap above $50B for Zacks-driven elections unless excepted",
+   "classification": "Preference",
+   "operating_value": 50,
+   "test": "Candidate market capitalization ($B)",
+   "status": "ACTIVE",
+   "authority": "Stewardship Committee",
+   "effect": "Sub-$50B candidates require documented exception",
+   "notes": "Adopted selection preference"
+  },
+  {
+   "control_id": "PEW-001-19",
+   "domain": "Selection",
+   "objective": "Zacks decision bias",
+   "standard": "Ranks #1/#2 favored; #3 neutral; #4/#5 require review / exception",
+   "classification": "Governance Rule",
+   "operating_value": "80% close-decision overlay",
+   "test": "Applied only when Manifest comparison is close",
+   "status": "ACTIVE",
+   "authority": "Stewardship Committee",
+   "effect": "Overlay does not replace MIAR, MICS, empirical or role-fit evidence",
+   "notes": "Adopted close-decision policy"
+  },
+  {
+   "control_id": "PEW-001-20",
+   "domain": "Selection",
+   "objective": "Merrill research commonality",
+   "standard": "Merrill-rated securities preferred; No Rating requires documented exception",
+   "classification": "Preference",
+   "operating_value": "Rated preferred",
+   "test": "Candidate eligibility / exception record",
+   "status": "ACTIVE",
+   "authority": "Stewardship Committee",
+   "effect": "Mega-cap Zacks #1/#2 may remain eligible under documented exception",
+   "notes": "Research crosswalk policy"
+  },
+  {
+   "control_id": "PEW-001-21",
+   "domain": "Allocation",
+   "objective": "Certified holding rebalance bands",
+   "standard": "Lower MAX(1%, 75% of target); upper MIN(4%, 125% of target)",
+   "classification": "Hard Constraint",
+   "operating_value": "Active",
+   "test": "Compare actual and scenario weights with certified bands",
+   "status": "PASS",
+   "authority": "MFPDF v1.0",
+   "effect": "Band breach triggers review, not automatic trade",
+   "notes": "Canonical rebalancing framework"
+  },
+  {
+   "control_id": "PEW-001-22",
+   "domain": "Governance",
+   "objective": "Automatic trading",
+   "standard": "Not authorized",
+   "classification": "Hard Constraint",
+   "operating_value": "Prohibited",
+   "test": "No output may authorize automatic execution",
+   "status": "PASS — PROHIBITED",
+   "authority": "Stewardship Committee",
+   "effect": "Committee review precedes implementation",
+   "notes": "Canonical rebalancing framework"
+  },
+  {
+   "control_id": "PEW-001-23",
+   "domain": "Governance",
+   "objective": "Scenario isolation",
+   "standard": "Engineering scenarios cannot overwrite the certified portfolio",
+   "classification": "Hard Constraint",
+   "operating_value": "Separate scenario layer",
+   "test": "Certified Allocation remains unchanged",
+   "status": "PASS",
+   "authority": "Chief Investment Steward",
+   "effect": "Only a newly certified MFPDF version becomes operational",
+   "notes": "MOPS-002 control principle"
+  },
+  {
+   "control_id": "PEW-001-24",
+   "domain": "Validation",
+   "objective": "Material-change validation",
+   "standard": "Material allocation changes require empirical and/or Monte Carlo review",
+   "classification": "Governance Rule",
+   "operating_value": "Required when triggered",
+   "test": "Turnover, additions/removals, sleeve shift or risk change",
+   "status": "ACTIVE",
+   "authority": "Validation Committee",
+   "effect": "Optimization output is evidence, not authority",
+   "notes": "MEVE / Monte Carlo protocol"
+  },
+  {
+   "control_id": "PEW-001-25",
+   "domain": "Operations",
+   "objective": "Actual weights before live rebalance",
+   "standard": "All 47 actual weights must be loaded",
+   "classification": "Hard Constraint",
+   "test": "Count of nonblank Certified Allocation column I",
+   "authority": "Portfolio Operations",
+   "effect": "Blocks implementation funding and live band review",
+   "notes": "CISC / MFPDF operating requirement"
+  },
+  {
+   "control_id": "PEW-001-26",
+   "domain": "Governance",
+   "objective": "Conviction before certification",
+   "standard": "Every active holding must have an assigned conviction tier",
+   "classification": "Hard Constraint",
+   "test": "Count of non-Unassigned effective convictions",
+   "authority": "Stewardship Committee",
+   "effect": "Blocks final certification of a changed portfolio",
+   "notes": "MOPS-002 PEW-005"
+  },
+  {
+   "control_id": "PEW-001-27",
+   "domain": "Validation",
+   "objective": "Objective-test data",
+   "standard": "Benchmark, income and risk analytics must be current",
+   "classification": "Hard Constraint",
+   "operating_value": "Not loaded",
+   "test": "Current empirical / risk evidence package",
+   "status": "INPUT REQUIRED",
+   "authority": "Portfolio Engineering",
+   "effect": "Required before substantive redesign certification",
+   "notes": "Validation standard"
+  },
+  {
+   "control_id": "PEW-001-28",
+   "domain": "Governance",
+   "objective": "Formal certification gate",
+   "standard": "Engineering review, research sufficiency, allocation/risk and committee approval",
+   "classification": "Hard Constraint",
+   "operating_value": "Required",
+   "test": "All PEW-007 approvals completed",
+   "status": "ACTIVE",
+   "authority": "Chief Investment Steward",
+   "effect": "Scenario remains non-operational until MFPDF version is issued",
+   "notes": "MOPS-002 control principle"
+  }
+ ],
+ "sleeves": [
+  {
+   "sleeve": "Strategic Anchors",
+   "purpose": "Durable capital compounders and portfolio-resilience anchors."
+  },
+  {
+   "sleeve": "Growth Compounders",
+   "purpose": "Above-market earnings, free-cash-flow and reinvestment compounders."
+  },
+  {
+   "sleeve": "Digital Infrastructure & AI",
+   "purpose": "Semiconductor, networking, cybersecurity and data-center backbone."
+  },
+  {
+   "sleeve": "Industrials & Infrastructure",
+   "purpose": "Aerospace, automation, transportation, electrification and capital spending."
+  },
+  {
+   "sleeve": "Financial Infrastructure",
+   "purpose": "Payments, exchanges, capital markets and quality financial intermediation."
+  },
+  {
+   "sleeve": "Healthcare Leadership",
+   "purpose": "Healthcare innovation, defensive growth and durable demand."
+  },
+  {
+   "sleeve": "Energy & Natural Resources",
+   "purpose": "Energy security, real assets, inflation sensitivity and resource exposure."
+  },
+  {
+   "sleeve": "Income & Risk Management",
+   "purpose": "Income generation, volatility moderation and preferred-security diversification."
+  }
+ ],
+ "roles": [
+  {
+   "functional_role": "Constitutional Anchor",
+   "role_priority": "Primary",
+   "core_eligibility": "Core",
+   "five_year_evidence": "Certified Baseline",
+   "thesis_horizon": "5+ years",
+   "duplication_risk": "Not Assessed",
+   "role_decision": "Retain — Certified Baseline"
+  },
+  {
+   "functional_role": "Core Compounder",
+   "role_priority": "Primary",
+   "core_eligibility": "Core",
+   "five_year_evidence": "Certified Baseline",
+   "thesis_horizon": "5+ years",
+   "duplication_risk": "Not Assessed",
+   "role_decision": "Retain — Certified Baseline"
+  },
+  {
+   "functional_role": "Defensive Healthcare",
+   "role_priority": "Primary",
+   "core_eligibility": "Core",
+   "five_year_evidence": "Certified Baseline",
+   "thesis_horizon": "5+ years",
+   "duplication_risk": "Not Assessed",
+   "role_decision": "Retain — Certified Baseline"
+  },
+  {
+   "functional_role": "Core Compounder",
+   "role_priority": "Primary",
+   "core_eligibility": "Core",
+   "five_year_evidence": "Certified Baseline",
+   "thesis_horizon": "5+ years",
+   "duplication_risk": "Not Assessed",
+   "role_decision": "Retain — Certified Baseline"
+  },
+  {
+   "functional_role": "Quality Financial",
+   "role_priority": "Primary",
+   "core_eligibility": "Core",
+   "five_year_evidence": "Certified Baseline",
+   "thesis_horizon": "5+ years",
+   "duplication_risk": "Not Assessed",
+   "role_decision": "Retain — Certified Baseline"
+  },
+  {
+   "functional_role": "Core Compounder",
+   "role_priority": "Primary",
+   "core_eligibility": "Core",
+   "five_year_evidence": "Certified Baseline",
+   "thesis_horizon": "5+ years",
+   "duplication_risk": "Not Assessed",
+   "role_decision": "Retain — Certified Baseline"
+  },
+  {
+   "functional_role": "Quality Financial",
+   "role_priority": "Primary",
+   "core_eligibility": "Core",
+   "five_year_evidence": "Certified Baseline",
+   "thesis_horizon": "5+ years",
+   "duplication_risk": "Not Assessed",
+   "role_decision": "Retain — Certified Baseline"
+  },
+  {
+   "functional_role": "Core Compounder",
+   "role_priority": "Primary",
+   "core_eligibility": "Core",
+   "five_year_evidence": "Certified Baseline",
+   "thesis_horizon": "5+ years",
+   "duplication_risk": "Not Assessed",
+   "role_decision": "Retain — Certified Baseline"
+  },
+  {
+   "functional_role": "Core Compounder",
+   "role_priority": "Primary",
+   "core_eligibility": "Core",
+   "five_year_evidence": "Certified Baseline",
+   "thesis_horizon": "5+ years",
+   "duplication_risk": "Not Assessed",
+   "role_decision": "Retain — Certified Baseline"
+  },
+  {
+   "functional_role": "Growth Engine",
+   "role_priority": "Primary",
+   "core_eligibility": "Core",
+   "five_year_evidence": "Certified Baseline",
+   "thesis_horizon": "5+ years",
+   "duplication_risk": "Not Assessed",
+   "role_decision": "Retain — Certified Baseline"
+  },
+  {
+   "functional_role": "Defensive Healthcare",
+   "role_priority": "Primary",
+   "core_eligibility": "Core",
+   "five_year_evidence": "Certified Baseline",
+   "thesis_horizon": "5+ years",
+   "duplication_risk": "Not Assessed",
+   "role_decision": "Retain — Certified Baseline"
+  },
+  {
+   "functional_role": "Growth Engine",
+   "role_priority": "Primary",
+   "core_eligibility": "Core",
+   "five_year_evidence": "Certified Baseline",
+   "thesis_horizon": "5+ years",
+   "duplication_risk": "Not Assessed",
+   "role_decision": "Retain — Certified Baseline"
+  },
+  {
+   "functional_role": "Growth Engine",
+   "role_priority": "Primary",
+   "core_eligibility": "Core",
+   "five_year_evidence": "Certified Baseline",
+   "thesis_horizon": "5+ years",
+   "duplication_risk": "Not Assessed",
+   "role_decision": "Retain — Certified Baseline"
+  },
+  {
+   "functional_role": "Growth Engine",
+   "role_priority": "Primary",
+   "core_eligibility": "Core",
+   "five_year_evidence": "Certified Baseline",
+   "thesis_horizon": "5+ years",
+   "duplication_risk": "Not Assessed",
+   "role_decision": "Retain — Certified Baseline"
+  },
+  {
+   "functional_role": "Growth Engine",
+   "role_priority": "Primary",
+   "core_eligibility": "Core",
+   "five_year_evidence": "Certified Baseline",
+   "thesis_horizon": "5+ years",
+   "duplication_risk": "Not Assessed",
+   "role_decision": "Retain — Certified Baseline"
+  },
+  {
+   "functional_role": "Infrastructure Enabler",
+   "role_priority": "Primary",
+   "core_eligibility": "Core",
+   "five_year_evidence": "Certified Baseline",
+   "thesis_horizon": "5+ years",
+   "duplication_risk": "Not Assessed",
+   "role_decision": "Retain — Certified Baseline"
+  },
+  {
+   "functional_role": "Infrastructure Enabler",
+   "role_priority": "Primary",
+   "core_eligibility": "Core",
+   "five_year_evidence": "Certified Baseline",
+   "thesis_horizon": "5+ years",
+   "duplication_risk": "Not Assessed",
+   "role_decision": "Retain — Certified Baseline"
+  },
+  {
+   "functional_role": "Infrastructure Enabler",
+   "role_priority": "Primary",
+   "core_eligibility": "Core",
+   "five_year_evidence": "Certified Baseline",
+   "thesis_horizon": "5+ years",
+   "duplication_risk": "Not Assessed",
+   "role_decision": "Retain — Certified Baseline"
+  },
+  {
+   "functional_role": "Infrastructure Enabler",
+   "role_priority": "Primary",
+   "core_eligibility": "Core",
+   "five_year_evidence": "Certified Baseline",
+   "thesis_horizon": "5+ years",
+   "duplication_risk": "Not Assessed",
+   "role_decision": "Retain — Certified Baseline"
+  },
+  {
+   "functional_role": "Infrastructure Enabler",
+   "role_priority": "Primary",
+   "core_eligibility": "Core",
+   "five_year_evidence": "Certified Baseline",
+   "thesis_horizon": "5+ years",
+   "duplication_risk": "Not Assessed",
+   "role_decision": "Retain — Certified Baseline"
+  },
+  {
+   "functional_role": "Infrastructure Enabler",
+   "role_priority": "Primary",
+   "core_eligibility": "Core",
+   "five_year_evidence": "Certified Baseline",
+   "thesis_horizon": "5+ years",
+   "duplication_risk": "Not Assessed",
+   "role_decision": "Retain — Certified Baseline"
+  },
+  {
+   "functional_role": "Infrastructure Enabler",
+   "role_priority": "Primary",
+   "core_eligibility": "Core",
+   "five_year_evidence": "Certified Baseline",
+   "thesis_horizon": "5+ years",
+   "duplication_risk": "Not Assessed",
+   "role_decision": "Retain — Certified Baseline"
+  },
+  {
+   "functional_role": "Infrastructure Enabler",
+   "role_priority": "Primary",
+   "core_eligibility": "Core",
+   "five_year_evidence": "Certified Baseline",
+   "thesis_horizon": "5+ years",
+   "duplication_risk": "Not Assessed",
+   "role_decision": "Retain — Certified Baseline"
+  },
+  {
+   "functional_role": "Infrastructure Enabler",
+   "role_priority": "Primary",
+   "core_eligibility": "Core",
+   "five_year_evidence": "Certified Baseline",
+   "thesis_horizon": "5+ years",
+   "duplication_risk": "Not Assessed",
+   "role_decision": "Retain — Certified Baseline"
+  },
+  {
+   "functional_role": "Infrastructure Enabler",
+   "role_priority": "Primary",
+   "core_eligibility": "Core",
+   "five_year_evidence": "Certified Baseline",
+   "thesis_horizon": "5+ years",
+   "duplication_risk": "Not Assessed",
+   "role_decision": "Retain — Certified Baseline"
+  },
+  {
+   "functional_role": "Infrastructure Enabler",
+   "role_priority": "Primary",
+   "core_eligibility": "Core",
+   "five_year_evidence": "Certified Baseline",
+   "thesis_horizon": "5+ years",
+   "duplication_risk": "Not Assessed",
+   "role_decision": "Retain — Certified Baseline"
+  },
+  {
+   "functional_role": "Infrastructure Enabler",
+   "role_priority": "Primary",
+   "core_eligibility": "Core",
+   "five_year_evidence": "Certified Baseline",
+   "thesis_horizon": "5+ years",
+   "duplication_risk": "Not Assessed",
+   "role_decision": "Retain — Certified Baseline"
+  },
+  {
+   "functional_role": "Infrastructure Enabler",
+   "role_priority": "Primary",
+   "core_eligibility": "Core",
+   "five_year_evidence": "Certified Baseline",
+   "thesis_horizon": "5+ years",
+   "duplication_risk": "Not Assessed",
+   "role_decision": "Retain — Certified Baseline"
+  },
+  {
+   "functional_role": "Infrastructure Enabler",
+   "role_priority": "Primary",
+   "core_eligibility": "Core",
+   "five_year_evidence": "Certified Baseline",
+   "thesis_horizon": "5+ years",
+   "duplication_risk": "Not Assessed",
+   "role_decision": "Retain — Certified Baseline"
+  },
+  {
+   "functional_role": "Infrastructure Enabler",
+   "role_priority": "Primary",
+   "core_eligibility": "Core",
+   "five_year_evidence": "Certified Baseline",
+   "thesis_horizon": "5+ years",
+   "duplication_risk": "Not Assessed",
+   "role_decision": "Retain — Certified Baseline"
+  },
+  {
+   "functional_role": "Infrastructure Enabler",
+   "role_priority": "Primary",
+   "core_eligibility": "Core",
+   "five_year_evidence": "Certified Baseline",
+   "thesis_horizon": "5+ years",
+   "duplication_risk": "Not Assessed",
+   "role_decision": "Retain — Certified Baseline"
+  },
+  {
+   "functional_role": "Infrastructure Enabler",
+   "role_priority": "Primary",
+   "core_eligibility": "Core",
+   "five_year_evidence": "Certified Baseline",
+   "thesis_horizon": "5+ years",
+   "duplication_risk": "Not Assessed",
+   "role_decision": "Retain — Certified Baseline"
+  },
+  {
+   "functional_role": "Quality Financial",
+   "role_priority": "Primary",
+   "core_eligibility": "Core",
+   "five_year_evidence": "Certified Baseline",
+   "thesis_horizon": "5+ years",
+   "duplication_risk": "Not Assessed",
+   "role_decision": "Retain — Certified Baseline"
+  },
+  {
+   "functional_role": "Quality Financial",
+   "role_priority": "Primary",
+   "core_eligibility": "Core",
+   "five_year_evidence": "Certified Baseline",
+   "thesis_horizon": "5+ years",
+   "duplication_risk": "Not Assessed",
+   "role_decision": "Retain — Certified Baseline"
+  },
+  {
+   "functional_role": "Quality Financial",
+   "role_priority": "Primary",
+   "core_eligibility": "Core",
+   "five_year_evidence": "Certified Baseline",
+   "thesis_horizon": "5+ years",
+   "duplication_risk": "Not Assessed",
+   "role_decision": "Retain — Certified Baseline"
+  },
+  {
+   "functional_role": "Quality Financial",
+   "role_priority": "Primary",
+   "core_eligibility": "Core",
+   "five_year_evidence": "Certified Baseline",
+   "thesis_horizon": "5+ years",
+   "duplication_risk": "Not Assessed",
+   "role_decision": "Retain — Certified Baseline"
+  },
+  {
+   "functional_role": "Quality Financial",
+   "role_priority": "Implementation",
+   "core_eligibility": "Satellite / Implementation",
+   "five_year_evidence": "Certified Baseline",
+   "thesis_horizon": "3–5 years",
+   "duplication_risk": "Not Assessed",
+   "role_decision": "Retain — Certified Baseline"
+  },
+  {
+   "functional_role": "Defensive Healthcare",
+   "role_priority": "Implementation",
+   "core_eligibility": "Satellite / Implementation",
+   "five_year_evidence": "Certified Baseline",
+   "thesis_horizon": "3–5 years",
+   "duplication_risk": "Not Assessed",
+   "role_decision": "Retain — Certified Baseline"
+  },
+  {
+   "functional_role": "Defensive Healthcare",
+   "role_priority": "Primary",
+   "core_eligibility": "Core",
+   "five_year_evidence": "Certified Baseline",
+   "thesis_horizon": "5+ years",
+   "duplication_risk": "Not Assessed",
+   "role_decision": "Retain — Certified Baseline"
+  },
+  {
+   "functional_role": "Resource Exposure",
+   "role_priority": "Primary",
+   "core_eligibility": "Core",
+   "five_year_evidence": "Certified Baseline",
+   "thesis_horizon": "5+ years",
+   "duplication_risk": "Not Assessed",
+   "role_decision": "Retain — Certified Baseline"
+  },
+  {
+   "functional_role": "Diversifier",
+   "role_priority": "Implementation",
+   "core_eligibility": "Satellite / Implementation",
+   "five_year_evidence": "Certified Baseline",
+   "thesis_horizon": "3–5 years",
+   "duplication_risk": "Not Assessed",
+   "role_decision": "Retain — Certified Baseline"
+  },
+  {
+   "functional_role": "Resource Exposure",
+   "role_priority": "Primary",
+   "core_eligibility": "Core",
+   "five_year_evidence": "Certified Baseline",
+   "thesis_horizon": "5+ years",
+   "duplication_risk": "Not Assessed",
+   "role_decision": "Retain — Certified Baseline"
+  },
+  {
+   "functional_role": "Resource Exposure",
+   "role_priority": "Primary",
+   "core_eligibility": "Core",
+   "five_year_evidence": "Certified Baseline",
+   "thesis_horizon": "5+ years",
+   "duplication_risk": "Not Assessed",
+   "role_decision": "Retain — Certified Baseline"
+  },
+  {
+   "functional_role": "Resource Exposure",
+   "role_priority": "Implementation",
+   "core_eligibility": "Satellite / Implementation",
+   "five_year_evidence": "Certified Baseline",
+   "thesis_horizon": "3–5 years",
+   "duplication_risk": "Not Assessed",
+   "role_decision": "Retain — Certified Baseline"
+  },
+  {
+   "functional_role": "Income Generator",
+   "role_priority": "Implementation",
+   "core_eligibility": "Satellite / Implementation",
+   "five_year_evidence": "Certified Baseline",
+   "thesis_horizon": "3–5 years",
+   "duplication_risk": "Not Assessed",
+   "role_decision": "Retain — Certified Baseline"
+  },
+  {
+   "functional_role": "Income Generator",
+   "role_priority": "Implementation",
+   "core_eligibility": "Satellite / Implementation",
+   "five_year_evidence": "Certified Baseline",
+   "thesis_horizon": "3–5 years",
+   "duplication_risk": "Not Assessed",
+   "role_decision": "Retain — Certified Baseline"
+  },
+  {
+   "functional_role": "Income Generator",
+   "role_priority": "Implementation",
+   "core_eligibility": "Satellite / Implementation",
+   "five_year_evidence": "Certified Baseline",
+   "thesis_horizon": "3–5 years",
+   "duplication_risk": "Not Assessed",
+   "role_decision": "Retain — Certified Baseline"
+  }
+ ],
+ "lab": {
+  "scenario_id": "PEW-SCN-001",
+  "scenario_name": "Certified Baseline / No Change",
+  "prepared_date": "2026-07-26"
+ },
+ "scenario": [
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {}
+ ],
+ "workflow": [
+  {
+   "stage": "Portfolio Engineering Review",
+   "status": "Pending",
+   "blocking": "Yes"
+  },
+  {
+   "stage": "Research Sufficiency Review",
+   "status": "Pending",
+   "blocking": "Yes"
+  },
+  {
+   "stage": "Allocation & Risk Review",
+   "status": "Pending",
+   "blocking": "Yes"
+  },
+  {
+   "stage": "Empirical / Monte Carlo Review",
+   "status": "Not Required",
+   "blocking": "When Required"
+  },
+  {
+   "stage": "Stewardship Committee Decision",
+   "status": "Pending",
+   "blocking": "Yes"
+  },
+  {
+   "stage": "Chief Investment Steward Certification",
+   "status": "Pending",
+   "blocking": "Yes"
+  },
+  {
+   "stage": "MFPDF Version Issuance",
+   "status": "Pending",
+   "blocking": "Yes"
+  }
+ ],
+ "changes": [
+  {
+   "change_id": "CHG-001"
+  },
+  {
+   "change_id": "CHG-002"
+  },
+  {
+   "change_id": "CHG-003"
+  },
+  {
+   "change_id": "CHG-004"
+  },
+  {
+   "change_id": "CHG-005"
+  },
+  {
+   "change_id": "CHG-006"
+  },
+  {
+   "change_id": "CHG-007"
+  },
+  {
+   "change_id": "CHG-008"
+  },
+  {
+   "change_id": "CHG-009"
+  },
+  {
+   "change_id": "CHG-010"
+  }
+ ],
+ "validation": {
+  "turnover_threshold": 0.1,
+  "position_threshold": 0.0075,
+  "sleeve_threshold": 0.02,
+  "total_tolerance": 1e-06,
+  "equity_min": 32,
+  "equity_max": 38,
+  "equity_ceiling": 41,
+  "proposed_version": "MFPDF v1.1 (proposed)"
+ }
 }

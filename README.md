@@ -2,106 +2,134 @@
 
 `manifest-workbench` is a console application built from the workbook
 **Manifest Workbench — CISC-001 / MOPS-003 RCC-004 MASR Registry & Candidate Pipeline v0.4**
-(`spec/`). It runs the MOPS-003 research command chain (RCC-001 through RCC-004) from
-the terminal, plus the certified MFPDF portfolio, PEW-004 and PEW-005 data that chain depends on.
+(`spec/`). It covers all 33 worksheets:
 
-The app stores only the workbook's input cells in a JSON file. It recalculates every
-formula column the way the workbook does. A golden test checks the engine against every
-cached formula result in the v0.4 workbook: more than 3,000 cells, plus the control-center
-cells, with no mismatches.
+- the CISC-001 Chief Investment Steward Console
+- the certified MFPDF portfolio
+- the MOPS-002 Portfolio Engineering Workspace (PEW-001 to PEW-007)
+- the MOPS-003 research command chain (RCC-001 to RCC-004)
 
-The app follows the MOPS-003 control principle. Research identifies and evaluates change,
-Portfolio Engineering designs the response and committee governance authorizes it. The
-certified MFPDF remains the only portfolio system of record. The app never changes
-certified target weights and has no trading function.
+The app stores only the workbook's input cells in a JSON file and recalculates everything
+else the way the workbook does. The golden test checks the engine against **every formula
+cell in the workbook, on every sheet**: 13,950 cells, with no missing cells and no mismatches.
+
+The app never changes certified target weights and has no trading function. Engineering
+scenarios live in a separate layer, and certified data can change only through a new certified
+MFPDF version.
 
 ## Install and run
 
 ```bash
 pip install .                 # or: pip install '.[xlsx]' to import .xlsx workbooks
-manifest-workbench            # interactive console (creates ./manifest_workbench.json on first run)
-manifest-workbench rcc004     # or run any command directly
+manifest-workbench            # interactive console, opening on the CISC dashboard
+                              # (creates ./manifest_workbench.json on first run)
+manifest-workbench sheets     # every worksheet and the command that opens it
 python -m manifest_workbench  # equivalent, without installing
 ```
 
 The app only needs the Python 3.9+ standard library. Importing a `.xlsx` file needs `openpyxl`.
 
-## What maps to what
+## Sheets and commands
 
-| Workbook sheet | Command | Notes |
+| Worksheet | Command | Editable tables |
 |---|---|---|
-| 16 RCC-001 Control Center | `rcc001` | readiness, exceptions, intelligence snapshot, roadmap |
-| 17 RCC-002 Control Center | `rcc002` | evidence state, activity, routing and materiality profile |
-| 18 RCC-002 Evidence Ledger | `evidence list/show/add/set` | 200 records, `EVD-YYYYMMDD-###` |
-| 19 RCC-003 Control Center | `rcc003` | MIAR state, exceptions, sleeve coverage |
-| 20 RCC-003 MIAR Registry | `miar list/show/set` | one dossier per certified holding |
-| 21 RCC-003 MIAR Review Log | `review list/show/add/set` | 200 records, `MIR-YYYYMMDD-###` |
-| 22 RCC-004 Control Center | `rcc004` | MASR and candidate state, exceptions, composition, stages |
-| 23 RCC-004 MASR Registry | `masr list/show/add/set` | 150 slots; 47 certified rows linked to the MFPDF |
-| 24 RCC-004 Candidate Pipeline | `pipeline list/show/add/set/advance/history` | 200 records, `MCP-YYYYMMDD-###` |
-| Certified Allocation / Sleeve Summary | `portfolio list/show/set/sleeves` | bands, variance, actual-weight loading |
-| 10 Candidate Comparison (PEW-004) | `pew004 list/show/set` | scoring, Zacks close-decision overlay, eligibility |
-| 11 Conviction (PEW-005) | `conviction list/show/set` | effective conviction, decision state |
-| 97 / 98 lists, data validation | `lists [NAME]` | controlled values |
-| 00 CISC Dashboard (research view) | `dashboard` | readiness, module state, decisions required this week |
+| 00 CISC Dashboard | `cisc` | fed by the sheets below |
+| 01 Dashboard Controls | `controls` | `controls`, `composite` |
+| 02 Decision Center | `decision-center` | `decisions` (manual decision register) |
+| 03 Research Intelligence | `intel` | `intel-review`, `intel-events`, `intel-zacks`, `intel-merrill`, `intel-miar`, `intel-thesis` |
+| 04 Committee Operations | `committee` | `actions`, `priorities`, `questions`, `projects`, `publications`, `calendar`, `certifications` |
+| 99 Dashboard Data | `dashboard-data` | calculated |
+| Certified Allocation / Sleeve Summary | `portfolio`, `portfolio sleeves` | `portfolio` (actual weights, MFPDF conviction, research status) |
+| Executive Summary · Rebalancing · Sources & Certification | `doc executive-summary` · `doc rebalancing` · `doc sources` | reference |
+| 05 Workbench Guide | `doc workbench-guide` | reference |
+| 06 PEW Control Center | `pew` | calculated |
+| 07 Mandate & Constraints (PEW-001) | `mandate` | operating value, status and notes of the non-formula controls |
+| 08 Sleeve Architecture (PEW-002) | `sleeves` | committee notes |
+| 09 Role Assignment (PEW-003) | `roles` | functional role, priority, eligibility, evidence, decision |
+| 10 Candidate Comparison (PEW-004) | `pew004` | candidate scoring inputs |
+| 11 Conviction (PEW-005) | `conviction` | proposed conviction, thesis, risk, horizon |
+| 12 Allocation Lab (PEW-006) | `lab` | `lab` (scenario header), `scenario` (scenario weights, rationale) |
+| 13 Validation & Cert (PEW-007) | `validation` | `validation` (thresholds, proposed version), `workflow`, `changes` |
+| 14 PEW Guide · 15 MOPS-002 Freeze Record | `doc pew-guide` · `doc freeze-record` | reference |
+| 16 RCC-001 Control Center | `rcc001` | calculated |
+| 17 / 18 RCC-002 | `rcc002`, `evidence` | evidence ledger (200 records, `EVD-YYYYMMDD-###`) |
+| 19 / 20 / 21 RCC-003 | `rcc003`, `miar`, `review` | MIAR registry; review log (200 records, `MIR-YYYYMMDD-###`) |
+| 22 / 23 / 24 RCC-004 | `rcc004`, `masr`, `pipeline` | MASR registry (150 slots); candidate pipeline (200 records, `MCP-YYYYMMDD-###`) |
+| 97 RCC Lists · 98 PEW Lists | `lists [NAME]` | controlled values |
 
-The other sheets are not part of this application: the CISC panels 01–05, Executive Summary,
-Rebalancing, Sources & Certification, 99 Dashboard Data, PEW-001/002/003/006/007 and the
-MOPS-002 freeze record.
+Other commands:
+
+- `dashboard` shows the MOPS-003 research view.
+- `guide` shows the RCC-004 operating standard.
+- `cell SHEET REF` reads any calculated cell, for example `cell "13 Validation" J12`.
+- `audit` shows the audit trail.
 
 ## Everyday use
 
-```bash
-manifest-workbench dashboard                     # what needs a decision this week
-manifest-workbench pipeline list --exceptions
-manifest-workbench masr show EMR                 # every field, with column letter and kind
+Every table command takes `list`, `show`, `set`, `fields` and `export`. Registers and list
+tables also take `add`, and list tables take `clear`.
 
-# edit input fields: use a field key, a unique key prefix or the worksheet column letter
-manifest-workbench masr set VRT masr_id=MASR-0023 T=45 zacks=2 merrill=buy
-manifest-workbench miar set VRT miar_id=MIAR-0023 integrity_score=82 mics_score=77 \
-    record_status=active research_owner="Research Ops" review_cadence=quarterly \
-    last_full_review=2026-09-01
+```bash
+manifest-workbench cisc                               # the five-panel console
 manifest-workbench portfolio set NVDA actual_weight=2.9%
 
-# add records (IDs are generated when omitted)
-manifest-workbench evidence add ticker=VRT activity_type="company review" ...
-manifest-workbench pipeline add ticker=PWR candidate_type=new source=other owner="Research Committee" due_date=2026-10-31
+# research intelligence and committee lists: add, edit by row number or key, clear
+manifest-workbench intel-review add symbol=MU company="Micron" reason="Memory cycle" status=decision
+manifest-workbench actions add action="Load Q4 weights" owner="Portfolio Operations" status=open
+manifest-workbench decisions add decision="Review MU conviction" committee_decision=yes status=open
+manifest-workbench intel-review clear 1
 
-# stage gates
-manifest-workbench pipeline advance MCP-20260824-001            # next stage, only if the current gate passes
-manifest-workbench pipeline advance MCP-20260824-001 --to "On Watch"
-manifest-workbench pipeline history MCP-20260824-001
+# weekly dashboard controls and composite score
+manifest-workbench controls set report_date=today previous_week_score=0.62 confidence=70%
+manifest-workbench composite set "Macro Regime" score=0.4
 
-manifest-workbench masr fields                   # field keys, columns, controlled values
-manifest-workbench pipeline export pipeline.csv  # computed view to CSV (or .json)
-manifest-workbench audit                         # who changed what, when
+# engineering scenario (never touches certified weights)
+manifest-workbench scenario set NVDA scenario_weight=3.18% rationale="AI capex; funded from JEPQ"
+manifest-workbench scenario set JEPQ scenario_weight=2.52% rationale="Source of funds"
+manifest-workbench lab                                # funding, bands, turnover, readiness
+manifest-workbench validation                         # VAL-001..018, workflow, change register
+manifest-workbench workflow set "Portfolio Engineering" status=approved reviewed_by=CIS review_date=today
+
+# research chain
+manifest-workbench masr set VRT masr_id=MASR-0023 T=45 zacks=2 merrill=buy
+manifest-workbench pipeline advance MCP-20260824-001  # only if the current stage gate passes
 ```
 
-Global options go before the command. `--data PATH` or `$MANIFEST_DATA` sets the data file.
-`--as-of YYYY-MM-DD` or `$MANIFEST_AS_OF` sets the date used for TODAY(). `--by NAME` or
-`$MANIFEST_USER` sets the operator name recorded in the audit trail. `--no-color` turns off colour.
+Global options go before the command:
 
-Controlled-list values are matched without regard to case or dash style, and a unique prefix
-is enough. For example, `stage=referred` means `Referred to PEW-004`, and `status="Closed - No Action"`
-means `Closed — No Action`. Weights accept `3.1%`, `0.031` or `3.1`. An empty value (`field=`)
-clears a field.
+- `--data PATH` or `$MANIFEST_DATA` sets the data file.
+- `--as-of YYYY-MM-DD` or `$MANIFEST_AS_OF` sets the date used for TODAY().
+- `--by NAME` or `$MANIFEST_USER` sets the operator name in the audit trail.
+- `--no-color` turns off colour.
+
+Fields can be named by key, unique key prefix or worksheet column letter (`T=45`).
+Controlled-list values match without regard to case or dash style, and a unique prefix is
+enough. Weights accept `3.1%`, `0.031` or `3.1`. An empty value (`field=`) clears a field.
+
+Records in list tables can be addressed by key, unique key prefix or row number (`3` or `#3`).
 
 ## Controls the app enforces
 
-- **Only input fields can be edited.** Calculated and linked fields are rejected. Certified
-  MFPDF data is locked: symbols, target weights, sleeves and roles, and the identity and
-  class of the 47 certified registry rows. Changing it requires a new certified MFPDF version.
-- **One identity per security.** Duplicate canonical MASR IDs, MIAR IDs and registry tickers
-  are blocked. Record IDs must follow `EVD-`, `MIR-` or `MCP-YYYYMMDD-###` and cannot change.
+- **Only input fields can be edited.**
+  - Calculated and linked fields are rejected.
+  - Certified MFPDF data is locked. Changing it requires a new certified MFPDF version.
+  - Frozen governance text is locked, including the adopted mandate standards, sleeve
+    purposes, workflow stages, composite component names and console identity. Changing it
+    requires a documented amendment.
+  - The formula rows of the mandate register (PEW-001-09 to 12, 25 and 26) cannot be overwritten.
+- **One identity per record.** These duplicates are blocked: canonical MASR and MIAR IDs,
+  registry tickers, and action, decision, question and project IDs. RCC record IDs follow
+  `EVD-`, `MIR-` or `MCP-YYYYMMDD-###` and cannot change. Missing IDs are generated.
 - **Controlled vocabularies.** Every validation-listed field accepts only values from its list.
-- **Stage gates.** New candidates enter at `Intake`. A candidate moves forward only after its
-  current stage gate passes; moving back is always allowed. Closed, rejected and removed
-  candidates keep their final disposition.
-- **Capacity.** The limits are 150 MASR slots and 200 records each for the pipeline, evidence
-  ledger and review log.
-- **Audit trail.** Every edit records a timestamp, the operator, the field, and the old and new values.
-- After every edit, the app shows the record's recalculated control status. It also names any
-  required fields that are still missing.
+- **Stage gates.** A candidate moves forward only after its current gate passes.
+- **Scenario isolation.** Scenario weights live in `scenario`. The certified allocation stays
+  unchanged.
+- **Capacity.** Each register and list keeps its worksheet size, for example 150 MASR slots,
+  8 rows per research section and 20 manual decisions.
+- **Audit trail.** Every edit, addition and cleared row is recorded with the time, operator,
+  field, and old and new values.
+- **Older data files.** A data file created before a sheet was covered gets that sheet's
+  v0.4 inputs on load. Existing entries are kept.
 
 ## Importing a workbook
 
@@ -110,29 +138,34 @@ pip install openpyxl
 manifest-workbench init --force --from-xlsx path/to/Manifest_Workbench_v0_4.xlsx
 ```
 
-The import reads only the input (yellow) cells and the certified schedule. Formula cells are
-ignored and recalculated. The bundled data (`manifest_workbench/data/seed.json`) is exactly
-the v0.4 workbook's inputs, and the golden test checks that.
+The import reads only the input cells. The bundled data (`manifest_workbench/data/seed.json`)
+is exactly the v0.4 workbook's inputs, and the golden test checks that. The reference sheets
+are bundled as `data/docs.json`.
 
 ## Findings from the v0.4 workbook
 
 - **Non-holding candidates cannot pass eligibility yet.** The RCC-003 MIAR registry has rows
-  only for the 47 certified holdings. RCC-004 reads the MIAR ID, status, freshness and scores
-  from that range. Candidates such as EMR or HUBB therefore always show `MIAR SETUP REQUIRED`
-  and `NOT ELIGIBLE`, and cannot pass the Eligibility Review gate until RCC-003 covers
-  non-holdings. The app reproduces this behaviour as is.
+  only for the 47 certified holdings, and RCC-004 reads MIAR identity, status, freshness and
+  scores from that range. Candidates such as EMR or HUBB therefore stay `NOT ELIGIBLE` until
+  RCC-003 covers non-holdings. The app reproduces this behaviour as is.
 - **All 10 candidates are overdue.** The workbook's saved results were calculated as of
   2026-08-24. The 10 Barron's roundtable candidates were due on 2026-09-23, so on any later
-  date they all show `OVERDUE`.
+  date they show `OVERDUE`.
+- **PEW-001 can never show FAIL.** The PEW Control Center checks the mandate register for the
+  exact text `FAIL`. The mandate's own tests report `FAIL — ABOVE OPERATING CEILING`, so a
+  failed hard constraint would still show the module as `ACTIVE`.
+- **Hardcoded equity limits in the mandate.** The mandate register uses fixed values of 38
+  and 41 for its equity-count tests. PEW-007 has its own thresholds, and changing them in
+  `validation` does not change the mandate.
 - **Two conviction vocabularies.** Certified Allocation uses `Tier 1/2/3`, while PEW-005 scores
-  only `Tier 1 — Anchor`, `Tier 2 — Core` and `Tier 3 — Opportunistic`. An MFPDF tier with
-  no PEW-005 proposal therefore scores 0.
-- **Blank lookups.** In desktop Excel, an `INDEX` onto an empty cell returns `0` rather than a
-  blank. That can hide "MIAR ID missing" checks. The app treats missing data as missing, which
-  matches the results saved in the file.
-- **Fuller summary tables.** The RCC-004 pipeline snapshot lists 8 of the 12 stages, and the
-  RCC-002 activity table leaves out `Other Research Signal`. The app shows every stage and
-  activity type.
+  only `Tier 1 — Anchor`, `Tier 2 — Core` and `Tier 3 — Opportunistic`.
+- **Blank cells.** The saved results treat a direct link to an empty cell as displaying `0`
+  while still counting as blank (for example, actual weights in 99 Dashboard Data and the
+  Allocation Lab). Lookups of empty cells return blank. The app follows both. In desktop
+  Excel, both would read as `0`, which could hide "missing" checks.
+- **Prototype console inputs.** The dashboard controls are marked
+  `PROTOTYPE VALUES — LIVE INPUTS REQUIRED`. The composite score of +0.62 comes from
+  placeholder component scores.
 
 ## Development
 
@@ -140,8 +173,11 @@ the v0.4 workbook's inputs, and the golden test checks that.
 python -m unittest discover -s tests -t .   # the golden test needs openpyxl
 ```
 
-- `manifest_workbench/engine.py`: the formula port. Each field is annotated with its worksheet column.
-- `schema.py`: every column of every sheet, with its kind (input, calc, link or locked) and validation list.
-- `ops.py`: controlled edits, stage gates and the audit trail.
-- `cli.py` and `render.py`: the commands, the interactive console and terminal rendering.
+- `engine.py`: MFPDF, PEW-004/005 and RCC-001 to RCC-004.
+- `pew.py`: PEW-001, 002, 003, 006 and 007, and the PEW control center.
+- `cisc.py`: dashboard controls, 99 Dashboard Data, Decision Center and the console.
+- `cells.py`: maps every formula cell to an engine value, for the golden test and `cell`.
+- `schema.py`: every table, its fields, kinds and validation lists.
+- `ops.py`: controlled edits.
+- `cli.py`, `views.py` and `render.py`: the console.
 - `xlsx_import.py`: workbook import.

@@ -1,0 +1,3133 @@
+{
+ "05 Workbench Guide": [
+  [
+   1,
+   [
+    [
+     "A",
+     "MANIFEST WORKBENCH — OPERATING GUIDE & FREEZE RECORD"
+    ]
+   ]
+  ],
+  [
+   3,
+   [
+    [
+     "A",
+     "CISC-001 is the frozen visual foundation. MFPDF v1.0 remains the sole portfolio-allocation authority."
+    ]
+   ]
+  ],
+  [
+   5,
+   [
+    [
+     "A",
+     "Freeze Field"
+    ],
+    [
+     "B",
+     "Adopted Standard"
+    ],
+    [
+     "C",
+     "Status"
+    ],
+    [
+     "D",
+     "Operating Effect"
+    ],
+    [
+     "F",
+     "Workbook Authority"
+    ],
+    [
+     "G",
+     "Standard"
+    ],
+    [
+     "H",
+     "Status"
+    ]
+   ]
+  ],
+  [
+   6,
+   [
+    [
+     "A",
+     "Visual Standard"
+    ],
+    [
+     "B",
+     "Chief Investment Steward Console (CISC-001)"
+    ],
+    [
+     "C",
+     "Frozen"
+    ],
+    [
+     "D",
+     "All future executive interfaces inherit this architecture."
+    ],
+    [
+     "F",
+     "Canonical Portfolio"
+    ],
+    [
+     "G",
+     "Portfolio B / 47 positions"
+    ],
+    [
+     "H",
+     "MFPDF v1.0"
+    ]
+   ]
+  ],
+  [
+   7,
+   [
+    [
+     "A",
+     "Edition"
+    ],
+    [
+     "B",
+     "Founders Edition v1.0"
+    ],
+    [
+     "C",
+     "Frozen"
+    ],
+    [
+     "D",
+     "Changes require explicit amendment."
+    ],
+    [
+     "F",
+     "Certified Target Total"
+    ],
+    [
+     "G",
+     "100.00%"
+    ],
+    [
+     "H",
+     "Locked"
+    ]
+   ]
+  ],
+  [
+   8,
+   [
+    [
+     "A",
+     "Panel 1"
+    ],
+    [
+     "B",
+     "Executive Status"
+    ],
+    [
+     "C",
+     "Required"
+    ],
+    [
+     "D",
+     "Composite gauge, institutional compass and executive recommendation."
+    ],
+    [
+     "F",
+     "Lower Band"
+    ],
+    [
+     "G",
+     "MAX(1.00%, 75% of target)"
+    ],
+    [
+     "H",
+     "Active"
+    ]
+   ]
+  ],
+  [
+   9,
+   [
+    [
+     "A",
+     "Panel 2"
+    ],
+    [
+     "B",
+     "Portfolio Health"
+    ],
+    [
+     "C",
+     "Required"
+    ],
+    [
+     "D",
+     "Sleeves, top holdings and allocation alerts."
+    ],
+    [
+     "F",
+     "Upper Band"
+    ],
+    [
+     "G",
+     "MIN(4.00%, 125% of target)"
+    ],
+    [
+     "H",
+     "Active"
+    ]
+   ]
+  ],
+  [
+   10,
+   [
+    [
+     "A",
+     "Panel 3"
+    ],
+    [
+     "B",
+     "Research Intelligence"
+    ],
+    [
+     "C",
+     "Required"
+    ],
+    [
+     "D",
+     "Current research queue, MIAR and conviction maintenance."
+    ],
+    [
+     "F",
+     "Automatic Trading"
+    ],
+    [
+     "G",
+     "Not authorized"
+    ],
+    [
+     "H",
+     "Prohibited"
+    ]
+   ]
+  ],
+  [
+   11,
+   [
+    [
+     "A",
+     "Panel 4"
+    ],
+    [
+     "B",
+     "Committee Operations"
+    ],
+    [
+     "C",
+     "Required"
+    ],
+    [
+     "D",
+     "Actions, publications, calendar, certifications and steward notebook."
+    ],
+    [
+     "F",
+     "Committee Review"
+    ],
+    [
+     "G",
+     "Precedes implementation"
+    ],
+    [
+     "H",
+     "Required when triggered"
+    ]
+   ]
+  ],
+  [
+   12,
+   [
+    [
+     "A",
+     "Panel 5"
+    ],
+    [
+     "B",
+     "Manifest Decision Center"
+    ],
+    [
+     "C",
+     "Required"
+    ],
+    [
+     "D",
+     "Answers what decisions are actually required this week."
+    ],
+    [
+     "F",
+     "Actual Weights"
+    ],
+    [
+     "G",
+     "User-entered"
+    ],
+    [
+     "H",
+     "Currently required"
+    ]
+   ]
+  ],
+  [
+   15,
+   [
+    [
+     "A",
+     "Weekly Workflow"
+    ],
+    [
+     "B",
+     "Action"
+    ],
+    [
+     "C",
+     "Primary Sheet"
+    ],
+    [
+     "D",
+     "Control"
+    ],
+    [
+     "F",
+     "Color / Entry Convention"
+    ],
+    [
+     "G",
+     "Meaning"
+    ],
+    [
+     "H",
+     "Use"
+    ]
+   ]
+  ],
+  [
+   16,
+   [
+    [
+     "A",
+     "1"
+    ],
+    [
+     "B",
+     "Update report date, score components and confidence"
+    ],
+    [
+     "C",
+     "01 Dashboard Controls"
+    ],
+    [
+     "D",
+     "Blue/yellow input cells"
+    ],
+    [
+     "F",
+     "Blue text + yellow fill"
+    ],
+    [
+     "G",
+     "Hardcoded operating input"
+    ],
+    [
+     "H",
+     "Update each reporting cycle"
+    ]
+   ]
+  ],
+  [
+   17,
+   [
+    [
+     "A",
+     "2"
+    ],
+    [
+     "B",
+     "Load all 47 actual portfolio weights"
+    ],
+    [
+     "C",
+     "Certified Allocation — column I"
+    ],
+    [
+     "D",
+     "Required before live band decisions"
+    ],
+    [
+     "F",
+     "Green text"
+    ],
+    [
+     "G",
+     "Link to another worksheet"
+    ],
+    [
+     "H",
+     "Do not overwrite"
+    ]
+   ]
+  ],
+  [
+   18,
+   [
+    [
+     "A",
+     "3"
+    ],
+    [
+     "B",
+     "Assign conviction and research status"
+    ],
+    [
+     "C",
+     "Certified Allocation — columns M–N"
+    ],
+    [
+     "D",
+     "Used by top-holdings and research panels"
+    ],
+    [
+     "F",
+     "Black text"
+    ],
+    [
+     "G",
+     "Formula / calculation"
+    ],
+    [
+     "H",
+     "Do not hardcode over formula"
+    ]
+   ]
+  ],
+  [
+   19,
+   [
+    [
+     "A",
+     "4"
+    ],
+    [
+     "B",
+     "Update research and committee workspaces"
+    ],
+    [
+     "C",
+     "03 Research Intelligence / 04 Committee Operations"
+    ],
+    [
+     "D",
+     "Use verified current information"
+    ],
+    [
+     "F",
+     "Red exception state"
+    ],
+    [
+     "G",
+     "Decision or band exception"
+    ],
+    [
+     "H",
+     "Review promptly"
+    ]
+   ]
+  ],
+  [
+   20,
+   [
+    [
+     "A",
+     "5"
+    ],
+    [
+     "B",
+     "Review the Manifest Decision Center"
+    ],
+    [
+     "C",
+     "02 Decision Center"
+    ],
+    [
+     "D",
+     "No-action state is valid and explicit"
+    ],
+    [
+     "F",
+     "Green status"
+    ],
+    [
+     "G",
+     "Aligned / no decision required"
+    ],
+    [
+     "H",
+     "Continue monitoring"
+    ]
+   ]
+  ],
+  [
+   21,
+   [
+    [
+     "A",
+     "6"
+    ],
+    [
+     "B",
+     "Publish the MWIR and related dashboards"
+    ],
+    [
+     "C",
+     "00 CISC Dashboard"
+    ],
+    [
+     "D",
+     "No automatic trading"
+    ]
+   ]
+  ],
+  [
+   24,
+   [
+    [
+     "A",
+     "Operating Rule: the workbench is an executive decision-support interface. It does not modify the frozen portfolio merely because a band is breached, and it never authorizes automatic trades. The correct weekly output may be “NO COMMITTEE ACTION REQUIRED.”"
+    ]
+   ]
+  ],
+  [
+   29,
+   [
+    [
+     "A",
+     "2"
+    ],
+    [
+     "B",
+     "Review materiality, reliability and routing"
+    ],
+    [
+     "C",
+     "17 RCC-002 Control Center"
+    ],
+    [
+     "D",
+     "Verification and referral gates"
+    ],
+    [
+     "F",
+     "Research Committee"
+    ],
+    [
+     "G",
+     "MIAR / thesis / conviction / PEW referral"
+    ],
+    [
+     "H",
+     "Scenario only"
+    ]
+   ]
+  ],
+  [
+   30,
+   [
+    [
+     "A",
+     "3"
+    ],
+    [
+     "B",
+     "Monitor research readiness and exceptions"
+    ],
+    [
+     "C",
+     "16 RCC-001 Control Center"
+    ],
+    [
+     "D",
+     "RCC-001 executive aggregation"
+    ],
+    [
+     "F",
+     "Chief Investment Steward"
+    ],
+    [
+     "G",
+     "Decision queue"
+    ],
+    [
+     "H",
+     "No direct allocation authority"
+    ]
+   ]
+  ]
+ ],
+ "14 PEW Guide": [
+  [
+   1,
+   [
+    [
+     "A",
+     "MOPS-002 — PORTFOLIO ENGINEERING WORKSPACE OPERATING GUIDE"
+    ]
+   ]
+  ],
+  [
+   2,
+   [
+    [
+     "A",
+     "How to use PEW-001 through PEW-007 without disturbing the frozen CISC architecture or the certified MFPDF portfolio"
+    ]
+   ]
+  ],
+  [
+   3,
+   [
+    [
+     "A",
+     "Founders Edition v1.0 — CERTIFIED & FROZEN | MOPS-001 remains frozen | Operating inputs remain live"
+    ]
+   ]
+  ],
+  [
+   4,
+   [
+    [
+     "A",
+     "MOPS-002 GOVERNANCE RECORD"
+    ]
+   ]
+  ],
+  [
+   5,
+   [
+    [
+     "A",
+     "Field"
+    ],
+    [
+     "B",
+     "Adopted / Proposed Standard"
+    ],
+    [
+     "C",
+     "Status"
+    ],
+    [
+     "D",
+     "Operating Effect"
+    ],
+    [
+     "F",
+     "Control Principle"
+    ],
+    [
+     "G",
+     "Meaning"
+    ],
+    [
+     "H",
+     "Authority"
+    ],
+    [
+     "I",
+     "Workbook Location"
+    ],
+    [
+     "J",
+     "Implementation"
+    ]
+   ]
+  ],
+  [
+   6,
+   [
+    [
+     "A",
+     "Operating Product"
+    ],
+    [
+     "B",
+     "MOPS-002 — Portfolio Engineering Workspace"
+    ],
+    [
+     "C",
+     "Certified & Frozen"
+    ],
+    [
+     "D",
+     "Operational architecture authorized for institutional use"
+    ],
+    [
+     "F",
+     "System of Record"
+    ],
+    [
+     "G",
+     "Certified MFPDF remains authoritative"
+    ],
+    [
+     "H",
+     "Chief Investment Steward"
+    ],
+    [
+     "I",
+     "Certified Allocation"
+    ],
+    [
+     "J",
+     "No scenario overwrite"
+    ]
+   ]
+  ],
+  [
+   7,
+   [
+    [
+     "A",
+     "Workspace Designation"
+    ],
+    [
+     "B",
+     "PEW-001 through PEW-007"
+    ],
+    [
+     "C",
+     "Frozen Architecture"
+    ],
+    [
+     "D",
+     "Seven controlled engineering modules"
+    ],
+    [
+     "F",
+     "Scenario Layer"
+    ],
+    [
+     "G",
+     "All changes remain hypothetical until certified"
+    ],
+    [
+     "H",
+     "Portfolio Engineering"
+    ],
+    [
+     "I",
+     "12 Allocation Lab"
+    ],
+    [
+     "J",
+     "Separate from certified weights"
+    ]
+   ]
+  ],
+  [
+   8,
+   [
+    [
+     "A",
+     "Certified Foundation"
+    ],
+    [
+     "B",
+     "Portfolio B — 47 positions / 100% target"
+    ],
+    [
+     "C",
+     "Preserved"
+    ],
+    [
+     "D",
+     "No target weight changed by construction of MOPS-002"
+    ],
+    [
+     "F",
+     "Automatic Trading"
+    ],
+    [
+     "G",
+     "Not authorized"
+    ],
+    [
+     "H",
+     "Stewardship Committee"
+    ],
+    [
+     "I",
+     "Rebalancing / PEW-007"
+    ],
+    [
+     "J",
+     "Committee review required"
+    ]
+   ]
+  ],
+  [
+   9,
+   [
+    [
+     "A",
+     "Visual Foundation"
+    ],
+    [
+     "B",
+     "CISC-001 five-panel console"
+    ],
+    [
+     "C",
+     "Frozen"
+    ],
+    [
+     "D",
+     "MOPS-002 inherits navy/gold institutional visual standard"
+    ],
+    [
+     "F",
+     "Certification Gate"
+    ],
+    [
+     "G",
+     "New MFPDF version required"
+    ],
+    [
+     "H",
+     "Chief Investment Steward"
+    ],
+    [
+     "I",
+     "13 Validation & Cert"
+    ],
+    [
+     "J",
+     "Only certified version operational"
+    ]
+   ]
+  ],
+  [
+   10,
+   [
+    [
+     "A",
+     "Current Readiness"
+    ],
+    [
+     "B",
+     "Actual weights and convictions are incomplete"
+    ],
+    [
+     "C",
+     "Data Setup Required"
+    ],
+    [
+     "D",
+     "Live implementation and final certification remain blocked"
+    ],
+    [
+     "F",
+     "Valid No-Change Outcome"
+    ],
+    [
+     "G",
+     "Baseline / no redesign is an authorized conclusion"
+    ],
+    [
+     "H",
+     "Stewardship Committee"
+    ],
+    [
+     "I",
+     "06 PEW Control Center"
+    ],
+    [
+     "J",
+     "Avoid forced activity"
+    ]
+   ]
+  ],
+  [
+   12,
+   [
+    [
+     "A",
+     "MODULE ARCHITECTURE"
+    ]
+   ]
+  ],
+  [
+   13,
+   [
+    [
+     "A",
+     "Module"
+    ],
+    [
+     "B",
+     "Workspace"
+    ],
+    [
+     "C",
+     "Core Question"
+    ],
+    [
+     "D",
+     "Primary Inputs"
+    ],
+    [
+     "E",
+     "Primary Output"
+    ],
+    [
+     "F",
+     "Authority"
+    ],
+    [
+     "G",
+     "System of Record"
+    ],
+    [
+     "H",
+     "Blocks Certification?"
+    ],
+    [
+     "I",
+     "Use Frequency"
+    ],
+    [
+     "J",
+     "Status"
+    ]
+   ]
+  ],
+  [
+   14,
+   [
+    [
+     "A",
+     "PEW-001"
+    ],
+    [
+     "B",
+     "Mandate & Constraints"
+    ],
+    [
+     "C",
+     "What must the portfolio accomplish and never violate?"
+    ],
+    [
+     "D",
+     "Objectives, risk limits, construction and governance rules"
+    ],
+    [
+     "E",
+     "Mandate compliance register"
+    ],
+    [
+     "F",
+     "Chief Investment Steward"
+    ],
+    [
+     "G",
+     "07 Mandate & Constraints"
+    ],
+    [
+     "H",
+     "Yes — hard controls"
+    ],
+    [
+     "I",
+     "Annual / amendment / material review"
+    ],
+    [
+     "J",
+     "Active"
+    ]
+   ]
+  ],
+  [
+   15,
+   [
+    [
+     "A",
+     "PEW-002"
+    ],
+    [
+     "B",
+     "Sleeve Architecture"
+    ],
+    [
+     "C",
+     "Is each sleeve serving its purpose at an appropriate allocation?"
+    ],
+    [
+     "D",
+     "Certified and scenario sleeve allocations"
+    ],
+    [
+     "E",
+     "Sleeve review decision"
+    ],
+    [
+     "F",
+     "Stewardship Committee"
+    ],
+    [
+     "G",
+     "08 Sleeve Architecture"
+    ],
+    [
+     "H",
+     "When material / unresolved"
+    ],
+    [
+     "I",
+     "Quarterly / material event"
+    ],
+    [
+     "J",
+     "Active"
+    ]
+   ]
+  ],
+  [
+   16,
+   [
+    [
+     "A",
+     "PEW-003"
+    ],
+    [
+     "B",
+     "Role Assignment"
+    ],
+    [
+     "C",
+     "What institutional function does every holding perform?"
+    ],
+    [
+     "D",
+     "Certified roles, functional role, evidence and duplication"
+    ],
+    [
+     "E",
+     "Retain / review / replace decision"
+    ],
+    [
+     "F",
+     "Research Committee"
+    ],
+    [
+     "G",
+     "09 Role Assignment"
+    ],
+    [
+     "H",
+     "Yes — role unresolved"
+    ],
+    [
+     "I",
+     "Annual / candidate review"
+    ],
+    [
+     "J",
+     "Active"
+    ]
+   ]
+  ],
+  [
+   17,
+   [
+    [
+     "A",
+     "PEW-004"
+    ],
+    [
+     "B",
+     "Candidate Comparison"
+    ],
+    [
+     "C",
+     "Should an incumbent or candidate occupy the role?"
+    ],
+    [
+     "D",
+     "MIAR, MICS, empirical, Merrill, Zacks and role-fit evidence"
+    ],
+    [
+     "E",
+     "Advance / watch / reject / exception"
+    ],
+    [
+     "F",
+     "Stewardship Committee"
+    ],
+    [
+     "G",
+     "10 Candidate Comparison"
+    ],
+    [
+     "H",
+     "Yes — open committee decision"
+    ],
+    [
+     "I",
+     "As needed"
+    ],
+    [
+     "J",
+     "Ready"
+    ]
+   ]
+  ],
+  [
+   18,
+   [
+    [
+     "A",
+     "PEW-005"
+    ],
+    [
+     "B",
+     "Conviction"
+    ],
+    [
+     "C",
+     "How strongly should the portfolio express the thesis?"
+    ],
+    [
+     "D",
+     "Conviction tier, thesis, research, risk and horizon"
+    ],
+    [
+     "E",
+     "Effective conviction and review decision"
+    ],
+    [
+     "F",
+     "Stewardship Committee"
+    ],
+    [
+     "G",
+     "11 Conviction"
+    ],
+    [
+     "H",
+     "Yes — unassigned conviction"
+    ],
+    [
+     "I",
+     "Quarterly / material event"
+    ],
+    [
+     "J",
+     "Input Required"
+    ]
+   ]
+  ],
+  [
+   19,
+   [
+    [
+     "A",
+     "PEW-006"
+    ],
+    [
+     "B",
+     "Allocation Lab"
+    ],
+    [
+     "C",
+     "What funded target-weight changes are being proposed?"
+    ],
+    [
+     "D",
+     "Certified targets, actual weights, scenario weights and rationale"
+    ],
+    [
+     "E",
+     "Band-aware funded scenario"
+    ],
+    [
+     "F",
+     "Portfolio Engineering"
+    ],
+    [
+     "G",
+     "12 Allocation Lab"
+    ],
+    [
+     "H",
+     "Yes — unbalanced / unsupported"
+    ],
+    [
+     "I",
+     "As needed"
+    ],
+    [
+     "J",
+     "Baseline"
+    ]
+   ]
+  ],
+  [
+   20,
+   [
+    [
+     "A",
+     "PEW-007"
+    ],
+    [
+     "B",
+     "Validation & Certification"
+    ],
+    [
+     "C",
+     "Is the proposal sufficiently evidenced and approved to become operational?"
+    ],
+    [
+     "D",
+     "Automated tests and formal approvals"
+    ],
+    [
+     "E",
+     "New certified MFPDF version"
+    ],
+    [
+     "F",
+     "Chief Investment Steward"
+    ],
+    [
+     "G",
+     "13 Validation & Cert"
+    ],
+    [
+     "H",
+     "Sole final gate"
+    ],
+    [
+     "I",
+     "Every proposed version"
+    ],
+    [
+     "J",
+     "Not Ready"
+    ]
+   ]
+  ],
+  [
+   22,
+   [
+    [
+     "A",
+     "OPERATING WORKFLOW"
+    ]
+   ]
+  ],
+  [
+   23,
+   [
+    [
+     "A",
+     "Step"
+    ],
+    [
+     "B",
+     "Action"
+    ],
+    [
+     "C",
+     "Primary Sheet"
+    ],
+    [
+     "D",
+     "Input Convention"
+    ],
+    [
+     "E",
+     "Decision Rule"
+    ],
+    [
+     "F",
+     "Required Evidence"
+    ],
+    [
+     "G",
+     "Authority"
+    ],
+    [
+     "H",
+     "Output"
+    ],
+    [
+     "I",
+     "Implementation Rule"
+    ],
+    [
+     "J",
+     "Control"
+    ]
+   ]
+  ],
+  [
+   24,
+   [
+    [
+     "A",
+     "1"
+    ],
+    [
+     "B",
+     "Confirm mandate and constraints"
+    ],
+    [
+     "C",
+     "07 Mandate & Constraints"
+    ],
+    [
+     "D",
+     "Yellow / blue policy inputs only when formally changed"
+    ],
+    [
+     "E",
+     "Hard constraints cannot be optimized away"
+    ],
+    [
+     "F",
+     "Adopted governance record"
+    ],
+    [
+     "G",
+     "Chief Investment Steward"
+    ],
+    [
+     "H",
+     "Mandate-compliant design space"
+    ],
+    [
+     "I",
+     "Amendment required for hard-rule change"
+    ],
+    [
+     "J",
+     "PEW-001"
+    ]
+   ]
+  ],
+  [
+   25,
+   [
+    [
+     "A",
+     "2"
+    ],
+    [
+     "B",
+     "Review sleeve purpose and capacity"
+    ],
+    [
+     "C",
+     "08 Sleeve Architecture"
+    ],
+    [
+     "D",
+     "Scenario allocations flow from PEW-006"
+    ],
+    [
+     "E",
+     "Material sleeve shifts require review"
+    ],
+    [
+     "F",
+     "Purpose, risk and diversification effect"
+    ],
+    [
+     "G",
+     "Stewardship Committee"
+    ],
+    [
+     "H",
+     "Sleeve decision"
+    ],
+    [
+     "I",
+     "No direct trade instruction"
+    ],
+    [
+     "J",
+     "PEW-002"
+    ]
+   ]
+  ],
+  [
+   26,
+   [
+    [
+     "A",
+     "3"
+    ],
+    [
+     "B",
+     "Confirm each holding's portfolio role"
+    ],
+    [
+     "C",
+     "09 Role Assignment"
+    ],
+    [
+     "D",
+     "Blue baseline / yellow assessment inputs"
+    ],
+    [
+     "E",
+     "No role = no allocation"
+    ],
+    [
+     "F",
+     "MIAR and thesis record"
+    ],
+    [
+     "G",
+     "Research Committee"
+    ],
+    [
+     "H",
+     "Retain / review / replace"
+    ],
+    [
+     "I",
+     "Candidate process required for replacement"
+    ],
+    [
+     "J",
+     "PEW-003"
+    ]
+   ]
+  ],
+  [
+   27,
+   [
+    [
+     "A",
+     "4"
+    ],
+    [
+     "B",
+     "Compare incumbent and candidate evidence"
+    ],
+    [
+     "C",
+     "10 Candidate Comparison"
+    ],
+    [
+     "D",
+     "Yellow cells; score 0–100"
+    ],
+    [
+     "E",
+     "Zacks overlay only for close decisions"
+    ],
+    [
+     "F",
+     "MIAR, MICS, empirical, Merrill and role fit"
+    ],
+    [
+     "G",
+     "Stewardship Committee"
+    ],
+    [
+     "H",
+     "Candidate decision"
+    ],
+    [
+     "I",
+     "No automatic selection"
+    ],
+    [
+     "J",
+     "PEW-004"
+    ]
+   ]
+  ],
+  [
+   28,
+   [
+    [
+     "A",
+     "5"
+    ],
+    [
+     "B",
+     "Assign conviction and thesis controls"
+    ],
+    [
+     "C",
+     "11 Conviction"
+    ],
+    [
+     "D",
+     "Yellow proposed conviction and review inputs"
+    ],
+    [
+     "E",
+     "Unassigned conviction blocks certification"
+    ],
+    [
+     "F",
+     "Current research and thesis evidence"
+    ],
+    [
+     "G",
+     "Stewardship Committee"
+    ],
+    [
+     "H",
+     "Effective conviction"
+    ],
+    [
+     "I",
+     "Sizing remains scenario-only"
+    ],
+    [
+     "J",
+     "PEW-005"
+    ]
+   ]
+  ],
+  [
+   29,
+   [
+    [
+     "A",
+     "6"
+    ],
+    [
+     "B",
+     "Build a fully funded scenario"
+    ],
+    [
+     "C",
+     "12 Allocation Lab"
+    ],
+    [
+     "D",
+     "Enter only Scenario Weight Input and rationale"
+    ],
+    [
+     "E",
+     "Effective weights must total 100%"
+    ],
+    [
+     "F",
+     "Funding, bands and rationale"
+    ],
+    [
+     "G",
+     "Portfolio Engineering"
+    ],
+    [
+     "H",
+     "Engineering scenario"
+    ],
+    [
+     "I",
+     "Certified targets remain unchanged"
+    ],
+    [
+     "J",
+     "PEW-006"
+    ]
+   ]
+  ],
+  [
+   30,
+   [
+    [
+     "A",
+     "7"
+    ],
+    [
+     "B",
+     "Validate, approve and issue"
+    ],
+    [
+     "C",
+     "13 Validation & Cert"
+    ],
+    [
+     "D",
+     "Approval status, reviewers and evidence"
+    ],
+    [
+     "E",
+     "Every blocking review must be approved"
+    ],
+    [
+     "F",
+     "Empirical / Monte Carlo when triggered"
+    ],
+    [
+     "G",
+     "Chief Investment Steward"
+    ],
+    [
+     "H",
+     "New MFPDF version"
+    ],
+    [
+     "I",
+     "Only issued version becomes operational"
+    ],
+    [
+     "J",
+     "PEW-007"
+    ]
+   ]
+  ],
+  [
+   31,
+   [
+    [
+     "A",
+     "8"
+    ],
+    [
+     "B",
+     "Synchronize executive publications"
+    ],
+    [
+     "C",
+     "00 CISC Dashboard / MWIR"
+    ],
+    [
+     "D",
+     "Linked outputs after certification"
+    ],
+    [
+     "E",
+     "No publication may imply unapproved change"
+    ],
+    [
+     "F",
+     "Certified MFPDF and committee record"
+    ],
+    [
+     "G",
+     "Publication Division"
+    ],
+    [
+     "H",
+     "Updated dashboard / MWIR"
+    ],
+    [
+     "I",
+     "No automatic execution"
+    ],
+    [
+     "J",
+     "Publication protocol"
+    ]
+   ]
+  ],
+  [
+   33,
+   [
+    [
+     "A",
+     "COLOR AND ENTRY CONVENTIONS"
+    ]
+   ]
+  ],
+  [
+   34,
+   [
+    [
+     "A",
+     "Convention"
+    ],
+    [
+     "B",
+     "Meaning"
+    ],
+    [
+     "C",
+     "Where Used"
+    ],
+    [
+     "D",
+     "User Action"
+    ],
+    [
+     "E",
+     "Do Not"
+    ],
+    [
+     "G",
+     "Freeze Field"
+    ],
+    [
+     "H",
+     "Current State"
+    ],
+    [
+     "I",
+     "Certification Requirement"
+    ],
+    [
+     "J",
+     "Result"
+    ]
+   ]
+  ],
+  [
+   35,
+   [
+    [
+     "A",
+     "Blue text + yellow fill"
+    ],
+    [
+     "B",
+     "Hardcoded scenario or policy input"
+    ],
+    [
+     "C",
+     "Candidate, conviction, allocation and certification inputs"
+    ],
+    [
+     "D",
+     "Enter verified information"
+    ],
+    [
+     "E",
+     "Do not paste over formula cells"
+    ],
+    [
+     "G",
+     "MOPS-001 CISC-001"
+    ],
+    [
+     "H",
+     "Frozen"
+    ],
+    [
+     "I",
+     "No alteration without formal amendment"
+    ],
+    [
+     "J",
+     "Preserved"
+    ]
+   ]
+  ],
+  [
+   36,
+   [
+    [
+     "A",
+     "Green text"
+    ],
+    [
+     "B",
+     "Cross-sheet link to certified or supporting data"
+    ],
+    [
+     "C",
+     "All PEW linked fields"
+    ],
+    [
+     "D",
+     "Review source sheet if value appears wrong"
+    ],
+    [
+     "E",
+     "Do not replace with hardcode"
+    ],
+    [
+     "G",
+     "MOPS-002 Architecture"
+    ],
+    [
+     "H",
+     "Certified & Frozen"
+    ],
+    [
+     "I",
+     "Version-controlled amendment required"
+    ],
+    [
+     "J",
+     "FROZEN"
+    ]
+   ]
+  ],
+  [
+   37,
+   [
+    [
+     "A",
+     "Black text"
+    ],
+    [
+     "B",
+     "Formula or calculated output"
+    ],
+    [
+     "C",
+     "Scores, deltas, statuses and validation"
+    ],
+    [
+     "D",
+     "Allow workbook to calculate"
+    ],
+    [
+     "E",
+     "Do not overwrite"
+    ],
+    [
+     "G",
+     "Certified Portfolio"
+    ],
+    [
+     "H",
+     "MFPDF v1.0"
+    ],
+    [
+     "I",
+     "New version required for operational change"
+    ],
+    [
+     "J",
+     "Preserved"
+    ]
+   ]
+  ],
+  [
+   38,
+   [
+    [
+     "A",
+     "Green status"
+    ],
+    [
+     "B",
+     "Passed, aligned or no decision required"
+    ],
+    [
+     "C",
+     "Control and validation status"
+    ],
+    [
+     "D",
+     "Continue monitoring"
+    ],
+    [
+     "E",
+     "Do not create activity merely to change status"
+    ],
+    [
+     "G",
+     "Actual Weights"
+    ],
+    [
+     "H",
+     {
+      "cell": "H38"
+     }
+    ],
+    [
+     "I",
+     "Required before implementation review"
+    ],
+    [
+     "J",
+     {
+      "cell": "J38"
+     }
+    ]
+   ]
+  ],
+  [
+   39,
+   [
+    [
+     "A",
+     "Amber status"
+    ],
+    [
+     "B",
+     "Input, review or committee attention required"
+    ],
+    [
+     "C",
+     "Decision queue and validation"
+    ],
+    [
+     "D",
+     "Resolve evidence or enter required data"
+    ],
+    [
+     "E",
+     "Do not interpret as automatic trade"
+    ],
+    [
+     "G",
+     "Conviction"
+    ],
+    [
+     "H",
+     {
+      "cell": "H39"
+     }
+    ],
+    [
+     "I",
+     "Required before certification"
+    ],
+    [
+     "J",
+     {
+      "cell": "J39"
+     }
+    ]
+   ]
+  ],
+  [
+   41,
+   [
+    [
+     "A",
+     "MOPS-002 FREEZE RECORD — Effective July 26, 2026, the PEW-001 through PEW-007 architecture is certified and frozen as the Manifest Portfolio Engineering Workspace, Founders Edition v1.0. Future changes must be version-controlled and may not silently alter the certified portfolio, rebalance authority, Zacks/Merrill governance, scenario-isolation rule or prohibition on automatic trading."
+    ]
+   ]
+  ]
+ ],
+ "15 MOPS-002 Freeze Record": [
+  [
+   1,
+   [
+    [
+     "A",
+     "MOPS-002 — MANIFEST PORTFOLIO ENGINEERING WORKSPACE"
+    ]
+   ]
+  ],
+  [
+   2,
+   [
+    [
+     "A",
+     "FOUNDERS EDITION v1.0 — CERTIFICATION AND FREEZE RECORD"
+    ]
+   ]
+  ],
+  [
+   3,
+   [
+    [
+     "A",
+     "Resolution MOPS-002-FR-001  |  Effective July 26, 2026  |  Status: CERTIFIED & FROZEN"
+    ]
+   ]
+  ],
+  [
+   5,
+   [
+    [
+     "A",
+     "FORMAL RESOLUTION"
+    ]
+   ]
+  ],
+  [
+   6,
+   [
+    [
+     "A",
+     "By direction of the Chief Investment Steward, MOPS-002 — Portfolio Engineering Workspace is adopted, certified and frozen as the Manifest Portfolio Engineering Workspace, Founders Edition v1.0. The certified architecture comprises PEW-001 through PEW-007 and is authorized as the controlled institutional environment for mandate review, sleeve design, role assignment, candidate comparison, conviction governance, allocation engineering, and validation/certification. This resolution freezes the operating architecture and control principles; it does not approve a portfolio trade, a scenario allocation, or a replacement MFPDF version."
+    ]
+   ]
+  ],
+  [
+   12,
+   [
+    [
+     "A",
+     "CERTIFIED WORKSPACE RECORD"
+    ]
+   ]
+  ],
+  [
+   13,
+   [
+    [
+     "A",
+     "Certification Field"
+    ],
+    [
+     "D",
+     "Certified Standard"
+    ],
+    [
+     "H",
+     "Status / Authority"
+    ]
+   ]
+  ],
+  [
+   14,
+   [
+    [
+     "A",
+     "Operating Product"
+    ],
+    [
+     "D",
+     "MOPS-002 — Portfolio Engineering Workspace"
+    ],
+    [
+     "H",
+     "CERTIFIED & FROZEN"
+    ]
+   ]
+  ],
+  [
+   15,
+   [
+    [
+     "A",
+     "Edition"
+    ],
+    [
+     "D",
+     "Founders Edition v1.0"
+    ],
+    [
+     "H",
+     "Effective July 26, 2026"
+    ]
+   ]
+  ],
+  [
+   16,
+   [
+    [
+     "A",
+     "Workspace Architecture"
+    ],
+    [
+     "D",
+     "PEW-001 through PEW-007"
+    ],
+    [
+     "H",
+     "Frozen"
+    ]
+   ]
+  ],
+  [
+   17,
+   [
+    [
+     "A",
+     "Visual Foundation"
+    ],
+    [
+     "D",
+     "CISC-001 five-panel executive console"
+    ],
+    [
+     "H",
+     "Preserved"
+    ]
+   ]
+  ],
+  [
+   18,
+   [
+    [
+     "A",
+     "System of Record"
+    ],
+    [
+     "D",
+     "Certified MFPDF v1.0 / Portfolio B"
+    ],
+    [
+     "H",
+     "Authoritative"
+    ]
+   ]
+  ],
+  [
+   19,
+   [
+    [
+     "A",
+     "Portfolio Foundation"
+    ],
+    [
+     "D",
+     "47 positions | 40 equities | 7 ETFs | 100.00% target"
+    ],
+    [
+     "H",
+     "Unchanged"
+    ]
+   ]
+  ],
+  [
+   20,
+   [
+    [
+     "A",
+     "Certification Authority"
+    ],
+    [
+     "D",
+     "Chief Investment Steward"
+    ],
+    [
+     "H",
+     "Adopted"
+    ]
+   ]
+  ],
+  [
+   21,
+   [
+    [
+     "A",
+     "Resolution"
+    ],
+    [
+     "D",
+     "MOPS-002-FR-001"
+    ],
+    [
+     "H",
+     "Final"
+    ]
+   ]
+  ],
+  [
+   23,
+   [
+    [
+     "A",
+     "FROZEN CONTROL PRINCIPLES"
+    ]
+   ]
+  ],
+  [
+   24,
+   [
+    [
+     "A",
+     "1. The certified MFPDF remains the sole portfolio system of record."
+    ]
+   ]
+  ],
+  [
+   25,
+   [
+    [
+     "A",
+     "2. The Portfolio Engineering Workspace is a scenario layer and may not overwrite certified target weights."
+    ]
+   ]
+  ],
+  [
+   26,
+   [
+    [
+     "A",
+     "3. Automatic trading or automatic implementation is prohibited; committee authority is retained."
+    ]
+   ]
+  ],
+  [
+   27,
+   [
+    [
+     "A",
+     "4. The PEW-001 through PEW-007 module architecture and operating sequence are frozen."
+    ]
+   ]
+  ],
+  [
+   28,
+   [
+    [
+     "A",
+     "5. Zacks/Merrill governance, evidence hierarchy, and documented exception controls remain in force."
+    ]
+   ]
+  ],
+  [
+   29,
+   [
+    [
+     "A",
+     "6. Any operational portfolio change requires a newly certified and issued MFPDF version."
+    ]
+   ]
+  ],
+  [
+   30,
+   [
+    [
+     "A",
+     "7. CISC and MWIR publications may reflect portfolio changes only after formal certification."
+    ]
+   ]
+  ],
+  [
+   32,
+   [
+    [
+     "A",
+     "SCOPE EXCLUSION AND OPERATING STATE AT FREEZE"
+    ]
+   ]
+  ],
+  [
+   33,
+   [
+    [
+     "A",
+     "This certification freezes the workspace architecture, not a portfolio transaction or new scenario. At the time of certification, actual portfolio weights loaded were 0 of 47, effective conviction tiers assigned were 0 of 47, scenario positions changed were 0, and PEW-SCN-001 remained NOT READY for implementation. These are operating-data conditions, not defects in the certified workspace. The certified Portfolio B target allocation remains unchanged and fully authoritative."
+    ]
+   ]
+  ],
+  [
+   38,
+   [
+    [
+     "A",
+     "VERSION CONTROL AND AMENDMENT STANDARD"
+    ]
+   ]
+  ],
+  [
+   39,
+   [
+    [
+     "A",
+     "Future structural changes must be issued through formal version control as Founders Edition v1.1 or a later authorized version. No revision may silently modify the certified portfolio, rebalancing authority, scenario-isolation principle, Zacks/Merrill governance, validation gate, or prohibition on automatic trading. Operating inputs may be updated in designated input cells without constituting an architectural amendment."
+    ]
+   ]
+  ],
+  [
+   43,
+   [
+    [
+     "A",
+     "CERTIFIED BY AUTHORITY OF THE CHIEF INVESTMENT STEWARD — MANIFEST INSTITUTIONAL INVESTMENT SYSTEM"
+    ]
+   ]
+  ],
+  [
+   44,
+   [
+    [
+     "A",
+     "MOPS-002-FR-001  |  Manifest Portfolio Engineering Workspace  |  Founders Edition v1.0  |  July 26, 2026"
+    ]
+   ]
+  ]
+ ],
+ "Executive Summary": [
+  [
+   1,
+   [
+    [
+     "A",
+     "MANIFEST FLAGSHIP PORTFOLIO DEFINITION FILE"
+    ]
+   ]
+  ],
+  [
+   2,
+   [
+    [
+     "A",
+     "Founders Edition Version 1.0 — Canonical Implementation Workbook"
+    ]
+   ]
+  ],
+  [
+   4,
+   [
+    [
+     "A",
+     "Certification Field"
+    ],
+    [
+     "B",
+     "Value"
+    ],
+    [
+     "D",
+     "Executive Certification"
+    ]
+   ]
+  ],
+  [
+   5,
+   [
+    [
+     "A",
+     "Canonical portfolio"
+    ],
+    [
+     "B",
+     "Portfolio B"
+    ],
+    [
+     "D",
+     "This workbook supersedes all prior preliminary allocation workbooks. It reconciles the 47-symbol Portfolio B export with the MQOC-006 empirical optimizer. The optimizer's 2.00% placeholder has been assigned to MMC, the sole Portfolio B symbol absent from the provisional weight file. No other target weight was changed."
+    ]
+   ]
+  ],
+  [
+   6,
+   [
+    [
+     "A",
+     "Total positions"
+    ],
+    [
+     "B",
+     47
+    ]
+   ]
+  ],
+  [
+   7,
+   [
+    [
+     "A",
+     "Equities"
+    ],
+    [
+     "B",
+     40
+    ]
+   ]
+  ],
+  [
+   8,
+   [
+    [
+     "A",
+     "ETFs"
+    ],
+    [
+     "B",
+     7
+    ]
+   ]
+  ],
+  [
+   9,
+   [
+    [
+     "A",
+     "Certified target total"
+    ],
+    [
+     "B",
+     {
+      "cell": "B9"
+     }
+    ]
+   ]
+  ],
+  [
+   10,
+   [
+    [
+     "A",
+     "Rebalancing policy"
+    ],
+    [
+     "B",
+     "Band-based; review before trade"
+    ]
+   ]
+  ],
+  [
+   12,
+   [
+    [
+     "A",
+     "Operating Rules"
+    ]
+   ]
+  ],
+  [
+   13,
+   [
+    [
+     "A",
+     "Rule"
+    ],
+    [
+     "B",
+     "Standard"
+    ]
+   ]
+  ],
+  [
+   14,
+   [
+    [
+     "A",
+     "Target allocation"
+    ],
+    [
+     "B",
+     "100.00%"
+    ]
+   ]
+  ],
+  [
+   15,
+   [
+    [
+     "A",
+     "Position minimum"
+    ],
+    [
+     "B",
+     "1.00% lower-band floor"
+    ]
+   ]
+  ],
+  [
+   16,
+   [
+    [
+     "A",
+     "Position maximum"
+    ],
+    [
+     "B",
+     "4.00% upper-band cap"
+    ]
+   ]
+  ],
+  [
+   17,
+   [
+    [
+     "A",
+     "Review trigger"
+    ],
+    [
+     "B",
+     "Actual weight outside allowable band; committee review precedes implementation"
+    ]
+   ]
+  ]
+ ],
+ "Rebalancing": [
+  [
+   1,
+   [
+    [
+     "A",
+     "MFPDF v1.0 — Rebalancing Control Framework"
+    ]
+   ]
+  ],
+  [
+   3,
+   [
+    [
+     "A",
+     "Control"
+    ],
+    [
+     "B",
+     "Definition"
+    ],
+    [
+     "C",
+     "Formula / Trigger"
+    ],
+    [
+     "D",
+     "Required Action"
+    ],
+    [
+     "E",
+     "Authority"
+    ],
+    [
+     "F",
+     "Frequency"
+    ],
+    [
+     "G",
+     "Status"
+    ]
+   ]
+  ],
+  [
+   4,
+   [
+    [
+     "A",
+     "Target weight"
+    ],
+    [
+     "B",
+     "Certified strategic allocation for each holding"
+    ],
+    [
+     "C",
+     "Certified Allocation column F"
+    ],
+    [
+     "D",
+     "Benchmark actual portfolio"
+    ],
+    [
+     "E",
+     "MFPDF v1.0"
+    ],
+    [
+     "F",
+     "Continuous"
+    ],
+    [
+     "G",
+     "Active"
+    ]
+   ]
+  ],
+  [
+   5,
+   [
+    [
+     "A",
+     "Lower band"
+    ],
+    [
+     "B",
+     "75% of target, floored at 1.00%"
+    ],
+    [
+     "C",
+     "MAX(1%, Target × 75%)"
+    ],
+    [
+     "D",
+     "Review potential add"
+    ],
+    [
+     "E",
+     "Stewardship Committee"
+    ],
+    [
+     "F",
+     "When breached"
+    ],
+    [
+     "G",
+     "Active"
+    ]
+   ]
+  ],
+  [
+   6,
+   [
+    [
+     "A",
+     "Upper band"
+    ],
+    [
+     "B",
+     "125% of target, capped at 4.00%"
+    ],
+    [
+     "C",
+     "MIN(4%, Target × 125%)"
+    ],
+    [
+     "D",
+     "Review potential trim"
+    ],
+    [
+     "E",
+     "Stewardship Committee"
+    ],
+    [
+     "F",
+     "When breached"
+    ],
+    [
+     "G",
+     "Active"
+    ]
+   ]
+  ],
+  [
+   7,
+   [
+    [
+     "A",
+     "Actual weight"
+    ],
+    [
+     "B",
+     "Current account/model weight"
+    ],
+    [
+     "C",
+     "User-entered in column I"
+    ],
+    [
+     "D",
+     "Update before review"
+    ],
+    [
+     "E",
+     "Portfolio Operations"
+    ],
+    [
+     "F",
+     "Weekly / as needed"
+    ],
+    [
+     "G",
+     "Input required"
+    ]
+   ]
+  ],
+  [
+   8,
+   [
+    [
+     "A",
+     "Automatic trading"
+    ],
+    [
+     "B",
+     "Not authorized"
+    ],
+    [
+     "C",
+     "No automatic execution"
+    ],
+    [
+     "D",
+     "Committee review required"
+    ],
+    [
+     "E",
+     "Stewardship Committee"
+    ],
+    [
+     "F",
+     "As needed"
+    ],
+    [
+     "G",
+     "Prohibited"
+    ]
+   ]
+  ],
+  [
+   9,
+   [
+    [
+     "A",
+     "Scheduled review"
+    ],
+    [
+     "B",
+     "Portfolio-level reconciliation"
+    ],
+    [
+     "C",
+     "Quarterly plus material-event review"
+    ],
+    [
+     "D",
+     "Rebalance only when justified"
+    ],
+    [
+     "E",
+     "Stewardship Committee"
+    ],
+    [
+     "F",
+     "Quarterly"
+    ],
+    [
+     "G",
+     "Active"
+    ]
+   ]
+  ]
+ ],
+ "Sources & Certification": [
+  [
+   1,
+   [
+    [
+     "A",
+     "Sources, Reconciliation Record & Certification"
+    ]
+   ]
+  ],
+  [
+   3,
+   [
+    [
+     "A",
+     "Source / Record"
+    ],
+    [
+     "B",
+     "Use"
+    ],
+    [
+     "C",
+     "Key Finding"
+    ],
+    [
+     "D",
+     "Disposition"
+    ],
+    [
+     "E",
+     "Reference"
+    ],
+    [
+     "F",
+     "Status"
+    ]
+   ]
+  ],
+  [
+   4,
+   [
+    [
+     "A",
+     "MQOC-005 Portfolio B YCharts Export"
+    ],
+    [
+     "B",
+     "Canonical constituent list"
+    ],
+    [
+     "C",
+     "47 symbols including MMC"
+    ],
+    [
+     "D",
+     "Adopted as Portfolio B constituent control"
+    ],
+    [
+     "E",
+     "ChatGPT Library: MQOC-005_Portfolio_B_YCharts_Export.csv"
+    ],
+    [
+     "F",
+     "Certified"
+    ]
+   ]
+  ],
+  [
+   5,
+   [
+    [
+     "A",
+     "MQOC-006 Provisional Optimized Portfolio Weights"
+    ],
+    [
+     "B",
+     "Empirical target weights"
+    ],
+    [
+     "C",
+     "46 named positions + 2.00% placeholder"
+    ],
+    [
+     "D",
+     "Placeholder reconciled to MMC; all other weights unchanged"
+    ],
+    [
+     "E",
+     "ChatGPT Library: MQOC-006_Provisional_Optimized_Portfolio_Weights.xlsx"
+    ],
+    [
+     "F",
+     "Reconciled"
+    ]
+   ]
+  ],
+  [
+   6,
+   [
+    [
+     "A",
+     "Prior allocation workbook"
+    ],
+    [
+     "B",
+     "Preliminary 56-position ranges"
+    ],
+    [
+     "C",
+     "Different draft portfolio; not Portfolio B"
+    ],
+    [
+     "D",
+     "Declared obsolete and superseded"
+    ],
+    [
+     "E",
+     "Manifest_Flagship_Portfolio_V1_0_Allocation_Schedule.xlsx"
+    ],
+    [
+     "F",
+     "Obsolete"
+    ]
+   ]
+  ],
+  [
+   7,
+   [
+    [
+     "A",
+     "Position count reconciliation"
+    ],
+    [
+     "B",
+     "Constituent classification"
+    ],
+    [
+     "C",
+     "40 equities + 7 ETFs = 47 positions"
+    ],
+    [
+     "D",
+     "Workbook reflects actual Portfolio B export"
+    ],
+    [
+     "E",
+     "Certified Allocation sheet"
+    ],
+    [
+     "F",
+     "Verified"
+    ]
+   ]
+  ],
+  [
+   8,
+   [
+    [
+     "A",
+     "Weight reconciliation"
+    ],
+    [
+     "B",
+     "Portfolio total"
+    ],
+    [
+     "C",
+     "100.00% after MMC substitution"
+    ],
+    [
+     "D",
+     "No residual or unallocated cash"
+    ],
+    [
+     "E",
+     "Certified Allocation total"
+    ],
+    [
+     "F",
+     "Verified"
+    ]
+   ]
+  ],
+  [
+   9,
+   [
+    [
+     "A",
+     "Certification date"
+    ],
+    [
+     "B",
+     "Founders Edition operational record"
+    ],
+    [
+     "C",
+     "2026-07-20"
+    ],
+    [
+     "D",
+     "Effective upon publication"
+    ],
+    [
+     "E",
+     "MPEC / MFPDF record"
+    ],
+    [
+     "F",
+     "Certified"
+    ]
+   ]
+  ],
+  [
+   11,
+   [
+    [
+     "A",
+     "Certification Statement"
+    ]
+   ]
+  ],
+  [
+   12,
+   [
+    [
+     "A",
+     "Portfolio B is designated as the sole canonical Manifest Flagship Portfolio implementation. This workbook is the authoritative MFPDF Founders Edition v1.0 target allocation schedule for MWIR benchmarking, stewardship review, optimization, Monte Carlo analysis, performance attribution and institutional publication."
+    ]
+   ]
+  ],
+  [
+   15,
+   [
+    [
+     "A",
+     "MOPS-002 Workspace Certification"
+    ]
+   ]
+  ],
+  [
+   16,
+   [
+    [
+     "A",
+     "Resolution"
+    ],
+    [
+     "B",
+     "Use"
+    ],
+    [
+     "C",
+     "Certified Scope"
+    ],
+    [
+     "D",
+     "Disposition"
+    ],
+    [
+     "E",
+     "Reference"
+    ],
+    [
+     "F",
+     "Status"
+    ]
+   ]
+  ],
+  [
+   17,
+   [
+    [
+     "A",
+     "MOPS-002-FR-001"
+    ],
+    [
+     "B",
+     "Workspace architecture certification"
+    ],
+    [
+     "C",
+     "PEW-001 through PEW-007, control principles and workflow"
+    ],
+    [
+     "D",
+     "Adopted, certified and frozen effective July 26, 2026"
+    ],
+    [
+     "E",
+     "15 MOPS-002 Freeze Record"
+    ],
+    [
+     "F",
+     "Certified & Frozen"
+    ]
+   ]
+  ],
+  [
+   19,
+   [
+    [
+     "A",
+     "Workspace certification does not certify a portfolio scenario, a trade, or a new MFPDF issuance. The existing certified Portfolio B allocation remains unchanged."
+    ]
+   ]
+  ],
+  [
+   21,
+   [
+    [
+     "A",
+     "Resolution / Module"
+    ],
+    [
+     "B",
+     "Use"
+    ],
+    [
+     "C",
+     "Installed Scope"
+    ],
+    [
+     "D",
+     "Disposition"
+    ],
+    [
+     "E",
+     "Reference"
+    ],
+    [
+     "F",
+     "Status"
+    ]
+   ]
+  ],
+  [
+   22,
+   [
+    [
+     "A",
+     "MOPS-003 / RCC-001"
+    ],
+    [
+     "B",
+     "Executive research command view"
+    ],
+    [
+     "C",
+     "Research readiness, exception queue, module roadmap and referrals"
+    ],
+    [
+     "D",
+     "Installed as construction candidate"
+    ],
+    [
+     "E",
+     "16 RCC-001 Control Center"
+    ],
+    [
+     "F",
+     "Active — Installed"
+    ]
+   ]
+  ],
+  [
+   23,
+   [
+    [
+     "A",
+     "MOPS-003 / RCC-002"
+    ],
+    [
+     "B",
+     "Research intake and chain-of-evidence control"
+    ],
+    [
+     "C",
+     "Evidence ledger, verification, materiality, routing and referral gates"
+    ],
+    [
+     "D",
+     "Installed as construction candidate"
+    ],
+    [
+     "E",
+     "17 RCC-002 Control Center / 18 RCC-002 Evidence Ledger"
+    ],
+    [
+     "F",
+     "Active — Installed"
+    ]
+   ]
+  ],
+  [
+   24,
+   [
+    [
+     "A",
+     "MOPS-003 / RCC-003"
+    ],
+    [
+     "B",
+     "MIAR dossier identity, freshness and review control"
+    ],
+    [
+     "C",
+     "47-holding MIAR registry, review log, scores, cadence, exception controls and RCC-007 referral state"
+    ],
+    [
+     "D",
+     "Installed as construction candidate"
+    ],
+    [
+     "E",
+     "19 RCC-003 Control Center / 20 RCC-003 MIAR Registry / 21 RCC-003 MIAR Review Log"
+    ],
+    [
+     "F",
+     "Active — Installed"
+    ]
+   ]
+  ],
+  [
+   25,
+   [
+    [
+     "A",
+     "MOPS-003 / RCC-004"
+    ]
+   ]
+  ],
+  [
+   26,
+   [
+    [
+     "A",
+     "MOPS-003 remains in construction and is not frozen. RCC-001 through RCC-004 certify neither a research conclusion nor a portfolio action. They create an auditable evidence-to-dossier-to-registry-to-candidate control path while preserving the certified MFPDF as the sole portfolio system of record."
+    ]
+   ]
+  ]
+ ]
+}

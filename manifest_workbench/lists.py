@@ -526,6 +526,29 @@ PEW_MERRILL_STATUS = ('Buy', 'Neutral', 'Underperform', 'No Rating', 'Not Checke
 YES_NO = ('Yes', 'No')
 PEW_COMMITTEE_DECISION = ('Approve', 'Reject', 'Defer', 'Exception Approved', 'No Decision')
 
+# 98 PEW Lists (remaining columns) and data validation on the PEW / CISC sheets
+CONSTRAINT_TYPE = ('Hard Constraint', 'Soft Objective', 'Governance Rule', 'Preference',
+                   'Monitoring Control')
+ROLE_PRIORITY = ('Primary', 'Secondary', 'Implementation')
+CORE_ELIGIBILITY = ('Core', 'Satellite / Implementation', 'Exception', 'Review')
+FIVE_YEAR_EVIDENCE = ('Certified Baseline', 'Met', 'Not Met', 'Exception', 'Review')
+ROLE_DECISION = ('Retain — Certified Baseline', 'Retain', 'Review', 'Replacement Candidate')
+PEW_RESEARCH_STATUS = ('Current', 'Update Due', 'Review Due', 'Decision Required')
+CERTIFICATION_STATUS = ('Pending', 'Approved', 'Rejected', 'Not Required')
+SCENARIO_STATUS = ('Open', 'Ready for Validation', 'Committee Review', 'Certified', 'Rejected')
+CHANGE_TYPE = ('Add', 'Remove', 'Increase', 'Decrease', 'Sleeve Reassignment', 'Role Change',
+               'Conviction Change')
+CHANGE_OUTCOME = ('Approved', 'Rejected', 'Deferred', 'Exception Approved', 'Pending')
+PRIORITY = ('High', 'Medium', 'Low')
+REVIEW_QUEUE_STATUS = ('Open', 'In Review', 'Decision Required', 'Closed')
+EVENT_STATUS = ('Scheduled', 'Complete', 'Canceled')
+ZACKS_DIRECTION = ('Upgrade', 'Downgrade', 'No Change')
+MERRILL_UPDATE_STATUS = ('New', 'Reviewed', 'Decision Required', 'Archived')
+MIAR_UPDATE_STATUS = ('Current', 'Due', 'Overdue', 'Complete')
+ACTION_STATUS = ('Open', 'In Progress', 'Planned', 'Completed', 'Deferred')
+PUBLICATION_STATUS = ('Not Started', 'Planned', 'Draft', 'In Review', 'Published', 'Scheduled')
+DECISION_STATUS = ('Open', 'In Review', 'Closed', 'Deferred')
+
 
 # Name -> values, for the `lists` command.
 REGISTRY = {
@@ -583,6 +606,25 @@ REGISTRY = {
     'pew-merrill-status': PEW_MERRILL_STATUS,
     'yes-no': YES_NO,
     'pew-committee-decision': PEW_COMMITTEE_DECISION,
+    'constraint-type': CONSTRAINT_TYPE,
+    'role-priority': ROLE_PRIORITY,
+    'core-eligibility': CORE_ELIGIBILITY,
+    'five-year-evidence': FIVE_YEAR_EVIDENCE,
+    'role-decision': ROLE_DECISION,
+    'pew-research-status': PEW_RESEARCH_STATUS,
+    'certification-status': CERTIFICATION_STATUS,
+    'scenario-status': SCENARIO_STATUS,
+    'change-type': CHANGE_TYPE,
+    'change-outcome': CHANGE_OUTCOME,
+    'priority': PRIORITY,
+    'review-queue-status': REVIEW_QUEUE_STATUS,
+    'event-status': EVENT_STATUS,
+    'zacks-direction': ZACKS_DIRECTION,
+    'merrill-update-status': MERRILL_UPDATE_STATUS,
+    'miar-update-status': MIAR_UPDATE_STATUS,
+    'action-status': ACTION_STATUS,
+    'publication-status': PUBLICATION_STATUS,
+    'decision-status': DECISION_STATUS,
 }
 
 # Status -> required action lookups (97 RCC Lists W/Y, AJ/AK, AL/AM).

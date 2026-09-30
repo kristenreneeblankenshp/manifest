@@ -20,4 +20,4 @@ manifest-workbench = "manifest_workbench.cli:main"
 packages = ["manifest_workbench"]
 
 [tool.setuptools.package-data]
-manifest_workbench = ["data/seed.json"]
+manifest_workbench = ["data/seed.json", "data/docs.json"]

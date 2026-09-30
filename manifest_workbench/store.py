@@ -15,8 +15,15 @@ from importlib import resources
 from pathlib import Path
 
 FORMAT = 'manifest-workbench/1'
-TABLE_KEYS = ('portfolio', 'conviction', 'pew004', 'evidence', 'miar', 'review', 'masr', 'pipeline')
 DEFAULT_DATA_FILE = 'manifest_workbench.json'
+
+
+def _table_keys():
+    from .schema import TABLES
+    return tuple(TABLES)
+
+
+TABLE_KEYS = _table_keys()
 
 
 class StoreError(Exception):
@@ -28,16 +35,21 @@ def default_path() -> Path:
 
 
 def empty_store() -> dict:
+    from .schema import TABLES
     store = {'format': FORMAT, 'meta': {}, 'audit': []}
-    for key in TABLE_KEYS:
-        store[key] = []
+    for key, table in TABLES.items():
+        store[key] = {} if table.mode == 'single' else []
     return store
+
+
+def _seed_raw() -> dict:
+    text = resources.files('manifest_workbench').joinpath('data/seed.json').read_text('utf-8')
+    return json.loads(text)
 
 
 def seed_store() -> dict:
     """The operating inputs of the Manifest Workbench v0.4, as issued."""
-    text = resources.files('manifest_workbench').joinpath('data/seed.json').read_text('utf-8')
-    return _validate(json.loads(text))
+    return _validate(_seed_raw(), migrate=False)
 
 
 def load(path: Path) -> dict:
@@ -71,11 +83,20 @@ def _json_default(value):
     raise TypeError(f'cannot serialise {type(value).__name__}')
 
 
-def _validate(store: dict) -> dict:
+def _validate(store: dict, migrate: bool = True) -> dict:
+    """Check the format and add any tables missing from an older data file.
+
+    Data files created before a sheet was covered receive that sheet's v0.4 inputs, so
+    existing operating data is kept and the new sheets start from the issued workbook.
+    """
     if store.get('format') != FORMAT:
         raise StoreError(f"Unsupported data format {store.get('format')!r}; expected {FORMAT!r}")
-    for key in TABLE_KEYS:
-        store.setdefault(key, [])
+    missing = [key for key in TABLE_KEYS if key not in store]
+    if missing:
+        seed = _seed_raw() if migrate else {}
+        empty = empty_store()
+        for key in missing:
+            store[key] = seed.get(key, empty[key])
     store.setdefault('audit', [])
     store.setdefault('meta', {})
     return store

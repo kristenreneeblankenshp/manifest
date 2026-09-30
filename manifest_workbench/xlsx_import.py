@@ -51,6 +51,64 @@ def _check_choices(table: S.Table, record: dict, where: str, problems: list) -> 
             problems.append(f"{where}: {field.header} '{value}' is not a controlled value")
 
 
+ORIGINAL = ('portfolio', 'conviction', 'miar', 'pew004', 'evidence', 'review', 'pipeline', 'masr')
+
+
+def _import_operating_sheets(wb, store, problems, holdings, sheet):
+    """CISC-001 and MOPS-002 operating inputs (every table added after the RCC chain)."""
+    for name, table in S.TABLES.items():
+        if name in ORIGINAL:
+            continue
+        ws = sheet(table)
+        if table.mode == 'single':
+            rec = {}
+            for f in table.fields:
+                if f.stored:
+                    value = _clean(ws[f.col].value)
+                    if value is not None:
+                        rec[f.key] = value
+            _check_choices(table, rec, table.sheet, problems)
+            store[name] = rec
+            continue
+        count = holdings if table.mode == 'positional' else table.capacity
+        rows = []
+        for row in range(table.first_row, table.first_row + count):
+            rec = _read_row(ws, table, row)
+            _check_choices(table, rec, f'{table.sheet}!{row}', problems)
+            rows.append(rec)
+        store[name] = rows
+
+
+DOC_SHEETS = ('05 Workbench Guide', '14 PEW Guide', '15 MOPS-002 Freeze Record', 'Executive Summary',
+              'Rebalancing', 'Sources & Certification')
+
+
+def extract_docs(path) -> dict:
+    """Static reference sheets as rows of (column, text); formula cells keep their reference."""
+    import openpyxl
+    with warnings.catch_warnings():
+        warnings.simplefilter('ignore')
+        wb = openpyxl.load_workbook(path)
+    docs = {}
+    for name in DOC_SHEETS:
+        ws = wb[name]
+        rows = []
+        for row in ws.iter_rows():
+            cells = []
+            for c in row:
+                v = c.value
+                if v is None:
+                    continue
+                if isinstance(v, str) and v.startswith('='):
+                    cells.append([c.column_letter, {'cell': c.coordinate}])
+                else:
+                    cells.append([c.column_letter, _clean(v) if not isinstance(v, str) else v])
+            if cells:
+                rows.append([row[0].row, cells])
+        docs[name] = rows
+    return docs
+
+
 def import_workbook(path) -> tuple:
     """Return (store, warnings) built from the workbook at ``path``."""
     try:
@@ -110,6 +168,8 @@ def import_workbook(path) -> tuple:
             continue
         _check_choices(S.MASR, rec, f'{S.MASR.sheet}!{row}', problems)
         store['masr'].append(rec)
+
+    _import_operating_sheets(wb, store, problems, n, sheet)
 
     title = wb['22 RCC-004 Control Center']['A1'].value if '22 RCC-004 Control Center' in wb.sheetnames else None
     store['meta'] = {'source': str(path), 'title': title,

@@ -19,7 +19,9 @@ from . import ops
 from . import render as R
 from . import schema as S
 from . import store as ST
+from . import views as V
 from .engine import blank, same
+from .views import SHEETS  # noqa: F401  (sheet index, re-exported)
 
 CONTROL_PRINCIPLE = (
     'MOPS-003 CONTROL PRINCIPLE — Research identifies and evaluates change. Portfolio Engineering '
@@ -39,6 +41,15 @@ STATUS_FIELDS = {
     'review': ('control_status',),
     'masr': ('eligibility_gate', 'exception_requirement', 'control_status', 'required_action'),
     'pipeline': ('gate_result', 'control_status', 'next_action'),
+    'composite': ('contribution',),
+    'mandate': ('status',),
+    'sleeves': ('decision_state',),
+    'roles': ('control_status',),
+    'scenario': ('effective_weight', 'change', 'band_test', 'trigger', 'validation_state'),
+    'changes': ('delta',),
+    'controls': ('composite_score', 'weekly_change', 'posture', 'compass_bias', 'classification'),
+    'lab': ('scenario_status', 'scenario_total', 'changed_positions', 'readiness'),
+    'validation': ('overall_readiness', 'certification_state'),
 }
 
 # Default list-view columns per table.
@@ -64,12 +75,31 @@ LIST_COLUMNS = {
              'exception_requirement', 'current_stage', 'control_status'),
     'pipeline': ('candidate_id', 'ticker', 'candidate_type', 'stage', 'gate_result', 'due_date',
                  'days_open', 'control_status', 'next_action'),
+    'composite': ('component', 'score', 'weight', 'contribution'),
+    'actions': ('_slot', 'id', 'category', 'action', 'owner', 'due_date', 'priority', 'status',
+                'committee_decision'),
+    'decisions': ('_slot',) + V.LIST_DECISIONS,
+    'mandate': ('control_id', 'domain', 'objective', 'classification', 'operating_value', 'status',
+                'authority'),
+    'sleeves': ('sleeve', 'positions', 'certified_target', 'actual', 'scenario', 'delta', 'range_low',
+                'range_high', 'role_control', 'conviction_completeness', 'decision_state'),
+    'roles': ('symbol', 'sleeve', 'functional_role', 'role_priority', 'core_eligibility',
+              'five_year_evidence', 'role_decision', 'control_status'),
+    'scenario': ('symbol', 'sleeve', 'certified_target', 'actual_weight', 'scenario_weight',
+                 'effective_weight', 'change', 'band_test', 'trigger', 'validation_state'),
+    'workflow': ('stage', 'status', 'reviewed_by', 'review_date', 'evidence_ref', 'blocking'),
+    'changes': ('change_id', 'symbol_sleeve', 'change_type', 'certified_weight', 'proposed_weight',
+                'delta', 'outcome'),
 }
+for _name in S.INTEL_TABLES + S.COMMITTEE_TABLES:
+    LIST_COLUMNS.setdefault(_name, ('_slot',) + tuple(S.TABLES[_name].keys()))
 STATUS_COLUMNS = {'band_status', 'decision_state', 'eligibility_gate', 'recommended_action',
                   'status', 'control_status', 'referral_eligibility', 'research_freshness',
-                  'dossier_completeness', 'rcc007_referral', 'gate_result', 'exception_requirement'}
+                  'dossier_completeness', 'rcc007_referral', 'gate_result', 'exception_requirement',
+                  'role_control', 'band_test', 'trigger', 'validation_state'}
 # Tables whose "status" column is an operator input rather than a computed state.
-INPUT_STATUS_TABLES = {'evidence'}
+INPUT_STATUS_TABLES = {'evidence', 'workflow'} | set(S.INTEL_TABLES) | set(S.COMMITTEE_TABLES) | {
+    'decisions'}
 
 
 class App:
@@ -106,7 +136,7 @@ class App:
 
     def rows_for(self, table_name, rows, columns):
         table = S.TABLES[table_name]
-        fields = [table.field(c) for c in columns]
+        fields = [SLOT if c == '_slot' else table.field(c) for c in columns]
         headers = [f.header for f in fields]
         body = [[R.fmt(r.get(f.key), f.vtype) for f in fields] for r in rows]
         status = [f.header for f in fields if f.key in STATUS_COLUMNS
@@ -123,10 +153,13 @@ class App:
     def echo_status(self, table_name, key):
         wb = self.wb()
         table = S.TABLES[table_name]
-        row = _find_computed(wb, table_name, key)
+        try:
+            row = _find_computed(wb, table_name, key)
+        except ops.OpError:
+            return
         if row is None:
             return
-        for fkey in STATUS_FIELDS[table_name]:
+        for fkey in STATUS_FIELDS.get(table_name, ()):
             f = table.field(fkey)
             value = R.fmt(row.get(fkey), f.vtype)
             shown = self.style.status(value) if f.vtype == S.TEXT else value
@@ -149,13 +182,16 @@ def _env_date():
     return dt.date.fromisoformat(raw) if raw else None
 
 
+SLOT = S.Field('_slot', '#', '#', S.AUTO, S.INT)
+
+
 def _find_computed(wb, table_name, key):
+    """The computed row for a record key (raises OpError when there is none)."""
+    if S.TABLES[table_name].mode == 'single':
+        return wb.record(table_name)
+    pos, _ = ops.find(wb.store, table_name, key)
     rows = wb.table(table_name)
-    field = S.KEYS[table_name]
-    for r in rows:
-        if same(r.get(field), key) or (table_name == 'masr' and same(r.get('masr_id'), key)):
-            return r
-    return None
+    return rows[pos] if pos < len(rows) else None
 
 
 def _date(text):
@@ -181,8 +217,8 @@ def cmd_init(app: App, args):
     ops.audit(store, app.actor, 'init', 'workbench', str(source))
     app._store = store
     app.save()
-    counts = ', '.join(f'{k}: {len(store[k])}' for k in ST.TABLE_KEYS)
-    app.out(f'Initialised {app.path} from {source}\n  {counts}')
+    counts = ', '.join(f'{k}: {len(store[k])}' for k in ('portfolio', 'masr', 'pipeline', 'evidence'))
+    app.out(f'Initialised {app.path} from {source}\n  {len(ST.TABLE_KEYS)} tables ({counts}, …)')
 
 
 def cmd_dashboard(app: App, args):
@@ -378,9 +414,13 @@ def _filter(rows, args):
 
 
 def cmd_list(app: App, args):
-    wb = app.wb()
     name = args.table
+    if S.TABLES[name].mode == 'single':
+        return cmd_show(app, args)
+    wb = app.wb()
     rows = wb.table(name)
+    if S.TABLES[name].mode == 'slots' and not args.all:
+        rows = V._filled(rows)
     if name == 'masr':
         rows = [r for r in rows if not blank(r.get('ticker'))]
     if name == 'pew004' and not args.all:
@@ -388,12 +428,25 @@ def cmd_list(app: App, args):
     rows = _filter(rows, args)
     if getattr(args, 'exceptions', False):
         rows = [r for r in rows if _is_exception(name, r)]
-    columns = LIST_COLUMNS[name]
+    columns = LIST_COLUMNS.get(name) or tuple(S.TABLES[name].keys())
     if args.columns:
         columns = [S.TABLES[name].field(c).key for c in args.columns.split(',')]
     table = S.TABLES[name]
-    app.header(f'{table.sheet.upper()}', f'{len(rows)} record(s) shown · capacity {table.capacity}')
+    app.header(f'{table.sheet.upper()}', f'{table.title} · {len(rows)} record(s) shown · '
+                                         f'capacity {table.capacity}')
     app.out(app.rows_for(name, rows, columns))
+    if name == 'sleeves':
+        t = wb.pew().sleeve_totals()
+        app.out(f"\n  TOTAL  {t['positions']} positions  ·  certified {t['certified_target'] * 100:.2f}%"
+                f"  ·  scenario {t['scenario'] * 100:.2f}%  ·  conviction "
+                f"{t['conviction_completeness'] * 100:.0f}%  ·  {app.style.status(t['decision_state'])}")
+    if name == 'roles':
+        rs = wb.pew().role_summary()
+        app.out(f"\n  ROLE CONTROL SUMMARY  {rs['passed']} passed  ·  {rs['review_items']} review items"
+                f"  ·  {rs['replacement_candidates']} replacement candidates")
+    if S.TABLES[name].mode == 'slots' and not args.all:
+        app.out(app.style.paint(f"  Empty rows hidden; use --all to show all {table.capacity}. "
+                                f"Add with '{name} add field=value …'.", R.DIM))
     if name == 'portfolio':
         t = wb.portfolio_totals()
         app.out(f"\n  PORTFOLIO TOTAL  target {t['target_total'] * 100:.2f}% "
@@ -413,11 +466,11 @@ def _is_exception(name, r):
 
 def cmd_show(app: App, args):
     wb = app.wb()
-    row = _find_computed(wb, args.table, args.key)
+    table = S.TABLES[args.table]
+    row = _find_computed(wb, args.table, getattr(args, 'key', None))
     if row is None:
         raise ops.OpError(f"No {args.table} record '{args.key}'")
-    table = S.TABLES[args.table]
-    key = row.get(S.KEYS[args.table])
+    key = table.title if table.mode == 'single' else (row.get(table.key) or f"#{row.get('_slot')}")
     app.header(f'{table.sheet.upper()} — {key}')
     locked = ()
     if args.table == 'masr' and row.get('_linked') is not None:
@@ -431,20 +484,44 @@ def cmd_show(app: App, args):
 
 
 def cmd_set(app: App, args):
-    ops.set_fields(app.store, args.table, args.key, args.assignments, app.actor, app.today)
+    words = list(args.words)
+    if S.TABLES[args.table].mode == 'single':
+        key = None
+    else:
+        if len(words) < 2:
+            raise ops.OpError(f'Usage: {args.table} set KEY field=value …')
+        key = words.pop(0)
+    ops.set_fields(app.store, args.table, key, words, app.actor, app.today)
     app.save()
-    app.out(f'Updated {args.table} {args.key}:')
-    app.echo_status(args.table, args.key)
+    app.out(f"Updated {args.table}{' ' + key if key else ''}:")
+    app.echo_status(args.table, key)
+
+
+def cmd_clear(app: App, args):
+    old = ops.clear_record(app.store, args.table, args.key, app.actor)
+    app.save()
+    label = old.get(S.TABLES[args.table].key) or args.key
+    app.out(f'Cleared {args.table} row {label}.')
 
 
 def cmd_add(app: App, args):
     rec = ops.add_record(app.store, args.table, args.assignments, app.actor, app.today)
     app.save()
     key = rec.get(S.KEYS[args.table])
-    app.out(f'Added {args.table} record {key}:')
+    if S.TABLES[args.table].mode == 'slots':
+        pos = next(i for i, r in enumerate(app.store[args.table]) if r is rec)
+        key = str(pos + 1)
+        app.out(f"Added {args.table} row {pos + 1}{' (' + str(rec.get(S.KEYS[args.table])) + ')' if rec.get(S.KEYS[args.table]) else ''}.")
+    else:
+        app.out(f'Added {args.table} record {key}:')
     if args.table == 'pipeline':
         wb = app.wb()
-        if _find_computed(wb, 'masr', rec['ticker']) is None:
+        try:
+            _find_computed(wb, 'masr', rec['ticker'])
+            has_masr = True
+        except ops.OpError:
+            has_masr = False
+        if not has_masr:
             app.out(app.style.paint(
                 f"  note: no RCC-004 MASR registry record for {rec['ticker']}. Create or reconcile "
                 f"it ('masr add ticker={rec['ticker']} ...') before the MIAR Review stage.", R.AMBER))
@@ -519,9 +596,11 @@ def cmd_fields(app: App, args):
 def cmd_export(app: App, args):
     wb = app.wb()
     table = S.TABLES[args.table]
-    rows = wb.table(args.table)
+    rows = [wb.record(args.table)] if table.mode == 'single' else wb.table(args.table)
     if args.table == 'masr':
         rows = [r for r in rows if not blank(r.get('ticker'))]
+    if table.mode == 'slots':
+        rows = V._filled(rows)
     out = Path(args.path)
     fmt = args.format or ('json' if out.suffix.lower() == '.json' else 'csv')
     if fmt == 'json':
@@ -597,25 +676,17 @@ def cmd_guide(app: App, args):
 
 # =========================================================================== parser
 
-TABLE_ALIASES = {
-    'portfolio': 'Certified Allocation (MFPDF)',
-    'conviction': 'PEW-005 conviction & thesis control',
-    'pew004': 'PEW-004 candidate comparison',
-    'evidence': 'RCC-002 evidence ledger',
-    'miar': 'RCC-003 MIAR dossier registry',
-    'review': 'RCC-003 MIAR review log',
-    'masr': 'RCC-004 MASR registry',
-    'pipeline': 'RCC-004 candidate pipeline',
-}
 ADDABLE = {'evidence', 'review', 'masr', 'pipeline'}
+# Tables whose bare command opens a sheet view rather than a record list.
+TABLE_VIEWS = {'lab': V.cmd_lab, 'validation': V.cmd_validation, 'controls': V.cmd_controls}
 
 
 def build_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(
         prog='manifest-workbench',
-        description='Manifest Workbench console — CISC-001 / MOPS-003 RCC-004 MASR Registry & '
-                    'Candidate Pipeline (Founders Edition v1.0, workbook v0.4). Run without a '
-                    'command for the interactive console.')
+        description='Manifest Workbench console — CISC-001 / MOPS-002 / MOPS-003 (Founders Edition '
+                    "v1.0, workbook v0.4). Run without a command for the interactive console; "
+                    "'sheets' lists every worksheet and its command.")
     p.add_argument('--data', help=f'data file (default: $MANIFEST_DATA or ./{ST.DEFAULT_DATA_FILE})')
     p.add_argument('--as-of', type=_date, help="evaluate TODAY() as this date (YYYY-MM-DD)")
     p.add_argument('--by', help='operator name recorded in the audit trail')
@@ -629,40 +700,61 @@ def build_parser() -> argparse.ArgumentParser:
     c.set_defaults(func=cmd_init)
 
     for name, func, text in (
-            ('dashboard', cmd_dashboard, 'executive console: readiness, module state, decision queue'),
+            ('cisc', V.cmd_cisc, '00 CISC Dashboard: five-panel Chief Investment Steward Console'),
+            ('decision-center', V.cmd_decision_center, '02 Decision Center: decisions required this week'),
+            ('intel', V.cmd_intel, '03 Research Intelligence: all six sections'),
+            ('committee', V.cmd_committee, "04 Committee Operations and steward's notebook"),
+            ('dashboard-data', V.cmd_dashboard_data, '99 Dashboard Data: rankings, alerts and metrics'),
+            ('pew', V.cmd_pew, '06 PEW Control Center (MOPS-002)'),
+            ('dashboard', cmd_dashboard, 'MOPS-003 research console: readiness, modules, decision queue'),
             ('rcc001', cmd_rcc001, 'RCC-001 executive research control center'),
             ('rcc002', cmd_rcc002, 'RCC-002 evidence ledger control center'),
             ('rcc003', cmd_rcc003, 'RCC-003 MIAR dossier control center'),
             ('rcc004', cmd_rcc004, 'RCC-004 MASR registry & candidate pipeline control center'),
-            ('guide', cmd_guide, 'RCC-004 operating standard, hard controls and weekly workflow')):
+            ('guide', cmd_guide, 'RCC-004 operating standard, hard controls and weekly workflow'),
+            ('sheets', V.cmd_sheets, 'every worksheet of the workbook and the command that covers it')):
         sub.add_parser(name, help=text).set_defaults(func=func)
+    dp = sub.add_parser('doc', help='reference sheets: workbench-guide, pew-guide, freeze-record, '
+                                    'executive-summary, rebalancing, sources')
+    dp.add_argument('name', nargs='?')
+    dp.set_defaults(func=V.cmd_doc)
+    cp = sub.add_parser('cell', help="read any formula cell, e.g. cell '13 Validation' J12")
+    cp.add_argument('sheet')
+    cp.add_argument('ref')
+    cp.set_defaults(func=V.cmd_cell)
 
-    for name, text in TABLE_ALIASES.items():
-        t = sub.add_parser(name, help=text)
+    for name, table in S.TABLES.items():
+        t = sub.add_parser(name, help=f'{table.title} ({table.sheet})')
         ts = t.add_subparsers(dest='action', metavar='ACTION')
-        lp = ts.add_parser('list', help='list records')
+        single = table.mode == 'single'
+        lp = ts.add_parser('list', help='list records' if not single else 'show the record')
         lp.add_argument('--columns', help='comma-separated field keys or column letters')
         lp.add_argument('--exceptions', action='store_true', help='only records with open exceptions')
         lp.add_argument('--sleeve')
         lp.add_argument('--ticker')
-        lp.add_argument('--all', action='store_true', help='include open slots (pew004)')
+        lp.add_argument('--all', action='store_true', help='include empty rows / unchanged positions')
         if name == 'pipeline':
             lp.add_argument('--stage')
         if name == 'masr':
             lp.add_argument('--class', dest='klass', help='record class filter')
             lp.add_argument('--status', help='registry status filter')
-        lp.set_defaults(func=cmd_list, table=name)
+        lp.set_defaults(func=TABLE_VIEWS.get(name, cmd_list), table=name)
         sp = ts.add_parser('show', help='show one record with every field')
-        sp.add_argument('key')
+        if not single:
+            sp.add_argument('key')
         sp.set_defaults(func=cmd_show, table=name)
-        ep = ts.add_parser('set', help='edit input fields: set KEY field=value ...')
-        ep.add_argument('key')
-        ep.add_argument('assignments', nargs='+', metavar='field=value')
+        usage = 'field=value …' if single else 'KEY field=value …'
+        ep = ts.add_parser('set', help=f'edit input fields: set {usage}')
+        ep.add_argument('words', nargs='+', metavar=usage)
         ep.set_defaults(func=cmd_set, table=name)
-        if name in ADDABLE:
-            ap = ts.add_parser('add', help='add a record: add field=value ...')
+        if name in ADDABLE or table.mode == 'slots':
+            ap = ts.add_parser('add', help='add a record: add field=value …')
             ap.add_argument('assignments', nargs='*', metavar='field=value')
             ap.set_defaults(func=cmd_add, table=name)
+        if table.mode == 'slots':
+            cl = ts.add_parser('clear', help='empty one row (by key or row number)')
+            cl.add_argument('key')
+            cl.set_defaults(func=cmd_clear, table=name)
         fp = ts.add_parser('fields', help='list fields, columns and controlled values')
         fp.set_defaults(func=cmd_fields, table=name)
         xp = ts.add_parser('export', help='export computed records to CSV or JSON')
@@ -679,8 +771,9 @@ def build_parser() -> argparse.ArgumentParser:
             hp.set_defaults(func=cmd_history)
         if name == 'portfolio':
             ts.add_parser('sleeves', help='sleeve allocation summary').set_defaults(func=cmd_sleeves)
-        t.set_defaults(func=cmd_list, table=name, action='list', columns=None, exceptions=False,
-                       sleeve=None, ticker=None, all=False, stage=None, klass=None, status=None)
+        t.set_defaults(func=TABLE_VIEWS.get(name, cmd_list), table=name, action='list', columns=None,
+                       exceptions=False, sleeve=None, ticker=None, all=False, stage=None, klass=None,
+                       status=None, key=None)
 
     lp = sub.add_parser('lists', help='controlled validation lists')
     lp.add_argument('name', nargs='?')
@@ -695,19 +788,18 @@ def build_parser() -> argparse.ArgumentParser:
 
 
 SHELL_HELP = """\
-Commands (same as the command line; type 'help COMMAND' or 'COMMAND -h' for options):
-  dashboard                      executive console and decision queue
-  rcc001 | rcc002 | rcc003 | rcc004   research control centers
-  portfolio [list|show|set|sleeves]  certified MFPDF allocation and bands
-  conviction [list|show|set]     PEW-005 conviction & thesis
-  pew004 [list|show|set]         PEW-004 candidate comparison
-  evidence [list|show|add|set]   RCC-002 evidence ledger
-  miar [list|show|set]           RCC-003 MIAR registry
-  review [list|show|add|set]     RCC-003 MIAR review log
-  masr [list|show|add|set]       RCC-004 MASR registry
-  pipeline [list|show|add|set|advance|history]  RCC-004 candidate pipeline
-  <table> fields | <table> export PATH
-  lists [NAME] · audit · guide · as-of YYYY-MM-DD · quit
+Commands (same as the command line; 'help COMMAND' or 'COMMAND -h' for options):
+  sheets                         every worksheet and the command that opens it
+  CISC-001   cisc · controls · composite · decision-center · decisions · intel · intel-* ·
+             committee · actions · priorities · questions · projects · publications ·
+             calendar · certifications · dashboard-data
+  MFPDF      portfolio [sleeves] · doc executive-summary · doc rebalancing · doc sources
+  MOPS-002   pew · mandate · sleeves · roles · pew004 · conviction · lab · scenario ·
+             validation · workflow · changes · doc pew-guide · doc freeze-record
+  MOPS-003   dashboard · rcc001 · rcc002 · rcc003 · rcc004 · evidence · miar · review ·
+             masr · pipeline [advance|history] · guide
+  Tables     TABLE [list|show|set|add|clear|fields|export]
+  Other      lists [NAME] · audit · cell SHEET REF · doc workbench-guide · as-of YYYY-MM-DD · quit
 """
 
 
@@ -717,7 +809,7 @@ def shell(app: App, parser: argparse.ArgumentParser):
     except ImportError:  # pragma: no cover
         pass
     try:
-        cmd_dashboard(app, None)
+        V.cmd_cisc(app, None)
     except ST.StoreError as exc:
         print(exc)
         return 1
