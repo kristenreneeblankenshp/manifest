@@ -1,0 +1,8 @@
+{% extends 'base.html' %}
+{% block title %}Workbook sheets{% endblock %}
+{% block heading %}All workbook sheets{% endblock %}
+{% block sub %}Every worksheet of the Manifest Workbench v0.4 and where it lives in the app{% endblock %}
+{% block content %}
+<div class="card"><table class="t"><tr><th>Worksheet</th><th>Contents</th><th>Open</th></tr>
+{% for s, cmd, desc, url in sheets %}<tr><td>{{ s }}</td><td>{{ desc }}</td><td><a href="{{ url }}">{{ url }}</a></td></tr>{% endfor %}</table></div>
+{% endblock %}

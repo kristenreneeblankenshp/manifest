@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% from '_macros.html' import badge, csrf %}
+{% block title %}Weights preview{% endblock %}
+{% block heading %}Review actual weights before loading{% endblock %}
+{% block sub %}{{ filename }} · {{ p.basis }} basis · nothing has changed yet{% endblock %}
+{% block content %}
+<div class="grid g4">
+  <div class="tile {{ 'ok' if p.matched == p.rows|length else 'warn' }}"><div class="k">Holdings matched</div><div class="v">{{ p.matched }} / {{ p.rows|length }}</div></div>
+  <div class="tile"><div class="k">Certified holdings total</div><div class="v">{{ p.new_total|pct }}</div></div>
+  <div class="tile {{ 'warn' if p.not_in_portfolio else 'ok' }}"><div class="k">Positions not in portfolio</div><div class="v">{{ p.not_in_portfolio|length }}</div></div>
+  <div class="tile"><div class="k">Their weight</div><div class="v">{{ p.extra_weight|pct }}</div></div>
+</div>
+{% if p.missing %}<div class="flash warn" style="margin-top:12px">Not found in the file: {{ p.missing|join(', ') }} (loaded as {{ '0%' if p.rows[0].new is not none else 'unchanged' }}).</div>{% endif %}
+{% if p.not_in_portfolio %}<div class="flash warn">In the file but not certified holdings (ignored): {{ p.not_in_portfolio|join(', ') }}</div>{% endif %}
+<div class="card" style="margin-top:12px">
+  <div class="spread"><h2>Proposed changes</h2>
+    <div class="row"><a class="btn ghost" href="/data">Cancel</a>
+      <form method="post" action="/data/weights/{{ token }}">{{ csrf() }}<button class="gold">Load these weights</button></form></div></div>
+  <table class="t"><tr><th>Symbol</th><th class="num">Target</th><th class="num">Current actual</th><th class="num">New actual</th><th>In file</th></tr>
+  {% for r in p.rows %}<tr><td>{{ r.symbol }}</td><td class="num">{{ r.target|pct }}</td><td class="num">{{ r.current|pct }}</td><td class="num"><b>{{ r.new|pct }}</b></td><td>{% if r.in_file %}<span class="badge ok">Yes</span>{% else %}<span class="badge bad">Missing</span>{% endif %}</td></tr>{% endfor %}</table>
+</div>
+{% endblock %}

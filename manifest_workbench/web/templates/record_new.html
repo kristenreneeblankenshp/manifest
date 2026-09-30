@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% from '_macros.html' import csrf, field_input %}
+{% block title %}New · {{ spec.title }}{% endblock %}
+{% block heading %}New record · {{ spec.title }}{% endblock %}
+{% block sub %}{{ spec.sheet }} · IDs are generated when left blank{% endblock %}
+{% block content %}
+<div class="card">
+  <form method="post" class="form-grid">{{ csrf() }}
+  {% for f in spec.fields if f.kind == 'input' %}
+    <div class="{{ 'wide' if f.key in ('summary', 'thesis_summary', 'notes', 'source_memo', 'findings', 'decision') }}"><label>{{ f.header }} ({{ f.col }})</label>{{ field_input(f, none) }}</div>
+  {% endfor %}
+  <div class="wide row"><button class="gold">Create</button><a class="btn ghost" href="/t/{{ spec.name }}">Cancel</a></div>
+  </form>
+</div>
+{% endblock %}

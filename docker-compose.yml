@@ -1,0 +1,19 @@
+# Local or single-server hosting: docker compose up -d, then open http://localhost:8000
+services:
+  manifest:
+    build: .
+    ports:
+      - "8000:8000"
+    volumes:
+      - manifest-data:/data
+    environment:
+      # First administrator (only used while no users exist). Remove after first sign-in.
+      MANIFEST_ADMIN_USER: ${MANIFEST_ADMIN_USER:-}
+      MANIFEST_ADMIN_PASSWORD: ${MANIFEST_ADMIN_PASSWORD:-}
+      # Set to 1 once the site is served over HTTPS.
+      MANIFEST_SECURE_COOKIES: ${MANIFEST_SECURE_COOKIES:-0}
+      ZACKS_API_KEY: ${ZACKS_API_KEY:-}
+      SEC_CONTACT_EMAIL: ${SEC_CONTACT_EMAIL:-}
+    restart: unless-stopped
+volumes:
+  manifest-data:

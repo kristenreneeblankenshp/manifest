@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% from '_macros.html' import badge, csrf %}
+{% block title %}Settings{% endblock %}
+{% block heading %}Settings &amp; users{% endblock %}
+{% block sub %}Connector configuration and access control · administrators only{% endblock %}
+{% block content %}
+<div class="card">
+  <h2>Data connections</h2>
+  <form method="post" class="form-grid">{{ csrf() }}
+    {% for key, label, hint in fields %}
+      <div><label>{{ label }}</label><input name="{{ key }}" value="{{ values.get(key, '') }}" placeholder="{{ hint }}" style="width:100%"></div>
+    {% endfor %}
+    <div><label>Zacks API key {{ badge('set on server (ZACKS_API_KEY)' if key_env else ('stored' if key_set else 'not set')) }}</label>
+      <input name="zacks_api_key" type="password" placeholder="{{ 'leave blank to keep' if key_set else 'paste your key' }}" style="width:100%" autocomplete="off">
+      {% if key_set %}<label><input type="checkbox" name="clear_zacks_key"> Remove stored key</label>{% endif %}</div>
+    <div class="wide"><button class="gold">Save settings</button>
+      <span class="small muted">A server environment variable (ZACKS_API_KEY, SEC_CONTACT_EMAIL) overrides the stored value and keeps the key out of the data file.</span></div>
+  </form>
+</div>
+
+<div class="card" style="margin-top:14px" id="users">
+  <h2>Users</h2>
+  <table class="t"><tr><th>Username</th><th>Name</th><th>Role</th><th>Created</th><th></th></tr>
+  {% for u, v in users.items() %}<tr><td>{{ u }}</td><td>{{ v.name }}</td><td>{{ badge(v.role) }}</td><td class="small">{{ (v.created or '')[:10] }}</td>
+    <td><form method="post" action="/settings/users" onsubmit="return confirm('Remove {{ u }}?')">{{ csrf() }}<input type="hidden" name="username" value="{{ u }}"><input type="hidden" name="remove" value="1"><button class="small danger">Remove</button></form></td></tr>{% endfor %}</table>
+  <h3>Add or update a user</h3>
+  <form method="post" action="/settings/users" class="form-grid">{{ csrf() }}
+    <div><label>Username</label><input name="username" required></div>
+    <div><label>Name</label><input name="name" required></div>
+    <div><label>Role</label><select name="role">{% for r in roles %}<option>{{ r }}</option>{% endfor %}</select></div>
+    <div><label>Password (10+ characters; blank keeps the current one)</label><input name="password" type="password" autocomplete="new-password"></div>
+    <div><button class="gold">Save user</button></div>
+  </form>
+  <p class="small muted">Roles: <b>admin</b> — everything, including settings and users · <b>editor</b> — operate the workbench · <b>viewer</b> — read-only.</p>
+</div>
+{% endblock %}

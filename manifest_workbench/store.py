@@ -99,4 +99,18 @@ def _validate(store: dict, migrate: bool = True) -> dict:
             store[key] = seed.get(key, empty[key])
     store.setdefault('audit', [])
     store.setdefault('meta', {})
+    for key, default in APP_SECTIONS.items():
+        store.setdefault(key, default())
     return store
+
+
+# Application sections kept alongside the workbook tables (not part of the workbook itself).
+APP_SECTIONS = {
+    'settings': dict,   # connector configuration and defaults
+    'users': dict,      # web users: username -> {name, role, password_hash}
+    'reviews': dict,    # review cycles: review id -> state
+    'reports': dict,    # report drafts and issued versions: report id -> draft
+    'inbox': list,      # pulled research items awaiting triage
+    'data_log': list,   # connector runs
+    'staging': dict,    # previews awaiting confirmation (e.g. a weights upload)
+}

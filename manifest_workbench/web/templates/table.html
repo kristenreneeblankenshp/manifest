@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% from '_macros.html' import badge, show %}
+{% block title %}{{ spec.title }}{% endblock %}
+{% block heading %}{{ spec.title }}{% endblock %}
+{% block sub %}{{ spec.sheet }} · {{ rows|length }} record(s) · capacity {{ spec.capacity }}{% endblock %}
+{% block content %}
+<div class="card">
+  <div class="spread">
+    <form method="get" class="inline"><input name="q" value="{{ q }}" placeholder="Filter…"><button class="small ghost">Filter</button>{% if q %}<a href="?" class="small">clear</a>{% endif %}</form>
+    <div class="row">{% if can_add and can_edit() %}<a class="btn gold" href="/t/{{ spec.name }}/new">+ Add</a>{% endif %}</div>
+  </div>
+  {% if extra.totals %}{% set t = extra.totals %}
+  <p class="small">{% if spec.name == 'portfolio' %}Target total {{ t.target_total|pct }} {{ badge(t.certification) }} · actual {{ t.actual_total|pct }} · actual weights {{ t.actual_loaded }} / {{ t.positions }} loaded {{ badge(t.actual_state) }}
+  {% else %}Total: certified {{ t.certified_target|pct }} · scenario {{ t.scenario|pct }} · conviction {{ t.conviction_completeness|pct(0) }} {{ badge(t.decision_state) }}{% endif %}</p>{% endif %}
+  <div class="scroll"><table class="t" style="margin-top:8px">
+    <tr>{% for f in fields %}<th class="{{ 'num' if f.vtype in ('percent', 'number', 'int') }}">{{ f.header }}</th>{% endfor %}</tr>
+    {% for key, r in rows %}<tr>
+      {% for f in fields %}<td class="{{ 'num' if f.vtype in ('percent', 'number', 'int') }}">
+        {% if loop.first %}<a href="/t/{{ spec.name }}/{{ key }}">{{ show(f, r.get(f.key), status_cols) or '#' ~ key }}</a>{% else %}{{ show(f, r.get(f.key), status_cols) }}{% endif %}</td>{% endfor %}
+    </tr>{% else %}<tr><td colspan="{{ fields|length }}" class="muted">No records.</td></tr>{% endfor %}
+  </table></div>
+</div>
+{% endblock %}

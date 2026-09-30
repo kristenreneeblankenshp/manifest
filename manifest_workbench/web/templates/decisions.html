@@ -1,0 +1,104 @@
+{% extends 'base.html' %}
+{% from '_macros.html' import badge, csrf, nxt %}
+{% block title %}Decisions{% endblock %}
+{% block heading %}Decision Center{% endblock %}
+{% block sub %}Every decision the system is waiting on, in one place · record it here and the workbook state updates immediately{% endblock %}
+{% block content %}
+{% set L = lists %}
+<div class="grid g4">
+  <div class="tile {{ dc.state|status }}"><div class="k">Decision state</div><div class="v small">{{ dc.state }}</div></div>
+  <div class="tile"><div class="k">Committee meeting</div><div class="v small">{{ dc.meeting }}</div></div>
+  <div class="tile"><div class="k">Committee decisions</div><div class="v">{{ dc.total_decisions }}</div></div>
+  <div class="tile"><div class="k">Highest priority</div><div class="v small">{{ dc.priority }}</div></div>
+</div>
+
+<div class="card" style="margin-top:14px">
+  <h2>System decision queue</h2>
+  <table class="t"><tr><th>ID</th><th>Category</th><th>Trigger</th><th>Decision required</th><th>Authority</th><th>Status</th></tr>
+  {% for q in dc.queue %}<tr><td>{{ q.id }}</td><td>{{ q.category }}</td><td>{{ q.trigger }}</td><td>{{ q.decision }}</td><td>{{ q.authority }}</td><td>{{ badge(q.status) }}</td></tr>{% endfor %}</table>
+</div>
+
+<div class="panel-title"><span class="num">1</span><h2>Candidates awaiting committee disposition</h2></div>
+<div class="card">
+  {% if items.pipeline %}
+  <table class="t"><tr><th>Candidate</th><th>Stage</th><th>Gate</th><th>Record disposition</th></tr>
+  {% for r in items.pipeline %}<tr>
+    <td><a href="/t/pipeline/{{ r.candidate_id }}"><b>{{ r.ticker }}</b></a> <span class="muted small">{{ r.candidate_id }} · {{ r.candidate_type }}</span></td>
+    <td>{{ r.stage }}</td><td>{{ badge(r.gate_result) }}</td>
+    <td>{% if can_edit() %}<form method="post" action="/pipeline/{{ r.candidate_id }}/update" class="inline">{{ csrf() }}{{ nxt() }}
+      <select name="committee_disposition" required><option value="">Choose…</option>{% for c in L.COMMITTEE_DISPOSITION %}<option {{ 'selected' if c == r.committee_disposition }}>{{ c }}</option>{% endfor %}</select>
+      <button class="small">Record</button></form>{% endif %}</td></tr>{% endfor %}</table>
+  {% else %}<p class="muted">No candidate is waiting on a committee disposition.</p>{% endif %}
+</div>
+
+<div class="panel-title"><span class="num">2</span><h2>MASR registry dispositions</h2></div>
+<div class="card">
+  {% if items.masr %}<table class="t"><tr><th>Ticker</th><th>Class</th><th>Status</th><th>Record disposition</th></tr>
+  {% for r in items.masr %}<tr><td><a href="/t/masr/{{ r.ticker }}">{{ r.ticker }}</a></td><td>{{ r.record_class }}</td><td>{{ r.registry_status }}</td>
+    <td>{% if can_edit() %}<form method="post" action="/t/masr/{{ r.ticker }}" class="inline">{{ csrf() }}{{ nxt() }}
+      <select name="committee_disposition" required><option value="">Choose…</option>{% for c in L.COMMITTEE_DISPOSITION %}<option>{{ c }}</option>{% endfor %}</select>
+      <input type="hidden" name="last_committee_review" value="{{ today().isoformat() }}"><button class="small">Record</button></form>{% endif %}</td></tr>{% endfor %}</table>
+  {% else %}<p class="muted">No registry record needs a committee disposition.</p>{% endif %}
+</div>
+
+<div class="panel-title"><span class="num">3</span><h2>PEW-004 candidate comparison decisions</h2></div>
+<div class="card">
+  {% if items.pew004 %}<table class="t"><tr><th>Candidate</th><th>Final score</th><th>Eligibility</th><th>Recommended</th><th>Committee decision</th></tr>
+  {% for r in items.pew004 %}<tr><td>{{ r.candidate_id }} · <b>{{ r.symbol }}</b></td><td>{{ r.final_score|cell('number') }}</td><td>{{ badge(r.eligibility_gate) }}</td><td>{{ badge(r.recommended_action) }}</td>
+    <td>{% if can_edit() %}<form method="post" action="/t/pew004/{{ r.candidate_id }}" class="inline">{{ csrf() }}{{ nxt() }}
+      <select name="committee_decision" required><option value="">Choose…</option>{% for c in L.PEW_COMMITTEE_DECISION %}<option>{{ c }}</option>{% endfor %}</select>
+      <button class="small">Record</button></form>{% endif %}</td></tr>{% endfor %}</table>
+  {% else %}<p class="muted">No PEW-004 comparison is waiting on the committee.</p>{% endif %}
+</div>
+
+<div class="panel-title"><span class="num">4</span><h2>Allocation-band exceptions</h2></div>
+<div class="card">
+  {% if items.bands %}<table class="t"><tr><th>Holding</th><th class="num">Target</th><th class="num">Band</th><th class="num">Actual</th><th>Status</th><th>Action</th></tr>
+  {% for r in items.bands %}<tr><td><a href="/t/portfolio/{{ r.symbol }}">{{ r.symbol }}</a></td><td class="num">{{ r.target_weight|pct }}</td><td class="num">{{ r.lower_band|pct }} – {{ r.upper_band|pct }}</td><td class="num">{{ r.actual_weight|pct }}</td><td>{{ badge(r.band_status) }}</td><td>{{ r.rebalancing_action }}</td></tr>{% endfor %}</table>
+  <p class="small muted">Band breaches trigger committee review, not an automatic trade. Record the committee's add / trim decision in the manual register below.</p>
+  {% else %}<p class="muted">No allocation-band exceptions (or actual weights not yet loaded).</p>{% endif %}
+</div>
+
+<div class="panel-title"><span class="num">5</span><h2>Conviction &amp; thesis decisions</h2></div>
+<div class="card">
+  {% if items.conviction %}
+  <details class="more" {{ 'open' if items.conviction|length < 12 }}><summary>{{ items.conviction|length }} holding(s) need a conviction or thesis decision</summary>
+  <table class="t"><tr><th>Holding</th><th>Effective</th><th>Thesis</th><th>State</th><th>Decide</th></tr>
+  {% for r in items.conviction %}<tr><td><a href="/t/conviction/{{ r.symbol }}">{{ r.symbol }}</a></td><td>{{ r.effective_conviction }}</td><td>{{ r.thesis_status or '—' }}</td><td>{{ badge(r.decision_state) }}</td>
+    <td>{% if can_edit() %}<form method="post" action="/t/conviction/{{ r.symbol }}" class="inline">{{ csrf() }}{{ nxt() }}
+      <select name="proposed_conviction"><option value="">Proposed…</option>{% for c in L.CONVICTION_TIER %}<option {{ 'selected' if c == r.proposed_conviction }}>{{ c }}</option>{% endfor %}</select>
+      <select name="thesis_status"><option value="">Thesis…</option>{% for c in L.THESIS_STATUS %}<option {{ 'selected' if c == r.thesis_status }}>{{ c }}</option>{% endfor %}</select>
+      <button class="small">Save</button></form>{% endif %}</td></tr>{% endfor %}</table></details>
+  {% else %}<p class="muted">Every holding has an effective conviction and no open thesis decision.</p>{% endif %}
+</div>
+
+<div class="panel-title"><span class="num">6</span><h2>PEW-007 certification approvals</h2></div>
+<div class="card">
+  {% if items.workflow %}<table class="t"><tr><th>Review stage</th><th>Blocking?</th><th>Decision</th></tr>
+  {% for r in items.workflow %}<tr><td>{{ r.stage }}</td><td>{{ r.blocking }}</td><td><a href="/validation">Decide on the validation page →</a></td></tr>{% endfor %}</table>
+  {% else %}<p class="muted">No certification review is pending.</p>{% endif %}
+</div>
+
+<div class="panel-title"><span class="num">7</span><h2>Manual decision register</h2></div>
+<div class="card">
+  <table class="t"><tr><th>ID</th><th>Decision</th><th>Owner / due</th><th>Committee?</th><th>Status</th><th>Record outcome</th></tr>
+  {% for r in items.manual %}<tr><td>{{ r.id }}</td><td><b>{{ r.decision }}</b><div class="small muted">{{ r.recommendation }}</div>{% if r.resolution %}<div class="small">Outcome: {{ r.resolution }}</div>{% endif %}</td>
+    <td class="small">{{ r.owner }}<br>{{ r.due_date or '' }}</td><td>{{ r.committee_decision }}</td><td>{{ badge(r.status) }}</td>
+    <td>{% if can_edit() %}<form method="post" action="/decisions/{{ r._slot }}/resolve" class="inline">{{ csrf() }}
+      <select name="status">{% for c in L.DECISION_STATUS %}<option {{ 'selected' if c == r.status }}>{{ c }}</option>{% endfor %}</select>
+      <input name="resolution" placeholder="Outcome / rationale" value="{{ r.resolution or '' }}" size="22"><button class="small">Save</button></form>{% endif %}</td></tr>{% endfor %}</table>
+  {% if can_edit() %}
+  <details class="more"><summary>+ New decision</summary>
+  <form method="post" action="/decisions/new" class="form-grid" style="margin-top:10px">{{ csrf() }}
+    <div class="wide"><label>Decision required</label><input name="decision" required style="width:100%"></div>
+    <div><label>Category</label><input name="category" placeholder="Allocation, Research, Governance…"></div>
+    <div><label>Owner</label><input name="owner"></div>
+    <div><label>Authority</label><input name="authority" value="Stewardship Committee"></div>
+    <div><label>Due date</label><input type="date" name="due_date"></div>
+    <div><label>Requires committee decision?</label><select name="committee_decision"><option>Yes</option><option>No</option></select></div>
+    <div class="wide"><label>Evidence</label><input name="evidence" style="width:100%"></div>
+    <div class="wide"><label>Recommendation</label><input name="recommendation" style="width:100%"></div>
+    <div><button class="gold">Add decision</button></div>
+  </form></details>{% endif %}
+</div>
+{% endblock %}

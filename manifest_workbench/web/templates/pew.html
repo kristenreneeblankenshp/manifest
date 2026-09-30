@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% from '_macros.html' import badge %}
+{% block title %}PEW control center{% endblock %}
+{% block heading %}Portfolio Engineering Workspace · MOPS-002{% endblock %}
+{% block sub %}PEW-001 – PEW-007 · certified &amp; frozen · scenario analysis never modifies the certified portfolio{% endblock %}
+{% block content %}
+<div class="grid g6">
+  <div class="tile {{ c.implementation_state|status }}"><div class="k">Implementation state</div><div class="v small">{{ c.implementation_state }}</div></div>
+  <div class="tile"><div class="k">Certified positions</div><div class="v">{{ c.certified_positions }}</div></div>
+  <div class="tile"><div class="k">Actual weights loaded</div><div class="v">{{ c.actual_loaded }}</div></div>
+  <div class="tile"><div class="k">Conviction assigned</div><div class="v">{{ c.conviction_assigned }}</div></div>
+  <div class="tile"><div class="k">Scenario changes</div><div class="v">{{ c.scenario_changes }}</div></div>
+  <div class="tile {{ c.certification_state|status }}"><div class="k">Certification state</div><div class="v small">{{ c.certification_state }}</div></div>
+</div>
+<p><b>Primary required action:</b> {{ c.primary_action }}</p>
+<div class="card"><h2>Modules</h2>
+<table class="t"><tr><th>Module</th><th>Workspace</th><th>Function</th><th>Status</th><th class="num">Open items</th><th>Next action</th></tr>
+{% set links = {'PEW-001': '/t/mandate', 'PEW-002': '/t/sleeves', 'PEW-003': '/t/roles', 'PEW-004': '/t/pew004', 'PEW-005': '/t/conviction', 'PEW-006': '/lab', 'PEW-007': '/validation'} %}
+{% for m in c.modules %}<tr><td><a href="{{ links[m[0]] }}">{{ m[0] }}</a></td><td>{{ m[1] }}</td><td class="small">{{ m[2] }}</td><td>{{ badge(m[3]) }}</td><td class="num">{{ m[4] }}</td><td class="small">{{ m[5] }}</td></tr>{% endfor %}</table></div>
+<div class="grid g2" style="margin-top:14px">
+  <div class="card"><h2>Engineering decision queue</h2><table class="t">{% for q in c.queue %}<tr><td>{{ q[1] }}</td><td>{{ q[2] }}</td><td>{{ badge(q[6]) }}</td></tr>{% endfor %}</table></div>
+  <div class="card"><h2>Certified vs. scenario sleeves</h2><table class="t"><tr><th>Sleeve</th><th class="num">Certified</th><th class="num">Scenario</th><th>State</th></tr>
+  {% for s in sleeves %}<tr><td>{{ s.sleeve }}</td><td class="num">{{ s.certified_target|pct }}</td><td class="num">{{ s.scenario|pct }}</td><td>{{ badge(s.decision_state) }}</td></tr>{% endfor %}</table></div>
+</div>
+{% endblock %}

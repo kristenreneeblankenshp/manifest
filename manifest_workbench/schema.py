@@ -525,6 +525,8 @@ DECISIONS = _t(
     F('due_date', 'I', 'Due Date', INPUT, DATE),
     F('committee_decision', 'J', 'Requires Committee Decision?', INPUT, TEXT, L.YES_NO),
     F('status', 'K', 'Status', INPUT, TEXT, L.DECISION_STATUS),
+    # Application extension (not in the v0.4 sheet): the recorded outcome of the decision.
+    F('resolution', 'L', 'Resolution / Outcome'),
     mode='slots', key='id', title='Decision Center: manual decision register',
 )
 

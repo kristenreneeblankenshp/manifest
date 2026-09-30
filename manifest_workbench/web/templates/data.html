@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% from '_macros.html' import badge, csrf, nxt %}
+{% block title %}Data connections{% endblock %}
+{% block heading %}Data connections{% endblock %}
+{% block sub %}Pull data with a click · every change is applied to the controlled fields and recorded in the audit trail{% endblock %}
+{% block content %}
+<div class="grid g3">
+  <div class="card">
+    <h2>Zacks Rank &amp; market cap {{ badge('Ready' if zacks_ready else 'Setup required') }}</h2>
+    <p class="small muted">Updates the MASR registry (Zacks Rank, market cap) and PEW-004 candidates. Every rank change is logged to Research Intelligence and as an RCC-002 evidence record.</p>
+    <p class="small">{{ runs.zacks.summary if runs.zacks else 'Never pulled' }}{% if runs.zacks %}<br><span class="muted">{{ runs.zacks.ts|replace('T', ' ') }} · {{ runs.zacks.actor }}</span>{% endif %}</p>
+    {% if can_edit() %}
+    <form method="post" action="/data/zacks">{{ csrf() }}<button class="gold" {{ 'disabled' if not zacks_ready }}>Pull from Zacks</button></form>
+    {% if not zacks_ready %}<p class="small muted">Enter your Zacks endpoint and key in <a href="/settings">Settings</a>.</p>{% endif %}
+    <form method="post" action="/data/zacks" enctype="multipart/form-data" style="margin-top:10px">{{ csrf() }}
+      <label>…or upload a Zacks screen / portfolio CSV</label><input type="file" name="file" accept=".csv" required><button class="small ghost">Upload</button></form>
+    {% endif %}
+  </div>
+  <div class="card">
+    <h2>Actual portfolio weights</h2>
+    <p class="small muted">Upload your broker's positions CSV. The header row, symbols (e.g. BRK/B) and weight, market-value or quantity × price columns are detected automatically. You'll see a preview before anything changes.</p>
+    <p class="small">{{ runs.weights.summary if runs.weights else 'No positions file loaded yet' }}{% if runs.weights %}<br><span class="muted">{{ runs.weights.ts|replace('T', ' ') }} · {{ runs.weights.actor }}</span>{% endif %}</p>
+    {% if can_edit() %}
+    <form method="post" action="/data/weights" enctype="multipart/form-data">{{ csrf() }}
+      <input type="file" name="file" accept=".csv,text/csv" required>
+      <label style="margin-top:6px"><input type="checkbox" name="missing_as_zero" checked> Treat certified holdings missing from the file as 0%</label>
+      <button class="gold" style="margin-top:6px">Upload &amp; preview</button></form>{% endif %}
+  </div>
+  <div class="card">
+    <h2>Research {{ badge('Ready' if sec_ready else 'Setup required') }}</h2>
+    <p class="small muted">New SEC EDGAR filings (8-K, 10-Q, 10-K) for tracked securities, plus your Zacks research feed if configured. Items land in the inbox below for triage — nothing becomes evidence unreviewed.</p>
+    <p class="small">{{ runs.research.summary if runs.research else 'Never pulled' }}{% if runs.research %}<br><span class="muted">{{ runs.research.ts|replace('T', ' ') }}</span>{% endif %}</p>
+    {% if can_edit() %}<form method="post" action="/data/research" class="inline">{{ csrf() }}
+      <select name="days"><option value="7">Last 7 days</option><option value="14">Last 14 days</option><option value="30">Last 30 days</option></select>
+      <button class="gold">Pull research</button></form>
+    {% if not sec_ready %}<p class="small muted">Add a contact e-mail for SEC EDGAR in <a href="/settings">Settings</a>.</p>{% endif %}{% endif %}
+  </div>
+</div>
+
+<div class="card" style="margin-top:14px" id="inbox">
+  <h2>Research inbox <span class="pill">{{ inbox|length }}</span></h2>
+  {% if inbox %}
+  <table class="t"><tr><th>Date</th><th>Ticker</th><th>Source</th><th>Item</th><th>Triage</th></tr>
+  {% for i in inbox %}<tr><td>{{ i.date }}</td><td><b>{{ i.ticker }}</b></td><td>{{ i.source }}<div class="small muted">{{ i.form }}</div></td>
+    <td>{% if i.url %}<a href="{{ i.url }}" target="_blank" rel="noopener">{{ i.title }}</a>{% else %}{{ i.title }}{% endif %}<div class="small muted">{{ i.summary|truncate(180) }}</div></td>
+    <td>{% if can_edit() %}<div class="row">
+      <a class="btn small gold" href="/data/inbox/{{ i.id }}/evidence">Log as evidence</a>
+      <form method="post" action="/data/inbox/{{ i.id }}/review">{{ csrf() }}<button class="small ghost">Add to review queue</button></form>
+      <form method="post" action="/data/inbox/{{ i.id }}/dismiss">{{ csrf() }}<button class="small danger">Dismiss</button></form></div>{% endif %}</td></tr>{% endfor %}</table>
+  {% else %}<p class="muted">Inbox is clear.</p>{% endif %}
+</div>
+
+<div class="card" style="margin-top:14px"><h2>Connector log</h2>
+  <table class="t"><tr><th>When</th><th>Connector</th><th>By</th><th>Result</th></tr>
+  {% for e in log %}<tr><td class="small">{{ e.ts|replace('T', ' ') }}</td><td>{{ e.connector }}</td><td>{{ e.actor }}</td><td>{{ e.summary }}{% for err in e.errors[:3] %}<div class="small" style="color:var(--warn)">{{ err }}</div>{% endfor %}{% if e.errors|length > 3 %}<div class="small muted">+{{ e.errors|length - 3 }} more</div>{% endif %}</td></tr>{% else %}<tr><td colspan="4" class="muted">No runs yet.</td></tr>{% endfor %}</table></div>
+{% endblock %}

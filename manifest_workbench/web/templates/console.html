@@ -1,0 +1,112 @@
+{% extends 'base.html' %}
+{% from '_macros.html' import badge, csrf, nxt %}
+{% block title %}Console{% endblock %}
+{% block heading %}Chief Investment Steward Console{% endblock %}
+{% block sub %}CISC-001 · report date {{ c.report_date or '—' }} · MFPDF v1.0 is the sole portfolio-allocation authority · automatic trading is not authorized{% endblock %}
+{% block content %}
+
+<div class="hero">
+  <div>
+    <div class="muted small">WHAT DECISIONS ARE ACTUALLY REQUIRED THIS WEEK?</div>
+    <div class="state">{{ dc.state }}</div>
+    <div style="margin:6px 0 12px">{{ con.summary }}</div>
+    <div class="row">
+      <span class="badge {{ dc.meeting|status }}">Meeting: {{ dc.meeting }}</span>
+      <span class="badge">Committee decisions: {{ dc.total_decisions }}</span>
+      <span class="badge">Data completeness: {{ dc.completeness|pct(0) }}</span>
+      <span class="badge bad">Trading: prohibited</span>
+    </div>
+    <div style="margin-top:12px"><b>Primary required action:</b> {{ dc.priority }}</div>
+  </div>
+  <div>
+    <div class="muted small">MANIFEST COMPOSITE ALIGNMENT</div>
+    <div class="score">{{ '%+.2f'|format(c.composite_score) }}</div>
+    <div>{{ c.classification }} · trend {{ '%+.2f'|format(c.weekly_change) }} · confidence {{ c.confidence|pct(0) }}</div>
+    <div style="margin-top:8px"><b>{{ c.posture }}</b> — {{ con.recommendation }}</div>
+    <div class="muted small">{{ con.compass }} · {{ con.next_review }}</div>
+  </div>
+</div>
+
+<div class="panel-title"><span class="num">⚡</span><h2>This week's workflow</h2></div>
+<div class="grid g4">
+  <div class="card">
+    <h2>Zacks Rank</h2>
+    <div class="small muted">{{ runs.zacks.summary if runs.zacks else 'Not pulled yet' }}</div>
+    <div class="small muted">{{ runs.zacks.ts[:16]|replace('T', ' ') if runs.zacks }}</div>
+    {% if can_edit() %}<form method="post" action="/data/zacks" style="margin-top:10px">{{ csrf() }}{{ nxt() }}<button class="gold">Pull Zacks</button></form>{% endif %}
+  </div>
+  <div class="card">
+    <h2>Actual weights</h2>
+    <div class="small muted">{{ runs.weights.summary if runs.weights else 'No positions file loaded yet' }}</div>
+    {% if can_edit() %}<form method="post" action="/data/weights" enctype="multipart/form-data" style="margin-top:10px">{{ csrf() }}
+      <label>Choose your broker positions CSV. A preview opens before anything changes.</label>
+      <input type="file" name="file" accept=".csv,text/csv" required onchange="this.form.submit()" style="width:100%">
+      <input type="hidden" name="missing_as_zero" value="on"></form>{% endif %}
+  </div>
+  <div class="card">
+    <h2>Research <a href="/data#inbox" class="small">{{ inbox }} to triage</a></h2>
+    <div class="small muted">{{ runs.research.summary if runs.research else 'Not pulled yet' }}</div>
+    {% if can_edit() %}<form method="post" action="/data/research" style="margin-top:10px">{{ csrf() }}<button class="gold">Pull research</button></form>{% endif %}
+  </div>
+  <div class="card">
+    <h2>Reviews</h2>
+    {% for kind, r in reviews.items() %}
+      <div class="spread small"><a href="{{ review_link(kind) }}">{{ kind|capitalize }} · {{ r.id.split('-', 1)[1] }}</a>
+        <span>{{ r.done }}/{{ r.total }} {{ badge(r.review.status if r.review else 'Not Started') }}</span></div>
+      <div class="progress"><i style="width:{{ (100 * r.done / r.total)|round }}%"></i></div>
+    {% endfor %}
+  </div>
+</div>
+
+<div class="panel-title"><span class="num">2</span><h2>Portfolio health</h2></div>
+<div class="grid g3">
+  <div class="card">
+    <h2>Sleeve allocation</h2>
+    <table class="t"><tr><th>Sleeve</th><th class="num">Target</th><th class="num">Actual</th><th class="num">Variance</th></tr>
+    {% for s in d.sleeves %}<tr><td>{{ s.sleeve }}</td><td class="num">{{ s.target|pct }}</td><td class="num">{{ s.actual|pct }}</td><td class="num">{{ s.variance|pct }}</td></tr>{% endfor %}
+    </table>
+  </div>
+  <div class="card">
+    <h2>Top 10 holdings <span class="small muted">{{ d.ranking_basis }}</span></h2>
+    <table class="t"><tr><th>#</th><th>Holding</th><th class="num">Weight</th><th>Conviction</th></tr>
+    {% for t in d.top10 %}<tr><td>{{ t.rank }}</td><td><a href="/t/portfolio/{{ t.symbol }}">{{ t.symbol }}</a> <span class="muted small">{{ t.role }}</span></td><td class="num">{{ t.weight|pct }}</td><td>{{ t.conviction }}</td></tr>{% endfor %}
+    </table>
+  </div>
+  <div class="card">
+    <h2>Allocation alerts</h2>
+    <p>{{ badge(con.alert_note) if 'not' in con.alert_note else con.alert_note }}</p>
+    {% set alerts = d.alerts|selectattr('symbol')|list %}
+    {% if alerts %}<table class="t"><tr><th>Holding</th><th class="num">Actual</th><th class="num">Target</th><th>Status</th></tr>
+      {% for a in alerts %}<tr><td>{{ a.symbol }}</td><td class="num">{{ a.actual|pct }}</td><td class="num">{{ a.target|pct }}</td><td>{{ badge(a.band_status) }}</td></tr>{% endfor %}</table>{% endif %}
+    <p class="small muted">Outside band = review required · no automatic trading. {{ con.completeness_line }}</p>
+  </div>
+</div>
+
+<div class="panel-title"><span class="num">3</span><h2>Research intelligence</h2></div>
+<div class="grid g3">
+  <div class="card"><h2>Research command <a href="/research" class="small">Open</a></h2>
+    <div class="kv"><div>RCC readiness</div><div>{{ badge(rcc1.readiness) }}</div>
+      <div>Control exceptions</div><div>{{ rcc1.control_exceptions }}</div>
+      <div>Candidate pipeline</div><div>{{ rcc4.stage_gates }} · {{ rcc4.active_candidates }} active</div>
+      <div>MASR registry</div><div>{{ rcc4.capacity }}</div></div></div>
+  {% for label, key in [('Companies requiring review', 'review'), ('Zacks Rank changes', 'zacks'), ('Thesis / conviction reviews', 'thesis')] %}
+  <div class="card"><h2>{{ label }} <a href="/intel" class="small">Open</a></h2>
+    {% for e in con.research[key] %}<div class="small {{ 'muted' if e == 'No entry loaded' }}">{{ e }}</div>{% endfor %}</div>
+  {% endfor %}
+</div>
+
+<div class="panel-title"><span class="num">4</span><h2>Committee operations &amp; engineering</h2></div>
+<div class="grid g3">
+  <div class="card"><h2>Pending <a href="/actions" class="small">Open</a></h2>
+    <table class="t">{% for label, v in con.pending %}<tr><td>{{ label }}</td><td class="num">{{ v|pct(0) if label == 'Data Completeness' else (badge(v) if label == 'Decision State' else v) }}</td></tr>{% endfor %}</table></div>
+  <div class="card"><h2>Publications &amp; calendar <a href="/reports" class="small">Reports</a></h2>
+    <div class="small"><b>{{ con.mwir }}</b> · {{ con.mwir_status }} · {{ con.mwir_last }} · {{ con.mwir_next }}</div>
+    <h3>Calendar</h3>{% for e in con.calendar %}<div class="small">{{ e }}</div>{% endfor %}
+    <h3>Notebook</h3><div class="small">{{ con.notebook|join(' · ') }}</div></div>
+  <div class="card"><h2>Portfolio engineering <a href="/pew" class="small">Open</a></h2>
+    <div class="kv"><div>Implementation state</div><div>{{ badge(pew.implementation_state) }}</div>
+      <div>Certification state</div><div>{{ badge(pew.certification_state) }}</div>
+      <div>Scenario changes</div><div>{{ pew.scenario_changes }}</div>
+      <div>Next action</div><div>{{ pew.primary_action }}</div></div></div>
+</div>
+{% endblock %}

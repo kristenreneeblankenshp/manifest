@@ -17,6 +17,12 @@ The app never changes certified target weights and has no trading function. Engi
 scenarios live in a separate layer, and certified data can change only through a new certified
 MFPDF version.
 
+It runs two ways over the same engine:
+
+- a **hosted web console** for day-to-day operation: one-click data pulls, decisions,
+  reviews and report PDFs (see [Web console](#web-console) below)
+- a **terminal console** (`manifest-workbench`) that covers every sheet from the command line
+
 ## Install and run
 
 ```bash
@@ -28,6 +34,75 @@ python -m manifest_workbench  # equivalent, without installing
 ```
 
 The app only needs the Python 3.9+ standard library. Importing a `.xlsx` file needs `openpyxl`.
+
+## Web console
+
+```bash
+pip install '.[web]'
+manifest-workbench serve            # http://127.0.0.1:8000; data in ./data
+```
+
+On first visit the console asks you to create the administrator account. Then everything
+the workbook asked you to do by hand happens in the browser:
+
+| Area | What it does |
+|---|---|
+| **Console** | The CISC-001 five-panel view, with this week's workflow: pull Zacks, drop in the broker CSV, pull research and see review progress, all in one place. |
+| **Data connections** | **Zacks**: one click updates Zacks Rank and market cap across the MASR registry and PEW-004 candidates, through your subscription's API or by uploading a Zacks screen CSV. Each rank change goes into Research Intelligence and becomes a complete RCC-002 evidence record. **Weights**: upload the broker positions CSV (weight, market value or quantity × price, with symbols like `BRK/B` normalised), check the preview and apply. **Research**: new SEC EDGAR 8-K/10-Q/10-K filings, plus your Zacks research feed if configured, arrive in a triage inbox. From there, one click logs an item as prefilled evidence, queues it for review or dismisses it. |
+| **Decisions** | Everything waiting on a decision in one place: candidates awaiting committee disposition, MASR dispositions, PEW-004 comparisons, conviction assignments, band exceptions, certification reviews and the manual decision register. Each item is decided in place. |
+| **Actions & notebook** | Actions, priorities, open questions, projects, publications, calendar and certifications, with inline status changes. |
+| **Candidate pipeline** | A board by stage. A candidate advances only once its stage gate passes, and each card has disposition and closure controls. |
+| **Allocation lab / Validation** | Enter scenario weights and rationale in a grid. Record each certification workflow decision, stamped with your name and date. |
+| **Every sheet** | A form for every input table, with calculated columns shown read-only, locked certified fields, missing-field warnings and per-record history. `All workbook sheets` maps each worksheet to its page. |
+| **Reviews** | Weekly, monthly and quarterly checklists taken from the Workbench Guide, PEW guide and RCC-004 standard. Each item is checked live against the data. An item whose check fails can be confirmed only with an exception note. Sign-off needs every item, and reopening a signed-off review needs a reason. |
+| **Reports** | Drafts of the MWIR (weekly), MIRD, MOR (monthly), Quarterly Engineering Review and MIPR, built from live data. You can edit any narrative, hide sections, add your own sections, refresh the data (your edits are kept) and preview. Draft PDFs carry a DRAFT watermark. **Issue** produces the final PDF as a numbered version and updates the publication row in Committee Operations. |
+| **Audit trail** | Every edit, pull, decision, sign-off and issue, with who made it and the old and new values. |
+
+Roles: **admin** (users and connector settings), **editor** (everything else) and **viewer**
+(read-only). Add users under *Settings & users*, or with `manifest-workbench user NAME --role editor`.
+The **As of** date in the top bar evaluates the workbook's `TODAY()` as a chosen date.
+
+### Connector setup
+
+- **Zacks.** Under *Settings*, enter your subscription's endpoint as a URL template with
+  `{ticker}`, say whether the key goes in the query string or a header, and give the response
+  field names for rank and market cap. Dotted paths such as `data.zacks_rank` work, as does
+  the unit of market cap. Keep the key in `ZACKS_API_KEY` on the server rather than in the
+  data file if you can. Until the API is configured, the CSV upload works with any Zacks
+  screen export that has Ticker plus Zacks Rank and/or Market Cap columns.
+- **SEC EDGAR.** The SEC requires a contact e-mail on automated requests. Set it in
+  *Settings* or in `SEC_CONTACT_EMAIL`. ETFs are skipped.
+- **Merrill.** Merrill has no public research API, so Merrill status stays a manual field.
+  Positions come in through the broker CSV upload.
+
+### Hosting
+
+The app is one Python process with a JSON data file guarded by a file lock, so run a
+**single instance with a persistent disk**. The disk holds the data file, issued PDFs and
+the session key.
+
+```bash
+docker compose up -d                       # builds the image; data in the manifest-data volume
+# or any container host (Render, Fly.io, Railway, a VM):
+docker build -t manifest-workbench .
+docker run -p 8000:8000 -v manifest-data:/data manifest-workbench
+```
+
+The image runs `gunicorn 'manifest_workbench.web:create_app()'` with one worker and eight
+threads. On a platform without Docker, use the same command after `pip install '.[web]'`.
+
+| Variable | Purpose |
+|---|---|
+| `MANIFEST_DATA_DIR` | Data directory (default `./data`, `/data` in the image). |
+| `MANIFEST_SECRET_KEY` | Session signing key. If unset, one is generated and stored in the data directory. |
+| `MANIFEST_ADMIN_USER`, `MANIFEST_ADMIN_PASSWORD` | Create the first administrator while no users exist. Otherwise use the `/setup` page. |
+| `MANIFEST_SECURE_COOKIES=1` | Set this when served over HTTPS, which you should use in production. |
+| `MANIFEST_PROXY=1` | Trust `X-Forwarded-*` headers from a reverse proxy or platform load balancer. It is on in the image. |
+| `ZACKS_API_KEY`, `SEC_CONTACT_EMAIL` | Connector credentials. These override *Settings*. |
+
+To start from your own workbook instead of the bundled v0.4 inputs:
+`manifest-workbench --data data/manifest_workbench.json init --from-xlsx workbook.xlsx --force`.
+Back up the data directory like any database.
 
 ## Sheets and commands
 
@@ -170,7 +245,8 @@ are bundled as `data/docs.json`.
 ## Development
 
 ```bash
-python -m unittest discover -s tests -t .   # the golden test needs openpyxl
+pip install -e '.[web,xlsx]'
+python -m unittest discover -s tests -t .   # the golden test needs openpyxl; web tests need the web extra
 ```
 
 - `engine.py`: MFPDF, PEW-004/005 and RCC-001 to RCC-004.
@@ -181,3 +257,8 @@ python -m unittest discover -s tests -t .   # the golden test needs openpyxl
 - `ops.py`: controlled edits.
 - `cli.py`, `views.py` and `render.py`: the console.
 - `xlsx_import.py`: workbook import.
+- `repo.py`: the locked data file shared by web requests.
+- `connectors/`: Zacks (API and CSV), broker weights CSV and research (SEC EDGAR, Zacks research).
+- `reviews.py`: weekly, monthly and quarterly review checklists and sign-off.
+- `reports.py` and `pdf.py`: report drafts (MWIR, MIRD, MOR, QER, MIPR) and PDF rendering.
+- `web/`: the Flask console (auth, pages, templates and styles).

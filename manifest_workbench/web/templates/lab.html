@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% from '_macros.html' import badge, csrf %}
+{% block title %}Allocation lab{% endblock %}
+{% block heading %}Allocation engineering lab · PEW-006{% endblock %}
+{% block sub %}Controlled scenario layer · the certified MFPDF is unchanged until a new version is issued · leave a weight blank to keep the certified target{% endblock %}
+{% block content %}
+<div class="grid g6">
+  <div class="tile {{ lab.scenario_status|status }}"><div class="k">Scenario status</div><div class="v small">{{ lab.scenario_status }}</div></div>
+  <div class="tile {{ 'ok' if (lab.scenario_total - 1)|abs < 0.000001 else 'bad' }}"><div class="k">Scenario total</div><div class="v">{{ lab.scenario_total|pct }}</div></div>
+  <div class="tile"><div class="k">Funding balance</div><div class="v">{{ lab.funding_balance|pct }}</div></div>
+  <div class="tile"><div class="k">Changed positions</div><div class="v">{{ lab.changed_positions }}</div></div>
+  <div class="tile"><div class="k">Gross turnover</div><div class="v">{{ lab.gross_turnover|pct }}</div></div>
+  <div class="tile {{ lab.readiness|status }}"><div class="k">Readiness</div><div class="v small">{{ lab.readiness }}</div></div>
+</div>
+<form method="post" style="margin-top:14px">{{ csrf() }}
+<div class="card">
+  <div class="form-grid">
+    <div><label>Scenario ID</label><input name="scenario_id" value="{{ lab.scenario_id or '' }}"></div>
+    <div><label>Scenario name</label><input name="scenario_name" value="{{ lab.scenario_name or '' }}" style="width:100%"></div>
+    <div><label>Prepared date</label><input type="date" name="prepared_date" value="{{ lab.prepared_date or '' }}"></div>
+  </div>
+</div>
+<div class="card" style="margin-top:14px">
+  <div class="spread"><h2>Scenario allocation schedule</h2>{% if can_edit() %}<button class="gold">Save scenario</button>{% endif %}</div>
+  <div class="scroll"><table class="t">
+  <tr><th>Sleeve</th><th>Symbol</th><th class="num">Certified</th><th class="num">Band</th><th class="num">Actual</th><th>Scenario weight</th><th class="num">Change</th><th>Band test</th><th>Trigger</th><th>Rationale</th><th>State</th></tr>
+  {% for r in rows %}<tr>
+    <td class="small">{{ r.sleeve }}</td><td><b>{{ r.symbol }}</b></td><td class="num">{{ r.certified_target|pct }}</td>
+    <td class="num small">{{ r.lower_band|pct }}–{{ r.upper_band|pct }}</td><td class="num">{{ '' if r._actual_blank else r.actual_weight|pct }}</td>
+    <td><input name="w_{{ r.symbol }}" value="{{ r.scenario_weight|pct if r.scenario_weight is number else (r.scenario_weight or '') }}" size="7" placeholder="{{ r.certified_target|pct }}"></td>
+    <td class="num">{{ r.change|pct if r.change else '' }}</td><td>{{ badge(r.band_test) if r.change else '' }}</td><td class="small">{{ r.trigger if r.change else '' }}</td>
+    <td><input name="r_{{ r.symbol }}" value="{{ r.rationale or '' }}" size="22"></td><td>{{ badge(r.validation_state) }}</td></tr>{% endfor %}
+  </table></div>
+</div>
+</form>
+<div class="card" style="margin-top:14px"><h2>Sleeve effect</h2>
+<table class="t"><tr><th>Sleeve</th><th class="num">Certified</th><th class="num">Scenario</th><th class="num">Delta</th><th class="num">Planning range</th><th>State</th></tr>
+{% for s in sleeves %}<tr><td>{{ s.sleeve }}</td><td class="num">{{ s.certified_target|pct }}</td><td class="num">{{ s.scenario|pct }}</td><td class="num">{{ s.delta|pct }}</td><td class="num">{{ s.range_low|pct }} – {{ s.range_high|pct }}</td><td>{{ badge(s.decision_state) }}</td></tr>{% endfor %}
+<tr><td><b>Total</b></td><td class="num">{{ totals.certified_target|pct }}</td><td class="num">{{ totals.scenario|pct }}</td><td class="num">{{ totals.delta|pct }}</td><td></td><td>{{ badge(totals.decision_state) }}</td></tr></table>
+<p class="small muted">Next: validate and certify on the <a href="/validation">Validation &amp; cert</a> page.</p></div>
+{% endblock %}

@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block title %}{{ sheet }}{% endblock %}
+{% block heading %}{{ sheet }}{% endblock %}
+{% block sub %}Reference record from the workbook{% endblock %}
+{% block content %}
+<div class="card">
+{% for row in rows %}
+  {% if row|length == 1 %}{% if row[0]|length > 70 %}<p>{{ row[0] }}</p>{% else %}<h3 style="color:var(--navy);margin-top:16px">{{ row[0] }}</h3>{% endif %}
+  {% else %}<div class="spread" style="border-bottom:1px solid var(--line);padding:5px 0;align-items:flex-start">{% for v in row %}<div style="flex:1;min-width:120px" class="{{ 'small' if not loop.first }}">{% if loop.first %}<b>{{ v }}</b>{% else %}{{ v }}{% endif %}</div>{% endfor %}</div>{% endif %}
+{% endfor %}
+</div>
+{% endblock %}

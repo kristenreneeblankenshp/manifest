@@ -1,0 +1,29 @@
+{% macro badge(v) %}{% if v not in (None, '') %}<span class="badge {{ v|status }}">{{ v }}</span>{% endif %}{% endmacro %}
+{% macro csrf() %}<input type="hidden" name="_csrf" value="{{ csrf_token() }}">{% endmacro %}
+{% macro nxt() %}<input type="hidden" name="next" value="{{ request.full_path if request.query_string else request.path }}">{% endmacro %}
+
+{# An input for a schema field; value is the stored value. #}
+{% macro field_input(f, value, name=None, required=False) -%}
+{%- set n = name or f.key -%}
+{%- if f.choices -%}
+  <select name="{{ n }}" {{ 'required' if required }}>
+    <option value=""></option>
+    {%- for c in f.choices %}<option value="{{ c }}" {{ 'selected' if value is not none and c|string == value|string }}>{{ c }}</option>{% endfor -%}
+  </select>
+{%- elif f.vtype == 'date' -%}
+  <input type="date" name="{{ n }}" value="{{ (value or '')|string|truncate(10, True, '') }}" {{ 'required' if required }}>
+{%- elif f.vtype == 'percent' -%}
+  <input name="{{ n }}" value="{{ (value * 100)|round(2)|string ~ '%' if value not in (None, '') else '' }}" placeholder="e.g. 3.02%" size="9">
+{%- elif f.vtype in ('number', 'int') -%}
+  <input name="{{ n }}" value="{{ value|cell(f.vtype) if value not in (None, '') else '' }}" size="10" inputmode="decimal">
+{%- else -%}
+  {%- if value and value|string|length > 70 -%}<textarea name="{{ n }}" rows="3">{{ value }}</textarea>
+  {%- else -%}<input name="{{ n }}" value="{{ value if value is not none else '' }}" style="width:100%" {{ 'required' if required }}>{%- endif -%}
+{%- endif -%}
+{%- endmacro %}
+
+{% macro show(f, value, status_cols) -%}
+{%- if f.key in status_cols %}{{ badge(value|cell(f.vtype)) }}
+{%- elif f.vtype == 'percent' %}{{ value|pct }}
+{%- else %}{{ value|cell(f.vtype) }}{% endif -%}
+{%- endmacro %}

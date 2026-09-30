@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sign in · Manifest Workbench</title><link rel="stylesheet" href="{{ url_for('static', filename='app.css') }}"></head>
+<body>
+<div class="login">
+  <div class="card">
+    <div style="margin-bottom:14px"><b style="color:var(--navy);font-size:18px">MANIFEST WORKBENCH</b><br>
+      <span class="muted small">Chief Investment Steward Console · CISC-001</span></div>
+    {% with msgs = get_flashed_messages(with_categories=true) %}{% for cat, msg in msgs %}<div class="flash {{ cat }}">{{ msg }}</div>{% endfor %}{% endwith %}
+    <form method="post">
+      <label>Username</label><input name="username" autofocus required style="width:100%;margin-bottom:10px">
+      <label>Password</label><input name="password" type="password" required style="width:100%;margin-bottom:16px">
+      <button class="gold" style="width:100%;justify-content:center">Sign in</button>
+    </form>
+  </div>
+</div>
+</body></html>

@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% from '_macros.html' import badge, csrf %}
+{% block title %}Dashboard controls{% endblock %}
+{% block heading %}Dashboard controls · CISC-001{% endblock %}
+{% block sub %}Weekly operating inputs and the composite alignment score · thresholds change only by committee action{% endblock %}
+{% block content %}
+<div class="grid g2">
+  <div class="card"><h2>Weekly inputs</h2>
+    <form method="post" action="/t/controls/_" class="form-grid">{{ csrf() }}<input type="hidden" name="next" value="/controls">
+      <div><label>Report date</label><input type="date" name="report_date" value="{{ c.report_date or '' }}"></div>
+      <div><label>Next review</label><input type="date" name="next_review" value="{{ c.next_review or '' }}"></div>
+      <div><label>Previous week score</label><input name="previous_week_score" value="{{ c.previous_week_score }}"></div>
+      <div><label>Confidence</label><input name="confidence" value="{{ (c.confidence * 100)|round(2) ~ '%' if c.confidence is not none }}"></div>
+      <div class="wide"><label>Data status</label><input name="data_status" value="{{ c.data_status or '' }}" style="width:100%"></div>
+      <div class="wide"><label>MWIR status</label><input name="mwir_status" value="{{ c.mwir_status or '' }}" style="width:100%"></div>
+      {% if can_edit() %}<div><button class="gold">Save</button></div>{% endif %}
+    </form></div>
+  <div class="card"><h2>Derived indicators</h2>
+    <div class="kv"><div>Composite alignment score</div><div><b>{{ '%+.2f'|format(c.composite_score) }}</b></div>
+      <div>Weekly change</div><div>{{ '%+.2f'|format(c.weekly_change) }}</div>
+      <div>Current posture</div><div>{{ badge(c.posture) }}</div><div>Compass bias</div><div>{{ c.compass_bias }}</div>
+      <div>Classification</div><div>{{ badge(c.classification) }}</div><div>Weight total</div><div>{{ c.weight_total|pct(0) }}</div></div></div>
+</div>
+<div class="card" style="margin-top:14px"><h2>Composite components (score −1 to +1)</h2>
+  <table class="t"><tr><th>Component</th><th>Score</th><th>Weight</th><th class="num">Contribution</th><th></th></tr>
+  {% for r in c.components %}<tr><td>{{ r.component }}</td>
+    <td colspan="2">{% if can_edit() %}<form method="post" action="/t/composite/{{ loop.index }}" class="inline">{{ csrf() }}<input type="hidden" name="next" value="/controls">
+      <input name="score" value="{{ r.score }}" size="6"><input name="weight" value="{{ (r.weight * 100)|round(2) ~ '%' }}" size="6"><button class="small">Save</button></form>{% else %}{{ r.score }} · {{ r.weight|pct(0) }}{% endif %}</td>
+    <td class="num">{{ '%.3f'|format(r.contribution) }}</td><td></td></tr>{% endfor %}</table>
+</div>
+{% endblock %}

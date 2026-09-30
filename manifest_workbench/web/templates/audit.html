@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% block title %}Audit trail{% endblock %}
+{% block heading %}Audit trail{% endblock %}
+{% block sub %}Every change, pull, decision, review and report issue · most recent first{% endblock %}
+{% block content %}
+<div class="card"><table class="t"><tr><th>When</th><th>By</th><th>Action</th><th>Table</th><th>Record</th><th>Field</th><th>Old</th><th>New</th></tr>
+{% for e in events %}<tr><td class="small">{{ e.ts|replace('T', ' ') }}</td><td>{{ e.actor }}</td><td>{{ e.action }}</td><td>{{ e.table }}</td><td>{{ e.record }}</td><td>{{ e.field or '' }}</td><td class="small">{{ e.old if e.old is not none else '' }}</td><td class="small">{{ e.new if e.new is not none else '' }}</td></tr>
+{% else %}<tr><td colspan="8" class="muted">No changes yet.</td></tr>{% endfor %}</table></div>
+{% endblock %}

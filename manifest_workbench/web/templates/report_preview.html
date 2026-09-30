@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block title %}Preview {{ r.code }}{% endblock %}
+{% block heading %}Preview · {{ r.title }}{% endblock %}
+{% block sub %}<a href="/reports/{{ r.id }}">← Back to the editor</a> · <a href="/reports/{{ r.id }}/draft.pdf" target="_blank">Draft PDF</a>{% endblock %}
+{% block content %}
+<div class="preview">
+  <div class="cover"><h1>{{ r.title }}</h1><div>{{ r.subtitle }}</div><div>{{ r.period_label }} · {{ 'Issued ' ~ r.issued[:10] ~ ' · v' ~ r.version if r.status == 'Issued' else 'DRAFT · data as of ' ~ r.snapshot_as_of }}</div></div>
+  {% for s in r.sections if s.include %}
+  <section><h2>{{ s.title }}</h2>
+    {% for p in s.narrative.split('\n\n') if p.strip() %}<p>{{ p }}</p>{% endfor %}
+    {% for t in s.tables %}<h3 class="muted small">{{ t.title }}</h3>
+      <div class="scroll"><table class="t"><tr>{% for c in t.columns %}<th>{{ c }}</th>{% endfor %}</tr>
+      {% for row in t.rows %}<tr>{% for v in row %}<td>{{ v }}</td>{% endfor %}</tr>{% else %}<tr><td colspan="{{ t.columns|length }}" class="muted">{{ t.empty }}</td></tr>{% endfor %}</table></div>
+    {% endfor %}
+  </section>
+  {% endfor %}
+</div>
+{% endblock %}

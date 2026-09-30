@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+{% from '_macros.html' import badge, csrf, field_input, show %}
+{% block title %}{{ spec.title }} · {{ key }}{% endblock %}
+{% block heading %}{{ spec.title }}{% if spec.mode != 'single' %} · {{ row.get(spec.key) or key }}{% endif %}{% endblock %}
+{% block sub %}{{ spec.sheet }} · <a href="/t/{{ spec.name }}">all records</a>{% endblock %}
+{% block content %}
+{% if missing %}<div class="flash warn">Missing required fields: {% for k in missing %}{{ spec.field(k).header }} ({{ spec.field(k).col }}){{ ', ' if not loop.last }}{% endfor %}</div>{% endif %}
+<div class="grid g2">
+  <div class="card">
+    <h2>Inputs {% if not can_edit() %}<span class="small muted">read-only</span>{% endif %}</h2>
+    <form method="post" class="form-grid">{{ csrf() }}
+    {% for f in spec.fields if f.kind == 'input' %}
+      {% if f.key in locked %}<div><label>{{ f.header }} ({{ f.col }}) · locked</label><div class="field-locked">{{ show(f, row.get(f.key), status_cols) }}</div></div>
+      {% else %}<div class="{{ 'wide' if f.vtype == 'text' and not f.choices and (row.get(f.key) or '')|string|length > 40 }}"><label>{{ f.header }} ({{ f.col }})</label>{{ field_input(f, row.get(f.key)) }}</div>{% endif %}
+    {% endfor %}
+    {% if can_edit() %}<div class="wide row"><button class="gold">Save</button>
+      {% if spec.name == 'pipeline' %}<a class="btn ghost" href="/pipeline">Pipeline board</a>{% endif %}
+      {% if spec.mode == 'slots' %}</form><form method="post" action="/t/{{ spec.name }}/{{ key }}/clear" onsubmit="return confirm('Clear this row? It is recorded in the audit trail.')">{{ csrf() }}<button class="danger">Clear row</button>{% endif %}
+    </div>{% endif %}
+    </form>
+  </div>
+  <div class="card">
+    <h2>Calculated &amp; certified</h2>
+    <div class="kv">
+    {% for f in spec.fields if f.kind != 'input' or f.key in locked %}
+      <div>{{ f.header }} <span class="muted small">{{ f.col }}{{ ' · ' ~ f.kind if f.kind != 'auto' }}</span></div><div>{{ show(f, row.get(f.key), status_cols) }}</div>
+    {% endfor %}
+    </div>
+  </div>
+</div>
+{% if history %}<div class="card" style="margin-top:14px"><h2>History</h2>
+<table class="t"><tr><th>When</th><th>By</th><th>Action</th><th>Field</th><th>Old</th><th>New</th></tr>
+{% for e in history %}<tr><td class="small">{{ e.ts|replace('T', ' ') }}</td><td>{{ e.actor }}</td><td>{{ e.action }}</td><td>{{ e.field or '' }}</td><td class="small">{{ e.old if e.old is not none else '' }}</td><td class="small">{{ e.new if e.new is not none else '' }}</td></tr>{% endfor %}</table></div>{% endif %}
+{% endblock %}

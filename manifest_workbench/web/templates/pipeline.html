@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{% from '_macros.html' import badge, csrf, nxt %}
+{% block title %}Candidate pipeline{% endblock %}
+{% block heading %}RCC-004 Candidate Pipeline{% endblock %}
+{% block sub %}{{ state.active_candidates }} active · stage gates {{ state.stage_gates }} · {{ state.routing }} · a candidate advances only after its current gate passes{% endblock %}
+{% block content %}
+<div class="board">
+{% for stage, cards in columns %}
+  <div class="col"><h3>{{ stage }} <span class="pill">{{ cards|length }}</span></h3>
+  {% for r in cards %}
+    <div class="kcard">
+      <div class="spread"><a class="tk" href="/t/pipeline/{{ r.candidate_id }}">{{ r.ticker }}</a>{{ badge(r.control_status) }}</div>
+      <div class="small muted">{{ r.security }}</div>
+      <div class="small">{{ r.candidate_type }} · due {{ r.due_date or '—' }} · {{ r.days_open }} days</div>
+      <div style="margin:6px 0">{{ badge(r.gate_result) }}</div>
+      <div class="small">{{ r.next_action }}</div>
+      {% set m = masr.get(r.ticker) %}
+      {% if m %}<div class="small muted">MASR: {{ m.eligibility_gate }} · {{ m.control_status }}</div>{% else %}<div class="small" style="color:var(--bad)">No MASR registry record</div>{% endif %}
+      {% if can_edit() %}
+      <div class="row" style="margin-top:8px">
+        {% set nxt_stage = stage_next(r.stage) %}
+        {% if nxt_stage %}<form method="post" action="/pipeline/{{ r.candidate_id }}/advance">{{ csrf() }}
+          <button class="small gold" {{ 'disabled' if not r.gate_result.startswith('PASS') }} title="{{ 'Current gate must pass first' if not r.gate_result.startswith('PASS') }}">Advance → {{ nxt_stage }}</button></form>{% endif %}
+      </div>
+      <details class="more"><summary>Decide / update</summary>
+        <form method="post" action="/pipeline/{{ r.candidate_id }}/update" class="grid" style="gap:6px;margin-top:6px">{{ csrf() }}
+          <label>Due date</label><input type="date" name="due_date" value="{{ r.due_date or '' }}">
+          <label>Committee disposition</label>
+          <select name="committee_disposition"><option value=""></option>{% for c in S.PIPELINE.field('committee_disposition').choices %}<option {{ 'selected' if c == r.committee_disposition }}>{{ c }}</option>{% endfor %}</select>
+          <label>PEW referral</label>
+          <select name="pew_referral"><option value=""></option>{% for c in S.PIPELINE.field('pew_referral').choices %}<option {{ 'selected' if c == r.pew_referral }}>{{ c }}</option>{% endfor %}</select>
+          <label>PEW-004 candidate ID</label>
+          <select name="pew_candidate_id"><option value=""></option>{% for c in pew_ids %}<option {{ 'selected' if c == r.pew_candidate_id }}>{{ c }}</option>{% endfor %}</select>
+          <label>Evidence IDs referenced</label><input name="evidence_ids" value="{{ r.evidence_ids or '' }}">
+          <label>Decision / thesis summary</label><textarea name="thesis_summary" rows="2">{{ r.thesis_summary or '' }}</textarea>
+          <button class="small">Save</button>
+        </form>
+        <form method="post" action="/pipeline/{{ r.candidate_id }}/update" class="grid" style="gap:6px;margin-top:10px">{{ csrf() }}
+          <label>Close candidate</label>
+          <select name="stage" required><option value="">Outcome…</option><option>On Watch</option><option>Rejected</option><option>Closed</option><option>Removed</option></select>
+          <select name="closure_reason"><option value="">Reason…</option>{% for c in S.PIPELINE.field('closure_reason').choices %}<option>{{ c }}</option>{% endfor %}</select>
+          <button class="small danger">Close / move</button>
+        </form>
+      </details>
+      {% endif %}
+    </div>
+  {% else %}<div class="small muted" style="padding:4px">—</div>{% endfor %}
+  </div>
+{% endfor %}
+</div>
+
+{% if closed %}<div class="card" style="margin-top:14px"><h2>Closed, rejected and removed</h2>
+<table class="t"><tr><th>Candidate</th><th>Ticker</th><th>Stage</th><th>Reason</th><th>Closed</th><th>Control</th></tr>
+{% for r in closed %}<tr><td><a href="/t/pipeline/{{ r.candidate_id }}">{{ r.candidate_id }}</a></td><td>{{ r.ticker }}</td><td>{{ r.stage }}</td><td>{{ r.closure_reason or '' }}</td><td>{{ r.closed_date or '' }}</td><td>{{ badge(r.control_status) }}</td></tr>{% endfor %}</table></div>{% endif %}
+
+{% if can_edit() %}
+<div class="card" style="margin-top:14px"><h2>New candidate</h2>
+<form method="post" action="/pipeline/new" class="form-grid">{{ csrf() }}
+  <div><label>Ticker</label><input name="ticker" required></div>
+  <div><label>Candidate type</label><select name="candidate_type" required>{% for c in S.PIPELINE.field('candidate_type').choices %}<option>{{ c }}</option>{% endfor %}</select></div>
+  <div><label>Source / referral</label><select name="source" required>{% for c in S.PIPELINE.field('source').choices %}<option>{{ c }}</option>{% endfor %}</select></div>
+  <div><label>Assigned owner</label><input name="owner" value="Research Committee" required></div>
+  <div><label>Due date</label><input type="date" name="due_date" required></div>
+  <div><label>Comparison group</label><input name="comparison_group"></div>
+  <div class="wide"><label>Decision / thesis summary</label><input name="thesis_summary" style="width:100%"></div>
+  <div><button class="gold">Create at Intake</button></div>
+</form>
+<p class="small muted">Create or reconcile the MASR registry record (<a href="/t/masr">MASR registry</a>) before the MIAR Review stage.</p></div>
+{% endif %}
+{% endblock %}

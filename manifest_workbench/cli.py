@@ -784,7 +784,56 @@ def build_parser() -> argparse.ArgumentParser:
     ap.add_argument('--record')
     ap.add_argument('--limit', type=int, default=50)
     ap.set_defaults(func=cmd_audit)
+
+    wp = sub.add_parser('serve', help='run the web console (install the [web] extra)')
+    wp.add_argument('--host', default='127.0.0.1', help='interface to bind (default 127.0.0.1)')
+    wp.add_argument('--port', type=int, default=8000)
+    wp.add_argument('--data-dir', help='web data directory (default: $MANIFEST_DATA_DIR or ./data)')
+    wp.set_defaults(web=cmd_serve)
+
+    up = sub.add_parser('user', help='add or update a web console login')
+    up.add_argument('username')
+    up.add_argument('--role', choices=('admin', 'editor', 'viewer'), default='editor')
+    up.add_argument('--name', default='', help='display name recorded in the audit trail')
+    up.add_argument('--data-dir', help='web data directory (default: $MANIFEST_DATA_DIR or ./data)')
+    up.set_defaults(web=cmd_user)
     return p
+
+
+def _web():
+    try:
+        from . import web
+    except ImportError as exc:  # pragma: no cover
+        raise SystemExit(f"The web console needs its extras: pip install 'manifest-workbench[web]' ({exc})")
+    return web
+
+
+def cmd_serve(args) -> int:
+    web = _web()
+    app = web.create_app(args.data_dir)
+    print(f"Manifest Workbench web console on http://{args.host}:{args.port} "
+          f"(data: {app.config['DATA_DIR']}). For hosting use gunicorn; see README.")
+    app.run(host=args.host, port=args.port, threaded=True)
+    return 0
+
+
+def cmd_user(args) -> int:
+    web = _web()
+    from .web.auth import set_user
+    app = web.create_app(args.data_dir)
+    password = getpass.getpass(f'Password for {args.username} (10+ characters): ')
+    if password != getpass.getpass('Confirm password: '):
+        print('error: passwords do not match', file=sys.stderr)
+        return 1
+    try:
+        with app.extensions['repo'].transaction() as store:
+            set_user(store, args.username, password, args.role, args.name or args.username)
+            ops.audit(store, 'command line', 'user', 'users', args.username.lower())
+    except ValueError as exc:
+        print(f'error: {exc}', file=sys.stderr)
+        return 1
+    print(f'Saved {args.username} ({args.role}).')
+    return 0
 
 
 SHELL_HELP = """\
@@ -867,6 +916,8 @@ def run(app: App, args) -> int:
 def main(argv=None) -> int:
     parser = build_parser()
     args = parser.parse_args(argv)
+    if getattr(args, 'web', None):
+        return args.web(args)
     app = App(args)
     if args.command is None:
         if not app.path.exists():
