@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% from '_macros.html' import badge, csrf %}
+{% block title %}MWIR{% endblock %}
+{% block heading %}MWIR · Weekly Institutional Report{% endblock %}
+{% block sub %}The official 8-page weekly report · built from the holdings file, the certified portfolio and Zacks{% endblock %}
+{% block content %}
+<div class="grid g2">
+  <div class="card">
+    <h2>This week</h2>
+    <div><b>Week ending {{ week_ending.strftime('%b') }} {{ week_ending.day }}, {{ week_ending.year }}</b> · publication {{ pub.strftime('%a %b') }} {{ pub.day }}</div>
+    <p class="small muted">{% if prior %}Starts from {{ prior.period_label|lower }} ({{ prior.status|lower }}{% if prior.version %} v{{ prior.version }}{% endif %}): holdings, guidance, rationale and narrative carry forward for you to update.{% else %}Starts from the 28 Aug 2026 MWIR as the example; load this week's holdings file next.{% endif %}</p>
+    {% if can_edit() %}<form method="post" action="/mwir/start">{{ csrf() }}<button class="gold">Start this week's MWIR</button></form>{% endif %}
+  </div>
+  <div class="card">
+    <h2>Weekly steps</h2>
+    <ol class="small" style="margin:0;padding-left:18px;line-height:1.7">
+      <li><a href="/data">Pull Zacks</a>: rank, market cap and earnings dates feed the validation screen (data as of {{ snap.as_of }}).</li>
+      <li>Load the holdings file (<code>Date, Symbol, Weights</code>). Sleeves and baselines for new names come from the certified portfolio.</li>
+      <li>Update signals, narrative and event gates. The preview updates as you type.</li>
+      <li>Issue: the final PDF is versioned, recorded in Committee Operations and ticks the weekly review.</li>
+    </ol>
+  </div>
+</div>
+<div class="card" style="margin-top:14px"><h2>History</h2>
+<table class="t"><tr><th>Week</th><th>Status</th><th>Certification</th><th>Versions</th></tr>
+{% for h in history %}<tr><td><a href="/mwir/{{ h.id }}">{{ h.period_label }}</a></td><td>{{ badge(h.status) }}</td><td>{{ h.certification or '—' }}</td>
+  <td>{% for f in h.files %}<a href="/reports/{{ h.id }}/file/{{ f.file }}">v{{ f.version }}</a> {% endfor %}</td></tr>
+{% else %}<tr><td colspan="4" class="muted">No MWIRs yet.</td></tr>{% endfor %}</table></div>
+{% endblock %}

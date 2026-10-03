@@ -8,6 +8,7 @@ from pathlib import Path
 from flask import (Blueprint, abort, current_app, flash, redirect, render_template, request, send_file,
                    url_for)
 
+from .. import mwir as MW
 from .. import reports as RP
 from ..pdf import render
 from .auth import actor, repo
@@ -46,7 +47,10 @@ def _get(rid):
 
 @bp.route('/reports/<rid>')
 def edit(rid):
-    return render_template('report_edit.html', r=_get(rid))
+    draft = _get(rid)
+    if draft.get('doc'):
+        return redirect(url_for('mwir.workspace', rid=rid))
+    return render_template('report_edit.html', r=draft)
 
 
 @bp.route('/reports/<rid>/save', methods=['POST'])
@@ -98,14 +102,17 @@ def reset_section(rid, key):
 
 @bp.route('/reports/<rid>/preview')
 def preview(rid):
-    return render_template('report_preview.html', r=_get(rid))
+    draft = _get(rid)
+    if draft.get('doc'):
+        return redirect(url_for('mwir.pages', rid=rid))
+    return render_template('report_preview.html', r=draft)
 
 
 @bp.route('/reports/<rid>/draft.pdf')
 def draft_pdf(rid):
     draft = _get(rid)
     tmp = Path(tempfile.mkdtemp()) / f"{rid}-draft.pdf"
-    render(draft, tmp, final=False)
+    render(draft, tmp, final=False, snap=MW.snapshot(repo().read()) if draft.get('doc') else None)
     return send_file(tmp, mimetype='application/pdf', as_attachment=False, download_name=tmp.name)
 
 

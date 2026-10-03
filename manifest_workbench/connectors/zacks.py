@@ -9,7 +9,9 @@ Two ways in, both applied identically:
 
 Applying results updates the RCC-004 MASR registry (T Market Cap, U Zacks Rank) and
 PEW-004 candidate rows, logs every rank change to Research Intelligence and records it as
-a complete RCC-002 evidence record so it flows through the normal verification gates.
+a complete RCC-002 evidence record so it flows through the normal verification gates. It also
+refreshes the Zacks snapshot (rank, market cap, next earnings date) that the MWIR holdings
+validation screen reads.
 """
 
 from __future__ import annotations
@@ -17,10 +19,12 @@ from __future__ import annotations
 import csv
 import datetime as dt
 import io
+import copy
 import urllib.parse
 
 from .. import ops
 from ..engine import blank, same
+from ..mwir import RANK_TEXT, bundled_snapshot, parse_date
 from . import ConnectorError, http_json, log_run, setting
 
 DEFAULTS = {
@@ -30,6 +34,7 @@ DEFAULTS = {
     'zacks_rank_field': 'zacks_rank',
     'zacks_market_cap_field': 'market_cap',
     'zacks_market_cap_unit': 'M',    # unit of the returned market cap: B, M or raw dollars
+    'zacks_earnings_field': 'next_report_date',  # next expected earnings date (optional)
     'evidence_reviewer': 'Research Committee',
 }
 UNIT_TO_BILLIONS = {'B': 1.0, 'M': 1e-3, 'RAW': 1e-9}
@@ -108,8 +113,9 @@ def fetch(store: dict, tickers=None, get_json=http_json) -> tuple:
     if not cfg['api_key']:
         raise ConnectorError('No Zacks API key. Set ZACKS_API_KEY on the server or enter it in Settings.')
     results, errors = {}, []
+    alias = (store.get('zacks') or bundled_snapshot()).get('alias') or {}
     for ticker in tickers or universe(store):
-        url = cfg['zacks_url'].replace('{ticker}', urllib.parse.quote(ticker))
+        url = cfg['zacks_url'].replace('{ticker}', urllib.parse.quote(alias.get(ticker, ticker)))
         headers = {'Accept': 'application/json'}
         if cfg['zacks_auth'] == 'header':
             headers[cfg['zacks_key_name']] = cfg['api_key']
@@ -133,7 +139,8 @@ def fetch(store: dict, tickers=None, get_json=http_json) -> tuple:
             errors.append(f'{ticker}: response had no {cfg["zacks_rank_field"]} / '
                           f'{cfg["zacks_market_cap_field"]}')
             continue
-        results[ticker] = {'rank': rank, 'market_cap': cap}
+        er = parse_date(str(_path(data, cfg['zacks_earnings_field']) or '')) if cfg['zacks_earnings_field'] else None
+        results[ticker] = {'rank': rank, 'market_cap': cap, 'er': er.isoformat() if er else None}
     return results, errors
 
 
@@ -141,6 +148,8 @@ CSV_TICKER = ('ticker', 'symbol')
 CSV_RANK = ('zacks rank', 'zacks_rank', 'zacksrank', 'rank')
 CSV_CAP = ('market cap (mil)', 'market cap ($mil)', 'market cap (m)', 'market cap ($b)', 'market cap (b)',
            'market cap', 'market_cap', 'mkt cap')
+CSV_ER = ('next eps report date', 'next report date', 'next earnings date', 'next expected report date',
+          'earnings date', 'next er', 'next_report_date')
 
 
 def parse_csv(text: str) -> tuple:
@@ -155,7 +164,7 @@ def parse_csv(text: str) -> tuple:
     def col(options):
         return next((header.index(o) for o in options if o in header), None)
 
-    t, r, m = col(CSV_TICKER), col(CSV_RANK), col(CSV_CAP)
+    t, r, m, e = col(CSV_TICKER), col(CSV_RANK), col(CSV_CAP), col(CSV_ER)
     if r is None and m is None:
         raise ConnectorError('No Zacks Rank or Market Cap column found in the CSV')
     unit = 'B' if m is not None and '(b' in header[m] or (m is not None and '$b' in header[m]) else 'M'
@@ -169,7 +178,8 @@ def parse_csv(text: str) -> tuple:
         if rank is None and cap is None:
             errors.append(f'{ticker}: no usable rank or market cap')
             continue
-        results[ticker] = {'rank': rank, 'market_cap': cap}
+        er = parse_date(row[e]) if e is not None and e < len(row) else None
+        results[ticker] = {'rank': rank, 'market_cap': cap, 'er': er.isoformat() if er else None}
     return results, errors
 
 
@@ -180,7 +190,10 @@ def apply(store: dict, results: dict, actor: str, today: dt.date, source: str) -
     cfg = config(store)
     changes, updated_masr, updated_pew = [], 0, 0
     portfolio = {r['symbol'].upper(): r for r in store['portfolio']}
+    snapped = update_snapshot(store, results, today, source)
+    reverse = {v: k for k, v in (store['zacks'].get('alias') or {}).items()}
     for ticker, res in results.items():
+        ticker = reverse.get(ticker, ticker)  # a Zacks symbol (MRSH) back to the workbench's (MMC)
         try:
             pos, rec = ops.find(store, 'masr', ticker)
         except ops.OpError:
@@ -203,7 +216,32 @@ def apply(store: dict, results: dict, actor: str, today: dt.date, source: str) -
         evidence_ids.append(_log_evidence(store, ticker, prior, current, today, source, actor,
                                           cfg['evidence_reviewer'], portfolio))
     return {'updated_masr': updated_masr, 'updated_pew004': updated_pew, 'rank_changes': changes,
-            'evidence': evidence_ids}
+            'evidence': evidence_ids, 'snapshot': snapped}
+
+
+def update_snapshot(store: dict, results: dict, today: dt.date, source: str) -> int:
+    """Fold results into the Zacks snapshot used by the MWIR screen. Returns entries updated."""
+    snap = store.get('zacks') or {}
+    if not snap.get('data'):
+        snap = copy.deepcopy(bundled_snapshot())
+    alias = snap.setdefault('alias', {})
+    etfs = {r['symbol'].upper() for r in store['portfolio'] if r.get('security_type') == 'ETF'}
+    n = 0
+    for ticker, res in results.items():
+        key = alias.get(ticker, ticker)
+        entry = dict(snap['data'].get(key) or {'rank': None, 'text': '', 'cap': None, 'er': None, 'etf': False})
+        entry['etf'] = entry.get('etf') or ticker in etfs
+        if res.get('rank') is not None:
+            entry['rank'], entry['text'] = res['rank'], RANK_TEXT[res['rank']]
+        if res.get('market_cap') is not None and not entry['etf']:
+            entry['cap'] = round(res['market_cap'] * 1000, 1)
+        if res.get('er'):
+            entry['er'] = res['er']
+        snap['data'][key] = entry
+        n += 1
+    snap.update({'as_of': today.isoformat(), 'source': source})
+    store['zacks'] = snap
+    return n
 
 
 def _set(store, table, label, rec, field, value, actor) -> bool:

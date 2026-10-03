@@ -38,7 +38,7 @@ class ZacksApiTest(unittest.TestCase):
         store = self.configured(zacks_rank_field='data.rank', zacks_market_cap_field='data.mktcap')
         results, errors = zacks.fetch(store, ['MU'], get_json=fake)
         self.assertEqual(errors, [])
-        self.assertEqual(results['MU'], {'rank': 2, 'market_cap': 125.3})
+        self.assertEqual(results['MU'], {'rank': 2, 'market_cap': 125.3, 'er': None})
         self.assertIn('symbol=MU', calls[0][0])
         self.assertIn('api_key=SECRET', calls[0][0])
 
@@ -52,7 +52,13 @@ class ZacksApiTest(unittest.TestCase):
         store = self.configured(zacks_auth='header', zacks_key_name='X-API-Key')
         results, _ = zacks.fetch(store, ['MU'], get_json=fake)
         self.assertEqual(seen['X-API-Key'], 'SECRET')
-        self.assertEqual(results['MU'], {'rank': 4, 'market_cap': 120.5})
+        self.assertEqual(results['MU'], {'rank': 4, 'market_cap': 120.5, 'er': None})
+
+    def test_alias_queried_by_zacks_symbol(self):
+        urls = []
+        zacks.fetch(self.configured(), ['MMC'], get_json=lambda u, h: urls.append(u) or {'zacks_rank': 3,
+                                                                                          'next_report_date': '2026-10-15'})
+        self.assertIn('symbol=MRSH', urls[0])
 
     def test_bad_ticker_reported_not_fatal(self):
         def fake(url, headers):
@@ -84,9 +90,26 @@ class ZacksCsvTest(unittest.TestCase):
         text = ('Zacks Screen export\n\nTicker,Company,Zacks Rank,Market Cap ($B)\n'
                 'MU,Micron,2-Buy,120.5\nAAPL,Apple,#1 Strong Buy,3400\nXYZ,,,\n')
         results, errors = zacks.parse_csv(text)
-        self.assertEqual(results['MU'], {'rank': 2, 'market_cap': 120.5})
+        self.assertEqual(results['MU'], {'rank': 2, 'market_cap': 120.5, 'er': None})
         self.assertEqual(results['AAPL']['rank'], 1)
         self.assertEqual(errors, ['XYZ: no usable rank or market cap'])
+
+    def test_earnings_date_alias_and_snapshot(self):
+        store = fresh()
+        text = ('Ticker,Zacks Rank,Market Cap (mil),Next EPS Report Date\n'
+                'MU,4,1222319,10/1/2026\nMRSH,3,81660,2026-10-15\nVHT,1,,\n')
+        summary = zacks.run(store, 'Ada', TODAY, csv_text=text, source='screen.csv')
+        snap = store['zacks']
+        self.assertEqual(snap['as_of'], TODAY.isoformat())
+        self.assertEqual(snap['data']['MU'], {'rank': 4, 'text': 'Sell', 'cap': 1222319.0, 'er': '2026-10-01',
+                                              'etf': False})
+        self.assertEqual(snap['data']['MRSH']['er'], '2026-10-15')
+        self.assertTrue(snap['data']['VHT']['etf'])
+        self.assertIn('JEPI', snap['data'])  # bundled entries are kept
+        self.assertEqual(summary['snapshot'], 3)
+        # the Zacks symbol MRSH updates the workbench's MMC registry record
+        mmc = next(r for r in Workbench(store).masr if r.get('ticker') == 'MMC')
+        self.assertEqual(mmc['zacks_rank'], 3)
 
     def test_rejects_unrelated_csv(self):
         with self.assertRaises(ConnectorError):

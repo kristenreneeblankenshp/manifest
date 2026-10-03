@@ -23,8 +23,9 @@ It runs two ways over the same engine:
   reviews and report PDFs (see [Web console](#web-console) below)
 - a **terminal console** (`manifest-workbench`) that covers every sheet from the command line
 
-The repository also contains `mwir/`, a browser tool that builds the weekly MWIR report PDF
-with a Zacks holdings screen. See [`mwir/README.md`](mwir/README.md).
+The weekly MWIR is built inside the web console, in the official 8-page layout of the
+`mwir/` browser builder (see [MWIR](#mwir) below). The standalone builder in `mwir/` still
+works on its own, and its saved documents can be imported into the console.
 
 ## Install and run
 
@@ -50,7 +51,8 @@ the workbook asked you to do by hand happens in the browser:
 
 | Area | What it does |
 |---|---|
-| **Console** | The CISC-001 five-panel view, with this week's workflow: pull Zacks, drop in the broker CSV, pull research and see review progress, all in one place. |
+| **Console** | The CISC-001 five-panel view, led by **This week**: six steps (pull Zacks, actual weights, research and triage, decide, MWIR, sign off) that turn green as the weekly review's live checks pass. Each step has its action button. |
+| **MWIR** | The official 8-page Weekly Institutional Report, edited beside a live preview. See [MWIR](#mwir). |
 | **Data connections** | **Zacks**: one click updates Zacks Rank and market cap across the MASR registry and PEW-004 candidates, through your subscription's API or by uploading a Zacks screen CSV. Each rank change goes into Research Intelligence and becomes a complete RCC-002 evidence record. **Weights**: upload the broker positions CSV (weight, market value or quantity × price, with symbols like `BRK/B` normalised), check the preview and apply. **Research**: new SEC EDGAR 8-K/10-Q/10-K filings, plus your Zacks research feed if configured, arrive in a triage inbox. From there, one click logs an item as prefilled evidence, queues it for review or dismisses it. |
 | **Decisions** | Everything waiting on a decision in one place: candidates awaiting committee disposition, MASR dispositions, PEW-004 comparisons, conviction assignments, band exceptions, certification reviews and the manual decision register. Each item is decided in place. |
 | **Actions & notebook** | Actions, priorities, open questions, projects, publications, calendar and certifications, with inline status changes. |
@@ -58,12 +60,53 @@ the workbook asked you to do by hand happens in the browser:
 | **Allocation lab / Validation** | Enter scenario weights and rationale in a grid. Record each certification workflow decision, stamped with your name and date. |
 | **Every sheet** | A form for every input table, with calculated columns shown read-only, locked certified fields, missing-field warnings and per-record history. `All workbook sheets` maps each worksheet to its page. |
 | **Reviews** | Weekly, monthly and quarterly checklists taken from the Workbench Guide, PEW guide and RCC-004 standard. Each item is checked live against the data. An item whose check fails can be confirmed only with an exception note. Sign-off needs every item, and reopening a signed-off review needs a reason. |
-| **Reports** | Drafts of the MWIR (weekly), MIRD, MOR (monthly), Quarterly Engineering Review and MIPR, built from live data. You can edit any narrative, hide sections, add your own sections, refresh the data (your edits are kept) and preview. Draft PDFs carry a DRAFT watermark. **Issue** produces the final PDF as a numbered version and updates the publication row in Committee Operations. |
+| **Reports** | Drafts of the MIRD, MOR (monthly), Quarterly Engineering Review and MIPR, built from live data. You can edit any narrative, hide sections, add your own sections, refresh the data (your edits are kept) and preview. Draft PDFs carry a DRAFT watermark. **Issue** produces the final PDF as a numbered version and updates the publication row in Committee Operations. |
 | **Audit trail** | Every edit, pull, decision, sign-off and issue, with who made it and the old and new values. |
+
+**Navigation.** The sidebar follows the operating cycle: *Operate* (console, decisions, actions),
+*Weekly cycle* (data and inbox, MWIR, reviews, reports), *Research*, *Portfolio* and *System*. Hub
+pages (Research, Portfolio, Engineering) carry sub-tabs for their registers and workspaces.
+**Jump to…** in the top bar (Ctrl/⌘ K) opens any page or workbook table by name.
 
 Roles: **admin** (users and connector settings), **editor** (everything else) and **viewer**
 (read-only). Add users under *Settings & users*, or with `manifest-workbench user NAME --role editor`.
 The **As of** date in the top bar evaluates the workbook's `TODAY()` as a chosen date.
+
+### MWIR
+
+Each week's MWIR opens from *MWIR* in the sidebar (or step 5 on the console):
+
+1. **Start this week's MWIR.** It starts from last week's document, so holdings, sleeves,
+   guidance, rationale and narrative carry forward. Week ending (the Friday) and publication date
+   (the Monday) are set from the review week.
+2. **Load the holdings file** (`Date, Symbol, Weights`, the dynamic holdings template). Decimal
+   weights become percentages. Tickers new this week take their sleeve, MFPDF baseline and role
+   from the certified portfolio, and only names outside it are left `Unassigned`. Dropped tickers
+   are listed.
+3. **Edit** holdings, signals (composite, compass, component scores, risk tape), narrative, and
+   controls and sources. Changes save as you type and the 8-page preview beside the editor
+   updates. *Add this week's earnings to event gates* writes gate lines for holdings that report
+   during the publication week.
+4. **Issue.** The final PDF is versioned, the week's Zacks data is frozen with it, the MWIR row
+   in Committee Operations is updated and the weekly review's MWIR item passes. If control
+   assertions are failing (`HOLD · CONTROLS FAILING`), issuing needs an override reason, which
+   is printed on page 8 and recorded in the audit trail. *Reopen to revise* issues a new version.
+
+The calculations match the browser builder:
+- **Bands:** 75–125% of target, floored at 1.00% and capped at 4.00%.
+- **Control assertions:** holdings present, a 100.00% total, Strategic Anchors matching the frozen
+  total (defaulted from the certified portfolio, 22.51%), no BRK.B executable rows, nothing above
+  4.00%, and no unassigned sleeves.
+- **Zacks screen:** market cap above $100B and Zacks Rank 1–3, with Rank 1–2 as Tier 1. ETFs carry
+  their ETF rank, and MMC is listed by Zacks as MRSH.
+- **Gauge zones:** 70+ green, 55–69 yellow, 40–54 orange, below 40 red. These are an assumption
+  until the framework's thresholds are supplied.
+
+The screen reads the **Zacks snapshot**. Every Zacks pull, by API or CSV, updates it with Zacks
+Rank, market cap and next earnings date. CSVs may carry a `Next EPS Report Date` column, and the
+API field is set in *Settings*. Until the first pull it uses the 25 Sep 2026 snapshot that ships
+with `mwir/zacks.js`. *More → Export* downloads the document as JSON, and *Import* accepts that
+file or a document saved by the browser builder.
 
 ### Connector setup
 
@@ -79,6 +122,14 @@ The **As of** date in the top bar evaluates the workbook's `TODAY()` as a chosen
   Positions come in through the broker CSV upload.
 
 ### Hosting
+
+**Fastest: one click on Render.**
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/kristenreneeblankenshp/manifest)
+Sign in to Render with GitHub, allow it to read this repository, enter an admin username and a
+password of 10 or more characters when prompted, and apply. Render builds the image, attaches a
+1 GB disk at `/data` and gives you an `https://manifest-workbench-….onrender.com` address. Sign in
+there with the admin account. The blueprint is `render.yaml`. The disk needs a paid instance
+(Starter). Every push to `main` redeploys.
 
 The app is one Python process with a JSON data file guarded by a file lock, so run a
 **single instance with a persistent disk**. The disk holds the data file, issued PDFs and
@@ -263,5 +314,6 @@ python -m unittest discover -s tests -t .   # the golden test needs openpyxl; we
 - `repo.py`: the locked data file shared by web requests.
 - `connectors/`: Zacks (API and CSV), broker weights CSV and research (SEC EDGAR, Zacks research).
 - `reviews.py`: weekly, monthly and quarterly review checklists and sign-off.
-- `reports.py` and `pdf.py`: report drafts (MWIR, MIRD, MOR, QER, MIPR) and PDF rendering.
+- `reports.py` and `pdf.py`: report drafts (MIRD, MOR, QER, MIPR, and the MWIR lifecycle) and PDF rendering.
+- `mwir.py` and `mwir_pdf.py`: the official MWIR (port of the `mwir/` builder) and its 8-page landscape PDF.
 - `web/`: the Flask console (auth, pages, templates and styles).

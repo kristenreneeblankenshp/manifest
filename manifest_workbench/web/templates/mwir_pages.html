@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MWIR · week ending {{ v.m.week_upper|title }}</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='mwir.css') }}">
+</head>
+<body>
+{% set d, m, zk = v.d, v.m, v.zk %}
+{% macro foot(n, left='MANIFEST MWIR') %}<div class="foot"><span>{{ left }}</span><span>WEEK ENDING {{ m.week_upper }} · {{ n }}/8</span></div>{% endmacro %}
+{% macro head(kicker, title, extra='') %}<div class="head"><div class="kicker">{{ kicker }}</div><h2>{{ title }}</h2>{% if extra %}<div class="muted s12">{{ extra }}</div>{% endif %}</div>{% endmacro %}
+<main class="stage" id="stage">
+
+<section class="sheet" id="p1"><div class="row-between kicker"><span>OFFICIAL PUBLICATION · FROZEN DELIVERABLES</span><span>PUBLISHED {{ m.pub_long }}</span></div>
+  <div class="cover-head"><h2 class="big">Weekly Institutional Report</h2><div class="headline">{{ d.headline }}</div><div class="subhead">{{ d.subhead }}</div></div>
+  <div class="cover-grid"><div class="card gauge"><div class="label">MANIFEST INSTITUTIONAL GAUGE</div>
+    <svg width="260" height="140" viewBox="0 0 260 140" role="img" aria-label="Composite gauge at {{ v.zone.value }} of 100">
+      <path d="M30 120 A100 100 0 0 1 99.10 24.89" stroke="#a3262a" stroke-width="22" fill="none"/>
+      <path d="M99.10 24.89 A100 100 0 0 1 145.64 21.23" stroke="#c2571a" stroke-width="22" fill="none"/>
+      <path d="M145.64 21.23 A100 100 0 0 1 188.78 39.10" stroke="#c9971c" stroke-width="22" fill="none"/>
+      <path d="M188.78 39.10 A100 100 0 0 1 230 120" stroke="#2f6f4f" stroke-width="22" fill="none"/>
+      <g transform="rotate({{ v.zone.deg }} 130 120)"><path d="M130 120 L126 118 L130 34 L134 118 Z" fill="#1a1d24"/></g>
+      <circle cx="130" cy="120" r="8" fill="#1a1d24"/></svg>
+    <div class="score">{{ v.zone.value }}</div><div class="zone" style="background:{{ v.zone.color }}">{{ v.zone.label }}</div></div>
+    <div class="card compass"><div class="label pad">INSTITUTIONAL COMPASS</div>
+      {% for c in v.compass %}<div class="compass-line"><span>{{ c.label }}</span><span class="mono val">{{ c.value }}</span><span class="muted">{{ c.note }}</span></div>{% endfor %}
+    </div></div>
+  <div class="exec"><h3 class="kicker">EXECUTIVE SUMMARY</h3><div class="grid2 gap28">
+    {% for label, text in v.exec_paras %}<p><strong>{{ label }}</strong> {{ text }}</p>{% endfor %}</div></div>
+  <div class="fine">{{ d.footnote }}</div>{{ foot(1) }}</section>
+
+<section class="sheet" id="p2">{{ head('MFSO COMPONENT ARCHITECTURE', 'Institutional Signal Dashboard') }}
+  <div><h3 class="label">COMPONENT SCORES · 0–10</h3><div class="grid2 gap40">
+    {% for c in v.components %}<div class="bar-row"><span>{{ c.name }}</span><div class="track"><div style="width:{{ c.pct }}%;background:{{ c.color }}"></div></div><span class="mono num">{{ c.score }}</span></div>{% endfor %}
+  </div></div>
+  <div class="tape-grid"><div><h3 class="label">WEEKLY RISK TAPE</h3><div class="tape">
+    {% for t in v.tape %}<div><span>{{ t.label }}</span><span class="mono">{{ t.value }}</span></div>{% endfor %}</div></div>
+    <div><h3 class="label">SIGNAL INTERPRETATION</h3><ul>{% for b in v.interpretation %}<li>{{ b }}</li>{% endfor %}</ul></div></div>
+  <div class="box"><div class="kicker">DECISION RULE</div><div>{{ d.decisionRule }}</div></div>
+  <div class="posture"><span>OFFICIAL POSTURE</span><strong>{{ d.officialPosture }}</strong></div>{{ foot(2) }}</section>
+
+<section class="sheet" id="p3">{{ head('RATES · INFLATION · EARNINGS · GEOPOLITICS', 'Macro Stewardship & Event Map') }}
+  <div class="grid2 gap32 grow">{% for title, text in v.macro %}<div class="macro"><h3>{{ title }}</h3><p>{{ text }}</p></div>{% endfor %}</div>
+  <div><h3 class="kicker">FORWARD EVENT GATES · {{ d.gatesWeek }}</h3><div class="events">
+    {% for e in v.events %}<div><span class="mono">{{ e[0] }}</span><strong>{{ e[1] }}</strong><span>{{ e[2] }}</span></div>{% endfor %}</div></div>
+  {{ foot(3) }}</section>
+
+<section class="sheet" id="p4">{{ head('MFPDF BASELINE · MRGES-001 EXECUTABLE CHANNEL', 'Allocation & Implementation Dashboard') }}
+  <div class="alloc-grid"><div><h3 class="label">EXECUTABLE SLEEVE ALLOCATION · {{ v.stats.total_fmt }}</h3>
+    {% for s in v.sleeve_alloc %}<div class="sleeve-row"><span>{{ s.name }}</span><div class="track t14"><div style="width:{{ s.bar }}%;background:#1d2b4a"></div></div><span class="mono num">{{ s.fmt }}</span></div>{% endfor %}</div>
+    <div><h3 class="label">TOP 10 EXECUTABLE TARGETS</h3><div class="t10 th"><span>TICKER</span><span class="r">TARGET</span><span class="r">APPROVED BAND</span></div>
+    {% for t in v.top10 %}<div class="t10 mono"><span class="tick">{{ t.ticker }}</span><span class="r">{{ t.current_fmt }}</span><span class="r muted">{{ t.band }}</span></div>{% endfor %}</div></div>
+  <div class="grid2 gap24"><div class="box"><div class="kicker">MRGES-001 CHANNEL RECONCILIATION</div><div class="s12">{{ d.reconciliation }}</div></div>
+    <div class="box"><div class="kicker">TARGET / BAND STANDARD</div><div class="s12">{{ d.bandStandard }}</div></div></div>
+  <div class="grow"><h3 class="kicker">CAPITAL DEPLOYMENT HIERARCHY</h3>
+    {% for t in v.hierarchy %}<div class="tier"><span>{{ loop.index }}</span><span>{{ t }}</span></div>{% endfor %}</div>
+  {{ foot(4) }}</section>
+
+{% for pg in v.matrix_pages %}
+<section class="sheet" id="p{{ pg.num }}">{{ head('HOLDING-BY-HOLDING WEIGHT GUIDANCE', 'Holding Action Matrix · ' ~ pg.roman, 'MFPDF = frozen analytical baseline. Current = MRGES executable recommendation. Actual = not supplied.') }}
+  <div class="grow"><div class="mx th"><span>SLEEVE</span><span>TICKER</span><span class="r">MFPDF</span><span class="r">CURRENT</span><span class="r">BAND</span><span>GUIDANCE</span><span>RATIONALE</span><span>STATUS</span></div>
+  {% for r in pg.rows %}<div class="mx"><span class="muted">{{ r.sleeve }}</span><span class="mono tick">{{ r.ticker }}</span><span class="mono r muted">{{ r.mfpdf_fmt }}</span><span class="mono r">{{ r.current_fmt }}</span><span class="mono r">{{ r.band }}</span>
+    <span class="tag" style="background:{{ r.chip_bg }};color:{{ r.chip_fg }}">{{ r.guidance }}</span><span class="ell">{{ r.rationale }}</span><span class="s11">{{ r.status }}</span></div>{% endfor %}</div>
+  <div class="fine">{{ d.matrixDisclaimer }}</div>{{ foot(pg.num) }}</section>
+{% endfor %}
+
+<section class="sheet" id="p7"><div class="head row-between end"><div><div class="kicker">ZACKS UNIVERSE SCREEN · DATA AS OF {{ zk.as_of_upper }}</div><h2>Holdings Validation Screen</h2>
+  <div class="muted s12">Rule: market cap above $100B and Zacks Rank 1–3 (1 Strong Buy · 2 Buy · 3 Hold). Tier 1 = Rank 1 or 2. ETFs show their ETF rank and are not held to the market-cap rule.</div></div>
+  <div class="tiles">{% for t in zk.tiles %}<div style="background:{{ t.bg }};color:{{ t.fg }}"><strong>{{ t.n }}</strong><span>{{ t.label }}</span></div>{% endfor %}</div></div>
+  <div class="grid2 gap28 grow">{% for col in zk.cols %}<div><div class="zr th"><span>TICKER</span><span>ZACKS RANK</span><span class="r">MKT CAP</span><span class="r">NEXT ER</span><span>SCREEN</span></div>
+    {% for z in col %}<div class="zr"><span class="mono tick">{{ z.ticker }}</span><span class="ell">{{ z.rank_label }}</span><span class="mono r" style="color:{{ z.cap_color }}">{{ z.cap }}</span><span class="mono r" style="color:{{ z.er_color }}">{{ z.er }}</span><span class="tag s10" style="background:{{ z.bg }};color:{{ z.fg }}">{{ z.screen }}</span></div>{% endfor %}</div>{% endfor %}</div>
+  <div class="box s12"><div><strong class="warn">Review:</strong> {{ zk.review_text }}</div><div><strong>Earnings within 21 days of publication:</strong> {{ zk.soon_text }}</div>
+    <div class="muted">A name under review is flagged, not dropped automatically. Framework overrides still apply. {{ zk.alias_text }}</div></div>
+  {{ foot(7, 'MANIFEST MWIR · SOURCE: ZACKS INVESTMENT RESEARCH') }}</section>
+
+<section class="sheet cert-page" id="p8">{{ head('PUBLICATION CONTROL RECORD', 'Certification, Client Brief & Sources') }}
+  <div class="box"><div class="kicker">CLIENT EXECUTIVE BRIEF</div><div>{{ d.clientBrief }}</div></div>
+  <div class="grid3 grow"><div><h3 class="label">FROZEN DELIVERABLES APPLIED</h3>
+    {% for x in v.deliverables %}<div class="li">{{ x }}</div>{% endfor %}
+    <div class="label mt">CERTIFICATION RESULT</div><div class="cert" style="color:{{ v.cert.color }}">{{ v.cert.label }}</div>
+    {% if r.override %}<div class="s11 warn">Issued under override: {{ r.override }}</div>{% endif %}</div>
+    <div><h3 class="label">CONTROL ASSERTIONS</h3>
+    {% for a in v.assertions %}<div class="li row-between"><span>{{ a.label }}</span><span class="mono r" style="color:{{ a.color }}">{{ a.result }}</span></div>{% endfor %}</div>
+    <div><h3 class="label">PRIMARY EVIDENCE &amp; MARKET SOURCES</h3>{% for x in v.sources %}<div class="li">{{ x }}</div>{% endfor %}</div></div>
+  <div class="s12"><strong>DATA-FRESHNESS CERTIFICATION:</strong> {{ d.freshness }}</div>
+  <div class="muted s12">Prepared for Manifest Institutional Investment System · Publication date: {{ m.pub_short }}</div>{{ foot(8) }}</section>
+</main>
+<script>
+// Fit the 1056 px pages to the frame width.
+(function () {
+  function fit() { var z = Math.min(1, window.innerWidth / 1104); document.documentElement.style.setProperty('--zoom', z.toFixed(3)); }
+  window.addEventListener('resize', fit); fit();
+})();
+</script>
+</body>
+</html>

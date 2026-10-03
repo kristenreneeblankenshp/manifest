@@ -27,37 +27,63 @@
   </div>
 </div>
 
-<div class="panel-title"><span class="num">⚡</span><h2>This week's workflow</h2></div>
-<div class="grid g4">
-  <div class="card">
-    <h2>Zacks Rank</h2>
-    <div class="small muted">{{ runs.zacks.summary if runs.zacks else 'Not pulled yet' }}</div>
-    <div class="small muted">{{ runs.zacks.ts[:16]|replace('T', ' ') if runs.zacks }}</div>
-    {% if can_edit() %}<form method="post" action="/data/zacks" style="margin-top:10px">{{ csrf() }}{{ nxt() }}<button class="gold">Pull Zacks</button></form>{% endif %}
+<div class="panel-title"><span class="num">1</span><h2>This week · {{ reviews.weekly.id.split('-', 1)[1] }}</h2>
+  <span class="small muted">{{ reviews.weekly.done }}/{{ reviews.weekly.total }} review items confirmed · steps turn green as the live checks pass</span></div>
+{% macro st(ok) %}{{ 'ok' if ok else ('warn' if ok is sameas false else '') }}{% endmacro %}
+<div class="steps">
+  {% set z = checks.zacks %}
+  <div class="step {{ st(z.auto_ok) }}">
+    <div class="n"><span>Step 1</span>{{ badge('Done' if z.auto_ok else 'To do') }}</div>
+    <h3>Pull Zacks</h3>
+    <div class="what">{{ z.detail }}<br>Screen data as of {{ zacks_as_of or '—' }}</div>
+    {% if can_edit() %}<form method="post" action="/data/zacks">{{ csrf() }}{{ nxt() }}<button class="gold small">Pull Zacks</button> <a class="small" href="/data">or upload CSV</a></form>{% endif %}
   </div>
-  <div class="card">
-    <h2>Actual weights</h2>
-    <div class="small muted">{{ runs.weights.summary if runs.weights else 'No positions file loaded yet' }}</div>
-    {% if can_edit() %}<form method="post" action="/data/weights" enctype="multipart/form-data" style="margin-top:10px">{{ csrf() }}
-      <label>Choose your broker positions CSV. A preview opens before anything changes.</label>
-      <input type="file" name="file" accept=".csv,text/csv" required onchange="this.form.submit()" style="width:100%">
+  {% set wt = checks.weights %}
+  <div class="step {{ st(wt.auto_ok) }}">
+    <div class="n"><span>Step 2</span>{{ badge('Done' if wt.auto_ok else 'To do') }}</div>
+    <h3>Actual weights</h3>
+    <div class="what">{{ wt.detail }}</div>
+    {% if can_edit() %}<form method="post" action="/data/weights" enctype="multipart/form-data">{{ csrf() }}
+      <input type="file" name="file" accept=".csv,text/csv" required onchange="this.form.submit()" aria-label="Broker positions CSV" title="Broker positions CSV; a preview opens before anything changes">
       <input type="hidden" name="missing_as_zero" value="on"></form>{% endif %}
   </div>
-  <div class="card">
-    <h2>Research <a href="/data#inbox" class="small">{{ inbox }} to triage</a></h2>
-    <div class="small muted">{{ runs.research.summary if runs.research else 'Not pulled yet' }}</div>
-    {% if can_edit() %}<form method="post" action="/data/research" style="margin-top:10px">{{ csrf() }}<button class="gold">Pull research</button></form>{% endif %}
+  {% set rs = checks.research %}
+  <div class="step {{ st(rs.auto_ok) }}">
+    <div class="n"><span>Step 3</span>{{ badge('Done' if rs.auto_ok else 'To do') }}</div>
+    <h3>Research &amp; triage</h3>
+    <div class="what">{{ rs.detail }}</div>
+    <div class="act row">{% if can_edit() %}<form method="post" action="/data/research">{{ csrf() }}<button class="gold small">Pull research</button></form>{% endif %}
+      {% if inbox %}<a class="btn small" href="/data#inbox">Triage {{ inbox }}</a>{% endif %}</div>
   </div>
-  <div class="card">
-    <h2>Reviews</h2>
-    {% for kind, r in reviews.items() %}
-      <div class="spread small"><a href="{{ review_link(kind) }}">{{ kind|capitalize }} · {{ r.id.split('-', 1)[1] }}</a>
-        <span>{{ r.done }}/{{ r.total }} {{ badge(r.review.status if r.review else 'Not Started') }}</span></div>
-      <div class="progress"><i style="width:{{ (100 * r.done / r.total)|round }}%"></i></div>
-    {% endfor %}
+  {% set dcn = checks.decisions %}
+  <div class="step {{ st(dcn.auto_ok) }}">
+    <div class="n"><span>Step 4</span>{{ badge('Done' if dcn.auto_ok else 'To do') }}</div>
+    <h3>Decide</h3>
+    <div class="what">Meeting: {{ dc.meeting|lower|capitalize }}<br>{{ dcn.detail }}<br>Priority: {{ dc.priority }}</div>
+    <div class="act"><a class="btn small" href="/decisions">Open decisions</a></div>
+  </div>
+  <div class="step {{ 'ok' if mwir and mwir.status == 'Issued' else ('warn' if mwir else '') }}">
+    <div class="n"><span>Step 5</span>{{ badge(mwir.status if mwir else 'Not Started') }}</div>
+    <h3>MWIR</h3>
+    <div class="what">{% if mwir %}{{ mwir_label }}{% if mwir.version %} · v{{ mwir.version }}{% endif %}<br>
+      <span class="badge {{ 'ok' if mwir_cert and mwir_cert.ok else 'bad' }}">{{ mwir_cert.label if mwir_cert else '' }}</span>
+      {% else %}Load the holdings file, update signals and narrative, issue the 8-page PDF.{% endif %}</div>
+    <div class="act">{% if mwir %}<a class="btn gold small" href="/mwir/{{ mwir.id }}">Open MWIR</a>
+      {% elif can_edit() %}<form method="post" action="/mwir/start">{{ csrf() }}<button class="gold small">Start MWIR</button></form>{% endif %}</div>
+  </div>
+  {% set wk = reviews.weekly %}
+  <div class="step {{ 'ok' if wk.review and wk.review.status == 'Completed' else ('warn' if wk.review else '') }}">
+    <div class="n"><span>Step 6</span>{{ badge(wk.review.status if wk.review else 'Not Started') }}</div>
+    <h3>Sign off the week</h3>
+    <div class="what">{{ wk.done }}/{{ wk.total }} items confirmed<div class="progress"><i style="width:{{ (100 * wk.done / wk.total)|round }}%"></i></div></div>
+    <div class="act"><a class="btn small" href="{{ review_link('weekly') }}">Weekly review</a></div>
   </div>
 </div>
-
+<div class="row small" style="margin-top:10px;gap:18px">
+  {% for kind in ('monthly', 'quarterly') %}{% set r = reviews[kind] %}
+  <span><a href="{{ review_link(kind) }}">{{ kind|capitalize }} review · {{ r.id.split('-', 1)[1] }}</a> {{ r.done }}/{{ r.total }} {{ badge(r.review.status if r.review else 'Not Started') }}</span>{% endfor %}
+  <span><a href="/reports">Report studio</a> · MIRD, MOR, quarterly engineering review, MIPR</span>
+</div>
 <div class="panel-title"><span class="num">2</span><h2>Portfolio health</h2></div>
 <div class="grid g3">
   <div class="card">

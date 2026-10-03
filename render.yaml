@@ -1,0 +1,30 @@
+# One-click hosting on Render: https://render.com/deploy?repo=https://github.com/kristenreneeblankenshp/manifest
+# Builds the Dockerfile and mounts a persistent disk for the data file, issued PDFs and the session key.
+# A persistent disk needs a paid instance type (Starter or above) and a single instance.
+services:
+  - type: web
+    name: manifest-workbench
+    runtime: docker
+    plan: starter
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /healthz
+    numInstances: 1
+    disk:
+      name: manifest-data
+      mountPath: /data
+      sizeGB: 1
+    envVars:
+      - key: MANIFEST_SECURE_COOKIES
+        value: "1"
+      - key: MANIFEST_SECRET_KEY
+        generateValue: true
+      # First administrator, created on first start while no users exist.
+      - key: MANIFEST_ADMIN_USER
+        sync: false
+      - key: MANIFEST_ADMIN_PASSWORD
+        sync: false
+      # Optional connector credentials (can also be entered later in Settings).
+      - key: ZACKS_API_KEY
+        sync: false
+      - key: SEC_CONTACT_EMAIL
+        sync: false

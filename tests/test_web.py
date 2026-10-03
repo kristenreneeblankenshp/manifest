@@ -76,6 +76,18 @@ class AuthTest(WebTestCase):
         self.assertEqual(r.status_code, 302)
         self.assertIn('/login', r.headers['Location'])
 
+    def test_login_and_setup_need_form_token(self):
+        anon = self.app.test_client()
+        r = anon.post('/login', data={'username': 'ada', 'password': PASSWORD})
+        self.assertEqual(r.status_code, 400)
+        fresh = create_app(tempfile.mkdtemp(), testing=True).test_client()
+        r = fresh.post('/setup', data={'name': 'X', 'username': 'x', 'password': PASSWORD, 'confirm': PASSWORD})
+        self.assertEqual(r.status_code, 400)
+
+    def test_health_check_is_public(self):
+        r = self.app.test_client().get('/healthz')
+        self.assertEqual((r.status_code, r.get_json()), (200, {'status': 'ok'}))
+
     def test_setup_closed_after_first_admin(self):
         r = self.app.test_client().get('/setup')
         self.assertEqual(r.status_code, 302)
@@ -300,7 +312,7 @@ class ReviewsTest(WebTestCase):
 
 class ReportsTest(WebTestCase):
     def test_draft_edit_issue(self):
-        r = self.post('/reports/new/mwir')
+        r = self.post('/reports/new/mor')
         self.assertEqual(r.status_code, 302)
         rid = r.headers['Location'].rsplit('/', 1)[-1]
         draft = self.store()['reports'][rid]
@@ -325,7 +337,7 @@ class ReportsTest(WebTestCase):
         f = self.c.get(f'/reports/{rid}/file/{name}')
         self.assertTrue(f.data.startswith(b'%PDF'))
         f.close()
-        pubs = [p for p in self.store()['publications'] if p and 'MWIR' in str(p.get('publication', ''))]
+        pubs = [p for p in self.store()['publications'] if p and str(p.get('publication', '')) == 'MOR']
         self.assertTrue(any(p.get('status') == 'Published' and p.get('last_published') == AS_OF for p in pubs))
 
     def test_all_report_types_build(self):
@@ -333,7 +345,7 @@ class ReportsTest(WebTestCase):
             r = self.post(f'/reports/new/{kind}')
             self.assertEqual(r.status_code, 302, kind)
             rid = r.headers['Location'].rsplit('/', 1)[-1]
-            self.assertEqual(self.c.get(f'/reports/{rid}').status_code, 200, kind)
+            self.assertEqual(self.c.get(f'/reports/{rid}', follow_redirects=True).status_code, 200, kind)
             pdf = self.c.get(f'/reports/{rid}/draft.pdf')
             self.assertTrue(pdf.data.startswith(b'%PDF'), kind)
             pdf.close()

@@ -113,4 +113,5 @@ APP_SECTIONS = {
     'inbox': list,      # pulled research items awaiting triage
     'data_log': list,   # connector runs
     'staging': dict,    # previews awaiting confirmation (e.g. a weights upload)
+    'zacks': dict,      # Zacks snapshot for the MWIR screen: as_of, source, alias, data
 }

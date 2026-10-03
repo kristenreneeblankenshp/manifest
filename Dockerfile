@@ -14,11 +14,13 @@ RUN pip install --no-cache-dir '/src[web,xlsx]' \
     && rm -rf /src \
     && useradd --create-home --uid 10001 manifest \
     && mkdir -p /data && chown manifest /data
+COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 
-USER manifest
 WORKDIR /home/manifest
 VOLUME ["/data"]
 EXPOSE 8000
+# Starts as root only to hand a freshly mounted disk to the app user, then drops privileges.
+ENTRYPOINT ["/bin/sh", "/usr/local/bin/docker-entrypoint.sh"]
 
 # One worker process: the JSON data file is guarded by a file lock, and threads keep the app responsive.
 # The long timeout covers research pulls that query SEC EDGAR for every tracked security.
