@@ -1,5 +1,11 @@
 # MWIR Report Builder
 
+> The same report is built inside the workbench web console (*MWIR* in the sidebar). That
+> version carries each week forward and fills new tickers from the certified portfolio. It reads
+> Zacks data from the console's Zacks connector, so `zacks.js` doesn't need hand-editing. It
+> also versions issued PDFs. Documents saved here can be imported there. This standalone page
+> still works with no server.
+
 A browser tool that builds the weekly **Manifest Weekly Institutional Report (MWIR)** as an
 8-page landscape PDF, in the layout of the 28 Aug 2026 official MWIR. Weekly inputs go in the
 panel on the left, and the report on the right updates as you type.

@@ -47,9 +47,9 @@ def create_app(data_dir=None, testing=False) -> Flask:
     app.extensions['repo'] = repo
     _bootstrap_admin(repo)
 
-    from . import auth, core, data, filters, reports, reviews, tables
+    from . import auth, core, data, filters, mwir, reports, reviews, tables
     filters.register(app)
-    for module in (auth, core, data, reviews, reports, tables):
+    for module in (auth, core, data, reviews, reports, mwir, tables):
         app.register_blueprint(module.bp)
     if os.environ.get('MANIFEST_PROXY') == '1':
         from werkzeug.middleware.proxy_fix import ProxyFix

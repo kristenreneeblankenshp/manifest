@@ -1,0 +1,204 @@
+{% extends 'base.html' %}
+{% from '_macros.html' import badge, csrf %}
+{% set editable = r.status == 'Draft' and can_edit() %}
+{% block title %}MWIR {{ r.period_label }}{% endblock %}
+{% block heading %}MWIR · week ending {{ v.m.week_upper|title }}{% endblock %}
+{% block sub %}Published {{ v.m.pub_short }} · {{ r.status }}{% if r.version %} · v{{ r.version }} issued{% endif %} · the official 8-page Weekly Institutional Report{% endblock %}
+{% block content_class %}wide{% endblock %}
+{% block content %}
+<div class="card mw-bar">
+  <div class="row">
+    {{ badge(r.status) }}
+    <span class="badge {{ 'ok' if v.cert.ok else 'bad' }}">{{ v.cert.label }}</span>
+    <span class="zk-line">Zacks data as of <b>{{ v.zk.as_of }}</b> · {{ v.zk.matched }}/{{ v.stats.count }} matched{% if r.status == 'Issued' %} · frozen with this version{% endif %}</span>
+    {% if editable %}<form method="post" action="/data/zacks" class="flush">{{ csrf() }}<input type="hidden" name="next" value="{{ request.path }}"><button class="small ghost" title="Refresh rank, market cap and earnings dates from Zacks">Pull Zacks</button></form>{% endif %}
+  </div>
+  <div class="row">
+    <span class="saved" id="saved">{% if r.updated %}Saved {{ r.updated[11:16] }} · {{ r.updated_by }}{% endif %}</span>
+    <a class="btn ghost small" href="/mwir/{{ r.id }}/pages" target="_blank">Full preview</a>
+    <a class="btn ghost small" href="/mwir/{{ r.id }}/draft.pdf" target="_blank">Draft PDF</a>
+    {% for f in r.files|reverse %}{% if loop.first %}<a class="btn small" href="/reports/{{ r.id }}/file/{{ f.file }}">Issued v{{ f.version }} PDF</a>{% endif %}{% endfor %}
+    {% if r.status == 'Issued' and can_edit() %}
+      <form method="post" action="/mwir/{{ r.id }}/reopen">{{ csrf() }}<button class="small">Reopen to revise</button></form>
+    {% elif editable %}
+      <button class="gold small" type="button" onclick="document.getElementById('issue').showModal()">Issue v{{ (r.version or 0) + 1 }}</button>
+    {% endif %}
+  </div>
+</div>
+
+{% if r.status == 'Issued' %}<div class="flash ok" style="margin-top:12px">Issued v{{ r.version }} on {{ r.issued[:10] }} by {{ r.issued_by }} ({{ r.certification }}){% if r.override %} under override: {{ r.override.rstrip('.') }}{% endif %}. The document and its Zacks data are frozen; reopen to revise.</div>{% endif %}
+
+<div class="mw" style="margin-top:14px">
+  <div>
+    <div class="card" id="status">{% include '_mwir_status.html' %}</div>
+
+    <div class="card" style="margin-top:12px">
+      <div class="mw-tabs" role="tablist">
+        {% for key, label in [('holdings', 'Holdings'), ('signals', 'Signals'), ('narrative', 'Narrative'), ('controls', 'Controls & sources')] %}
+        <button type="button" role="tab" data-tab="{{ key }}" aria-selected="false">{{ label }}</button>{% endfor %}
+      </div>
+
+      {# actions that post on their own (outside the main form) #}
+      <div data-panel="holdings">
+        {% if editable %}
+        <div class="row" style="margin-bottom:10px;align-items:flex-end">
+          <form method="post" action="/mwir/{{ r.id }}/holdings" enctype="multipart/form-data" class="flush" style="flex:1">{{ csrf() }}
+            <label>Holdings file (Date, Symbol, Weights CSV)</label>
+            <input type="file" name="file" accept=".csv,text/csv" required onchange="this.form.requestSubmit()" style="width:100%">
+          </form>
+          <form method="post" action="/mwir/{{ r.id }}/baseline" class="flush">{{ csrf() }}<button class="small ghost" title="Set MFPDF % (and any unassigned sleeves) from the certified portfolio">MFPDF from certified portfolio</button></form>
+        </div>
+        <p class="small muted" style="margin:0 0 8px">Current = executable target (from the file). MFPDF = frozen analytical baseline. Bands are 75–125% of Current, floored at 1.00% and capped at 4.00%. Tickers new this week are filled from the certified portfolio; highlighted rows still need a sleeve.</p>
+        {% endif %}
+      </div>
+      <div data-panel="controls">
+        {% if editable %}
+        <div class="row" style="margin-bottom:10px">
+          <form method="post" action="/mwir/{{ r.id }}/events" class="flush">{{ csrf() }}<button class="small ghost">Add this week's earnings to event gates{% if upcoming %} ({{ upcoming|length }}){% endif %}</button></form>
+          <span class="small muted">Certified Strategic Anchors total: {{ strategic_cert or '—' }}%</span>
+        </div>
+        {% endif %}
+      </div>
+
+      <form method="post" action="/mwir/{{ r.id }}/save" id="mwir-form">{{ csrf() }}
+      <fieldset {{ 'disabled' if not editable }} class="{{ '' if editable else 'locked' }}">
+        <div class="grid2" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
+          <label class="fld">Week ending<input type="date" name="weekEnding" value="{{ d.weekEnding }}"></label>
+          <label class="fld">Publication date<input type="date" name="pubDate" value="{{ d.pubDate }}"></label>
+        </div>
+
+        <div data-panel="holdings" id="holdings">
+          <input type="hidden" name="h_count" value="{{ d.holdings|length }}">
+          <div class="hold-grid">
+            <div class="hrow hhead"><span>Ticker</span><span>Sleeve</span><span>MFPDF %</span><span>Current %</span><span>Band</span><span title="Remove">✕</span></div>
+            {% for h in d.holdings %}{% set i = loop.index0 %}
+            <div class="hold{{ ' unassigned' if h.sleeve in ('', 'Unassigned') }}">
+              <div class="hrow">
+                <input class="tk" name="h_{{ i }}_ticker" value="{{ h.ticker }}" aria-label="Ticker">
+                <select name="h_{{ i }}_sleeve" aria-label="Sleeve">{% for k, n in sleeves %}<option value="{{ k }}" {{ 'selected' if k == h.sleeve }}>{{ n }}</option>{% endfor %}</select>
+                <input class="nm" name="h_{{ i }}_mfpdf" value="{{ h.mfpdf }}" inputmode="decimal" aria-label="MFPDF %">
+                <input class="nm" name="h_{{ i }}_current" value="{{ h.current }}" inputmode="decimal" aria-label="Current %">
+                <span class="band mono">{{ v.rows[i].band if v.rows|length > i }}</span>
+                <label class="rm" title="Remove {{ h.ticker }}"><input type="checkbox" name="h_{{ i }}_remove" value="1" data-submit aria-label="Remove {{ h.ticker }}"></label>
+              </div>
+              <div class="hrow2">
+                <select name="h_{{ i }}_guidance" aria-label="Guidance">{% for g in guidance %}<option {{ 'selected' if g == h.guidance }}>{{ g }}</option>{% endfor %}</select>
+                <input name="h_{{ i }}_rationale" value="{{ h.rationale }}" placeholder="Rationale" aria-label="Rationale">
+                <input name="h_{{ i }}_status" value="{{ h.status }}" placeholder="Status" aria-label="Status">
+              </div>
+            </div>{% endfor %}
+          </div>
+          {% if editable %}<button name="h_add" value="1" class="small ghost" style="margin-top:8px">+ Add holding</button>{% endif %}
+        </div>
+
+        <div data-panel="signals">
+          <div class="grid2" style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+            <label class="fld">Composite (0–100)<input name="composite" value="{{ d.composite }}" inputmode="decimal"></label>
+            <label class="fld">Change w/w<input name="compositeChange" value="{{ d.compositeChange }}"></label>
+          </div>
+          <p class="small muted" style="margin:0 0 10px">Gauge zones (assumed until the framework's thresholds are supplied): 70+ green · 55–69 yellow · 40–54 orange · below 40 red.</p>
+          <h3>Institutional compass</h3>
+          {% for label, val, note in compass %}<div class="compass"><span>{{ label }}</span><input name="{{ val }}" value="{{ d[val] }}" aria-label="{{ label }} value"><input name="{{ note }}" value="{{ d[note] }}" aria-label="{{ label }} note"></div>{% endfor %}
+          <h3>Component scores (0–10)</h3>
+          <div class="grid2" style="display:grid;grid-template-columns:1fr 1fr;gap:6px 14px;margin-bottom:10px">
+            {% for c in d.components %}<label class="compass" style="grid-template-columns:1fr 70px;margin:0">{{ c.name }}<input name="comp_{{ loop.index0 }}" value="{{ c.score }}" inputmode="decimal"></label>{% endfor %}
+          </div>
+          {% for key, label, rows, hint in text_fields.signals %}<label class="fld">{{ label }}{% if hint %}<span class="hint">{{ hint }}</span>{% endif %}<textarea name="{{ key }}" rows="{{ rows }}">{{ d[key] }}</textarea></label>{% endfor %}
+        </div>
+
+        <div data-panel="narrative">
+          {% for key, label, rows, hint in text_fields.narrative %}<label class="fld">{{ label }}{% if hint %}<span class="hint">{{ hint }}</span>{% endif %}<textarea name="{{ key }}" rows="{{ rows }}">{{ d[key] }}</textarea></label>{% endfor %}
+        </div>
+
+        <div data-panel="controls">
+          {% for key, label, rows, hint in text_fields.controls %}<label class="fld">{{ label }}{% if hint %}<span class="hint">{{ hint }}</span>{% endif %}{% if rows == 1 %}<input name="{{ key }}" value="{{ d[key] }}">{% else %}<textarea name="{{ key }}" rows="{{ rows }}">{{ d[key] }}</textarea>{% endif %}</label>{% endfor %}
+        </div>
+        {% if editable %}<noscript><button class="gold">Save</button></noscript>{% endif %}
+      </fieldset>
+      </form>
+    </div>
+
+    <details class="card" style="margin-top:12px">
+      <summary><b>More</b> · history, import and export</summary>
+      <h3>Weekly history</h3>
+      <table class="t">{% for h in history %}<tr><td><a href="/mwir/{{ h.id }}">{{ h.period_label }}</a></td><td>{{ badge(h.status) }}</td>
+        <td>{% for f in h.files %}<a href="/reports/{{ h.id }}/file/{{ f.file }}">v{{ f.version }}</a> {% endfor %}</td><td class="small">{{ h.certification or '' }}</td></tr>{% endfor %}</table>
+      <h3>Export / import</h3>
+      <div class="row"><a class="btn ghost small" href="/mwir/{{ r.id }}/export.json">Export document (JSON)</a></div>
+      {% if editable %}
+      <form method="post" action="/mwir/{{ r.id }}/import-json" enctype="multipart/form-data" style="margin-top:8px" onsubmit="return confirm('Replace this week\'s document with the imported one?')">{{ csrf() }}
+        <label>Import a document exported from here or from the browser MWIR builder (its saved JSON)</label>
+        <div class="row"><input type="file" name="file" accept=".json,application/json" required><button class="small">Import</button></div>
+      </form>{% endif %}
+    </details>
+  </div>
+
+  <div class="mw-preview"><iframe id="preview" src="/mwir/{{ r.id }}/pages" title="MWIR preview"></iframe></div>
+</div>
+
+{% if editable %}
+<dialog id="issue" class="card" style="max-width:520px">
+  <form method="post" action="/mwir/{{ r.id }}/issue" class="flush">{{ csrf() }}
+    <h2>Issue MWIR v{{ (r.version or 0) + 1 }}</h2>
+    <p class="small">Renders the final 8-page PDF, freezes this week's Zacks data with it, records the MWIR publication in Committee Operations and satisfies the weekly review's MWIR item.</p>
+    <div id="issue-status">{% if not v.cert.ok %}<div class="flash warn">Control assertions are failing ({{ v.cert.label }}). The report will print that certification. Give the reason for issuing anyway, or close and fix the holdings.</div>
+      <label>Override reason (recorded in the audit trail)</label><textarea name="override" rows="3" style="width:100%" required></textarea>{% endif %}</div>
+    <div class="row" style="margin-top:12px;justify-content:flex-end"><button type="button" class="ghost" onclick="this.closest('dialog').close()">Cancel</button><button class="gold">Issue</button></div>
+  </form>
+</dialog>
+{% endif %}
+{% endblock %}
+
+{% block scripts %}
+<script>
+(function () {
+  // tabs (all panels stay in one form, so one save posts everything)
+  var tabs = document.querySelectorAll('[data-tab]');
+  function show(key) {
+    tabs.forEach(function (t) { t.setAttribute('aria-selected', String(t.dataset.tab === key)); });
+    document.querySelectorAll('[data-panel]').forEach(function (p) { p.hidden = p.dataset.panel !== key; });
+    var map = { holdings: 'p5', signals: 'p2', narrative: 'p1', controls: 'p3' };
+    var f = document.getElementById('preview');
+    try { var el = f.contentDocument.getElementById(map[key]); if (el) el.scrollIntoView(); } catch (e) {}
+  }
+  tabs.forEach(function (t) { t.addEventListener('click', function () { history.replaceState(null, '', '#' + t.dataset.tab); show(t.dataset.tab); }); });
+  show((location.hash || '#holdings').slice(1).replace(/[^a-z]/g, '') || 'holdings');
+
+  var form = document.getElementById('mwir-form');
+  if (!form || form.querySelector('fieldset').disabled) return;
+  var saved = document.getElementById('saved'), timer = null, pending = null;
+  function save() {
+    clearTimeout(timer); timer = null;
+    saved.textContent = 'Saving…';
+    pending = fetch(form.action, { method: 'POST', body: new FormData(form), headers: { 'X-Requested-With': 'fetch' } })
+      .then(function (r) { return r.json(); })
+      .then(function (j) {
+        if (!j.ok) { saved.textContent = j.error || 'Not saved'; return; }
+        saved.textContent = 'Saved ' + (j.saved || '').slice(11, 16);
+        document.getElementById('status').innerHTML = j.status_html;
+        var f = document.getElementById('preview'), y = 0;
+        try { y = f.contentWindow.scrollY; } catch (e) {}
+        f.onload = function () { try { f.contentWindow.scrollTo(0, y); } catch (e) {} };
+        f.contentWindow.location.reload();
+      })
+      .catch(function () { saved.textContent = 'Not saved — check your connection'; });
+    return pending;
+  }
+  function later() { saved.textContent = 'Unsaved changes'; clearTimeout(timer); timer = setTimeout(save, 700); }
+  form.addEventListener('input', function (e) { if (!e.target.hasAttribute('data-submit')) later(); });
+  form.addEventListener('change', function (e) {
+    if (e.target.hasAttribute('data-submit')) { clearTimeout(timer); form.submit(); return; }
+    if (e.target.tagName === 'SELECT' || e.target.type === 'date') later();
+  });
+  // other actions save pending edits first
+  document.querySelectorAll('form.flush').forEach(function (f) {
+    f.addEventListener('submit', function (e) {
+      if (!timer && !pending) return;
+      e.preventDefault();
+      (timer ? save() : pending).then(function () { HTMLFormElement.prototype.submit.call(f); });
+    });
+  });
+  window.addEventListener('beforeunload', function (e) { if (timer) { save(); } });
+})();
+</script>
+{% endblock %}

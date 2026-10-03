@@ -50,5 +50,6 @@ def today():
 
 def register(app):
     app.jinja_env.filters.update(status=status_class, cell=cell, pct=pct)
+    from .nav import jump_targets
     app.jinja_env.globals.update(csrf_token=csrf_token, current_user=current_user, can_edit=can_edit,
-                                 today=today, S=S)
+                                 today=today, S=S, jump_targets=jump_targets)

@@ -5,59 +5,41 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{% block title %}Manifest Workbench{% endblock %} · Manifest Workbench</title>
 <link rel="stylesheet" href="{{ url_for('static', filename='app.css') }}">
+{% block head %}{% endblock %}
 </head>
 <body>
 {% from '_macros.html' import csrf %}
-{% set path = request.path %}
 <div class="app">
-  <aside class="side">
-    <div class="brand"><b>MANIFEST WORKBENCH</b><span>CISC-001 · Founders Edition v1.0</span></div>
-    <nav class="nav">
-      <a href="/" class="{{ 'on' if path == '/' }}">Console</a>
-      <a href="/decisions" class="{{ 'on' if path.startswith('/decisions') }}">Decisions</a>
-      <a href="/actions" class="{{ 'on' if path.startswith('/actions') }}">Actions &amp; notebook</a>
-      <a href="/reviews" class="{{ 'on' if path.startswith('/reviews') }}">Reviews</a>
-      <a href="/reports" class="{{ 'on' if path.startswith('/reports') }}">Reports</a>
-      <a href="/data" class="{{ 'on' if path.startswith('/data') }}">Data connections {% if nav_inbox %}<span class="pill">{{ nav_inbox }}</span>{% endif %}</a>
-      <div class="group">Research · MOPS-003</div>
-      <a href="/research" class="{{ 'on' if path == '/research' }}">Research command</a>
-      <a href="/pipeline" class="{{ 'on' if path.startswith('/pipeline') }}">Candidate pipeline</a>
-      <a href="/t/evidence" class="{{ 'on' if path.startswith('/t/evidence') }}">Evidence ledger</a>
-      <a href="/t/miar" class="{{ 'on' if path.startswith('/t/miar') }}">MIAR registry</a>
-      <a href="/t/masr" class="{{ 'on' if path.startswith('/t/masr') }}">MASR registry</a>
-      <a href="/intel" class="{{ 'on' if path.startswith('/intel') }}">Research intelligence</a>
-      <div class="group">Portfolio · MFPDF</div>
-      <a href="/t/portfolio" class="{{ 'on' if path.startswith('/t/portfolio') }}">Certified allocation</a>
-      <a href="/t/conviction" class="{{ 'on' if path.startswith('/t/conviction') }}">Conviction</a>
-      <a href="/controls" class="{{ 'on' if path.startswith('/controls') }}">Dashboard controls</a>
-      <div class="group">Engineering · MOPS-002</div>
-      <a href="/pew" class="{{ 'on' if path == '/pew' }}">PEW control center</a>
-      <a href="/lab" class="{{ 'on' if path.startswith('/lab') }}">Allocation lab</a>
-      <a href="/validation" class="{{ 'on' if path.startswith('/validation') }}">Validation &amp; cert</a>
-      <a href="/t/pew004" class="{{ 'on' if path.startswith('/t/pew004') }}">Candidate comparison</a>
-      <a href="/t/roles" class="{{ 'on' if path.startswith('/t/roles') }}">Role assignment</a>
-      <a href="/t/mandate" class="{{ 'on' if path.startswith('/t/mandate') }}">Mandate</a>
-      <a href="/t/sleeves" class="{{ 'on' if path.startswith('/t/sleeves') }}">Sleeves</a>
-      <div class="group">System</div>
-      <a href="/sheets" class="{{ 'on' if path.startswith('/sheets') }}">All workbook sheets</a>
-      <a href="/audit" class="{{ 'on' if path.startswith('/audit') }}">Audit trail</a>
-      {% if current_user() and current_user().role == 'admin' %}<a href="/settings" class="{{ 'on' if path.startswith('/settings') }}">Settings &amp; users</a>{% endif %}
+  <aside class="side" id="side">
+    <a class="brand" href="/"><b>MANIFEST WORKBENCH</b><span>CISC-001 · Founders Edition v1.0</span></a>
+    <nav class="nav" aria-label="Main">
+      {% for sec in nav_sections %}
+        <div class="group">{{ sec.title }}</div>
+        {% for it in sec.links %}
+          <a href="{{ it.url }}" class="{{ 'on' if it.active }}"{% if it.active %} aria-current="page"{% endif %}>{{ it.label }}
+            {% if it.badge %}<span class="pill {{ 'quiet' if it.badge in ('Draft', 'Start') else ('done' if it.badge == 'Issued' else '') }}">{{ it.badge }}</span>{% endif %}</a>
+        {% endfor %}
+      {% endfor %}
     </nav>
   </aside>
   <main class="main">
     <div class="top">
-      <div><h1>{% block heading %}{% endblock %}</h1><div class="sub">{% block sub %}{% endblock %}</div></div>
-      <div class="row">
+      <button class="ghost small menu" type="button" onclick="document.getElementById('side').classList.toggle('open')" aria-label="Menu">☰</button>
+      <div class="title"><h1>{% block heading %}{% endblock %}</h1><div class="sub">{% block sub %}{% endblock %}</div></div>
+      <div class="row tools">
+        <input id="jump" class="jump" list="jump-list" placeholder="Jump to…  Ctrl K" aria-label="Jump to a page" autocomplete="off">
+        <datalist id="jump-list">{% for label, url in jump_targets() %}<option value="{{ label }}" data-url="{{ url }}">{% endfor %}</datalist>
         <form method="post" action="/as-of">{{ csrf() }}
           <label style="margin:0">As of</label>
           <input type="date" name="as_of" value="{{ today().isoformat() }}" onchange="this.form.submit()">
           <input type="hidden" name="next" value="{{ request.path }}">
         </form>
-        <span class="muted small">{{ current_user().name }} · {{ current_user().role }}</span>
+        <span class="muted small who">{{ current_user().name }} · {{ current_user().role }}</span>
         <form method="post" action="/logout">{{ csrf() }}<button class="ghost small">Sign out</button></form>
       </div>
     </div>
-    <div class="content">
+    {% if subnav %}<nav class="subnav" aria-label="Section">{% for t in subnav %}<a href="{{ t.url }}" class="{{ 'on' if t.active }}">{{ t.label }}</a>{% endfor %}</nav>{% endif %}
+    <div class="content {% block content_class %}{% endblock %}">
       {% with msgs = get_flashed_messages(with_categories=true) %}
         {% for cat, msg in msgs %}<div class="flash {{ cat }}">{{ msg }}</div>{% endfor %}
       {% endwith %}
@@ -65,5 +47,23 @@
     </div>
   </main>
 </div>
+<script>
+(function () {
+  var jump = document.getElementById('jump');
+  var urls = {};
+  document.querySelectorAll('#jump-list option').forEach(function (o) { urls[o.value] = o.dataset.url; });
+  function go() { var u = urls[jump.value]; if (u) window.location = u; }
+  jump.addEventListener('change', go);
+  jump.addEventListener('keydown', function (e) {
+    if (e.key !== 'Enter') return;
+    var v = jump.value.toLowerCase(), hit = Object.keys(urls).find(function (k) { return k.toLowerCase().indexOf(v) >= 0; });
+    if (hit) window.location = urls[hit];
+  });
+  document.addEventListener('keydown', function (e) {
+    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') { e.preventDefault(); jump.focus(); jump.select(); }
+  });
+})();
+</script>
+{% block scripts %}{% endblock %}
 </body>
 </html>

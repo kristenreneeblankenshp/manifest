@@ -1,0 +1,819 @@
+{
+ "doc": {
+  "weekEnding": "2026-08-28",
+  "pubDate": "2026-08-31",
+  "headline": "CONSTRUCTIVE PARTICIPATION · HAWKISH FED / GEOPOLITICAL DISCIPLINE",
+  "subhead": "Remain fully model-allocated, but do not expand aggregate risk. Strong earnings and tighter credit spreads are offset by a more hawkish Fed path and renewed Iran/oil escalation into publication morning.",
+  "composite": "62",
+  "compositeChange": "-1",
+  "deltaGamma": "-1 / -1",
+  "deltaNote": "policy-event cooling",
+  "fedRange": "3.50–3.75%",
+  "fedNote": "unchanged",
+  "hyOas": "2.63%",
+  "hyNote": "calm / improving",
+  "tenY": "4.67%*",
+  "tenYNote": "still restrictive",
+  "vix": "14.43",
+  "vixNote": "contained",
+  "components": [
+   {
+    "name": "Growth",
+    "score": "5"
+   },
+   {
+    "name": "Breadth",
+    "score": "6"
+   },
+   {
+    "name": "Inflation",
+    "score": "4"
+   },
+   {
+    "name": "Momentum",
+    "score": "6"
+   },
+   {
+    "name": "Fed / Liquidity",
+    "score": "4"
+   },
+   {
+    "name": "Volatility",
+    "score": "7"
+   },
+   {
+    "name": "Credit",
+    "score": "9"
+   },
+   {
+    "name": "Rates",
+    "score": "4"
+   },
+   {
+    "name": "Earnings",
+    "score": "9"
+   },
+   {
+    "name": "Geopolitics / Oil",
+    "score": "2"
+   }
+  ],
+  "tape": "S&P 500 | +0.49%\nNasdaq Composite | +0.85%\nDow Industrials | +0.53%\nVIX close | 14.43\nWTI crude | $83.40 Fri / ~$86.31 Mon\nBrent crude | $89.31 Fri / ~$90.97 Mon",
+  "interpretation": "Credit improved again: HY OAS fell to 2.63% on the latest official observation.\nFinancial stress remains below zero: STLFSI4 -0.8107 (latest published week).\nNVIDIA Q2 results materially strengthened the earnings evidence set.\nFriday Jackson Hole guidance raised the probability of a September hike.\nMonday oil/geopolitical escalation offsets part of the week-ending improvement.\nComposite slips to 62 from 63; Gamma remains negative.",
+  "decisionRule": "The signal mix supports full model participation with a defensive risk budget: preserve quality anchors, healthcare, industrial infrastructure and income ballast; allow NVIDIA to revert from event hold to maintain-at-target after strong results; constrain AVGO/PANW additions through their evidence gates; do not chase energy after the renewed geopolitical premium.",
+  "officialPosture": "100% MODEL ALLOCATION · SELECTIVE INTERNAL ROTATION ONLY",
+  "execPosture": "Retain the 100.00% rules-governed Merrill executable model. The week improved on earnings, credit and volatility, but Friday's hawkish Jackson Hole message and renewed U.S.-Iran strikes into Aug. 31 argue against a net risk increase.",
+  "execImplementation": "Enforce MRGES-001. Berkshire Hathaway remains analytical only at 0.00% executable. Release the prior NVIDIA event hold after the Aug. 26 evidence review, but keep semiconductor/networking exposure at disciplined targets; place AVGO and PANW behind this week's earnings gates.",
+  "execIncremental": "Favor healthcare and quality industrials only when below approved bands. Maintain energy exposure without chasing the publication-morning oil spike.",
+  "execControl": "Actual account weights remain unavailable. This report publishes model guidance and monitoring bands; it does not infer drift or authorize live trades.",
+  "footnote": "*Latest official FRED daily observation available for DGS10 was 4.67% on Aug 27; Friday market yield moved higher after Jackson Hole.",
+  "macroRates": "Fed target remains 3.50-3.75%. The latest official 10-year Treasury observation was 4.67% on Aug. 27, down modestly from Aug. 21, but Chair Kevin Warsh's Jackson Hole remarks reinforced a hawkish reaction and increased September hike expectations.",
+  "macroInflation": "The 10-year breakeven averaged 2.32% for the week ending Aug. 28. Inflation remains the key policy constraint; renewed oil strength into Aug. 31 raises the risk of headline re-acceleration.",
+  "macroCredit": "High-yield OAS tightened to 2.63% on Aug. 27. STLFSI4 was -0.8107 for the week ending Aug. 21, still below zero and consistent with below-average system stress. Credit is not validating broad de-risking.",
+  "macroEarnings": "NVIDIA reported Q2 FY2027 revenue of $96.2B, +106% y/y, with Data Center revenue of $89.0B, +117% y/y. The result clears the prior Aug. 26 event gate, though concentration discipline remains in force.",
+  "macroGeo": "WTI finished Aug. 28 at $83.40 and Brent at $89.31, both down on the week. Renewed U.S.-Iran strikes over the weekend pushed Monday indications to about $86.31 WTI and $90.97 Brent, restoring an inflationary event premium.",
+  "gatesWeek": "WEEK OF AUG 31",
+  "events": "SEP 1 | Palo Alto Networks | Maintain event hold; review cybersecurity evidence after release.\nSEP 3 | Broadcom | Hold AVGO at or below target into earnings; reassess AI/networking concentration.\nSEP 4 | U.S. payrolls | Re-score growth, rates and Fed/liquidity after employment data.",
+  "reconciliation": "Berkshire Hathaway (BRK.B): MFPDF analytical baseline 3.02% · Merrill executable target 0.00% · excluded because Merrill coverage is unavailable. The 3.02% remains redistributed pro rata among the eight eligible Strategic Anchors, preserving the sleeve at 22.51% and the executable model at 100.00%.",
+  "bandStandard": "Current recommendation equals the MRGES executable target unless an event gate says HOLD <= TARGET. Approved monitoring bands remain 75%-125% of target, subject to the 1.00% floor and 4.00% cap. Actual weights are not available; no drift classification is asserted.",
+  "hierarchy": "Selective adds: VHT, SYK, JNJ, LLY, DHR, DE, CAT, ETN, GE and PH · only when below band and after account controls.\nMaintain: core anchors, NVIDIA at disciplined target after evidence review, financial infrastructure, income ballast and existing energy exposure.\nConstrain: AVGO and PANW at or below target through this week's event gates; do not chase energy on the renewed geopolitical premium.",
+  "matrixDisclaimer": "No live trade authorization. Apply suitability, tax, liquidity, firm and supervisory controls before any account action. Missing actual weights prevents drift and order-size certification.",
+  "clientBrief": "The Manifest portfolio remains fully allocated under its rules-governed model, with a neutral/risk-control posture. Credit spreads tightened and NVIDIA delivered strong earnings, but the Federal Reserve reinforced its inflation-fighting stance at Jackson Hole and renewed U.S.-Iran conflict lifted oil again into publication morning. Preserve the Merrill executable model, selectively fund healthcare and quality industrials only when below approved bands, maintain NVIDIA at target after its evidence gate, and hold AVGO/PANW at or below target into this week's events.",
+  "deliverables": "MWIR-WGT-001 weight-guidance standard\nMFPDF Founders Edition v1.0 allocation\nMRGES-001 rules-governed execution standard\nMerrill executable workbook v1.1\nPrior MWIR continuity through Aug 21, 2026",
+  "strategicTarget": "22.51",
+  "disclosures": "Actual weights | unavailable / disclosed\nLive trade status | not authorized\nComposite formula | not retrieved; continuity judgment\nConviction tier | not reconstructed",
+  "sources": "Federal Reserve Bank of St. Louis · ICE BofA US HY OAS (BAMLH0A0HYM2)\nFederal Reserve Bank of St. Louis · 10-Year Treasury (DGS10)\nCboe · VIX spot close, Aug 28, 2026\nFederal Reserve Bank of St. Louis · Financial Stress Index (STLFSI4)\nReuters · Wall Street ends lower after Fed Chair Warsh reaffirms inflation fight, Aug 28, 2026\nNVIDIA Newsroom · Q2 FY2027 results, Aug 26, 2026\nReuters · Oil settles lower on Fed policy / Hormuz signals, Aug 28, 2026\nReuters · Oil rises after renewed U.S.-Iran military attacks, Aug 31, 2026\nReuters · Week Ahead: jobs report and Broadcom results, Aug 28, 2026\nZacks Investment Research · Zacks Rank, market cap and earnings calendar",
+  "freshness": "Market levels use the latest published official observations available as of the publication run. Where Friday official series were not yet posted, the report identifies the latest official observation rather than fabricating a Friday value. Publication-morning geopolitical/oil moves are treated as an event overlay, not as week-ending data.",
+  "holdings": [
+   {
+    "sleeve": "Strategic",
+    "ticker": "COST",
+    "mfpdf": "3.02",
+    "current": "3.49",
+    "guidance": "MAINTAIN",
+    "rationale": "Consumer resilience; redistributed anchor",
+    "status": "EVIDENCE HOLD"
+   },
+   {
+    "sleeve": "Strategic",
+    "ticker": "JNJ",
+    "mfpdf": "3.02",
+    "current": "3.49",
+    "guidance": "SELECTIVE ADD",
+    "rationale": "Quality healthcare anchor",
+    "status": "EVIDENCE HOLD"
+   },
+   {
+    "sleeve": "Strategic",
+    "ticker": "MSFT",
+    "mfpdf": "3.02",
+    "current": "3.49",
+    "guidance": "MAINTAIN",
+    "rationale": "AI platform; preserve discipline",
+    "status": "EVIDENCE HOLD"
+   },
+   {
+    "sleeve": "Strategic",
+    "ticker": "V",
+    "mfpdf": "2.88",
+    "current": "3.33",
+    "guidance": "MAINTAIN",
+    "rationale": "Payments infrastructure",
+    "status": "EVIDENCE HOLD"
+   },
+   {
+    "sleeve": "Strategic",
+    "ticker": "GOOGL",
+    "mfpdf": "2.84",
+    "current": "3.28",
+    "guidance": "MAINTAIN",
+    "rationale": "AI/platform anchor",
+    "status": "EVIDENCE HOLD"
+   },
+   {
+    "sleeve": "Strategic",
+    "ticker": "MA",
+    "mfpdf": "1.60",
+    "current": "1.85",
+    "guidance": "MAINTAIN",
+    "rationale": "Payments infrastructure",
+    "status": "EVIDENCE HOLD"
+   },
+   {
+    "sleeve": "Strategic",
+    "ticker": "AAPL",
+    "mfpdf": "1.56",
+    "current": "1.80",
+    "guidance": "MAINTAIN",
+    "rationale": "Ecosystem anchor",
+    "status": "EVIDENCE HOLD"
+   },
+   {
+    "sleeve": "Strategic",
+    "ticker": "AMZN",
+    "mfpdf": "1.55",
+    "current": "1.79",
+    "guidance": "MAINTAIN",
+    "rationale": "Cloud/commerce anchor",
+    "status": "EVIDENCE HOLD"
+   },
+   {
+    "sleeve": "Growth",
+    "ticker": "AVGO",
+    "mfpdf": "3.02",
+    "current": "3.02",
+    "guidance": "EVENT HOLD",
+    "rationale": "Sep 3 earnings gate",
+    "status": "EVIDENCE HOLD"
+   },
+   {
+    "sleeve": "Growth",
+    "ticker": "LLY",
+    "mfpdf": "3.02",
+    "current": "3.02",
+    "guidance": "SELECTIVE ADD",
+    "rationale": "Healthcare quality priority",
+    "status": "EVIDENCE HOLD"
+   },
+   {
+    "sleeve": "Growth",
+    "ticker": "NVDA",
+    "mfpdf": "2.68",
+    "current": "2.68",
+    "guidance": "MAINTAIN",
+    "rationale": "Q2 gate cleared; strong AI demand",
+    "status": "EVIDENCE HOLD"
+   },
+   {
+    "sleeve": "Growth",
+    "ticker": "HD",
+    "mfpdf": "1.56",
+    "current": "1.56",
+    "guidance": "MAINTAIN",
+    "rationale": "Q2 beat; guidance reaffirmed",
+    "status": "EVIDENCE HOLD"
+   },
+   {
+    "sleeve": "Growth",
+    "ticker": "META",
+    "mfpdf": "1.56",
+    "current": "1.56",
+    "guidance": "MAINTAIN",
+    "rationale": "Platform quality",
+    "status": "EVIDENCE HOLD"
+   },
+   {
+    "sleeve": "Growth",
+    "ticker": "ANET",
+    "mfpdf": "1.55",
+    "current": "1.55",
+    "guidance": "HOLD <= TARGET",
+    "rationale": "Networking concentration",
+    "status": "EVIDENCE HOLD"
+   },
+   {
+    "sleeve": "Digital",
+    "ticker": "PANW",
+    "mfpdf": "1.99",
+    "current": "1.99",
+    "guidance": "EVENT HOLD",
+    "rationale": "Sep 1 earnings gate",
+    "status": "EVIDENCE HOLD"
+   },
+   {
+    "sleeve": "Digital",
+    "ticker": "AMAT",
+    "mfpdf": "1.56",
+    "current": "1.56",
+    "guidance": "HOLD <= TARGET",
+    "rationale": "Semi-cycle restraint",
+    "status": "EVIDENCE HOLD"
+   },
+   {
+    "sleeve": "Digital",
+    "ticker": "CSCO",
+    "mfpdf": "1.56",
+    "current": "1.56",
+    "guidance": "HOLD <= TARGET",
+    "rationale": "Networking overlap",
+    "status": "EVIDENCE HOLD"
+   },
+   {
+    "sleeve": "Digital",
+    "ticker": "KLAC",
+    "mfpdf": "1.56",
+    "current": "1.56",
+    "guidance": "HOLD <= TARGET",
+    "rationale": "Semi-cycle restraint",
+    "status": "EVIDENCE HOLD"
+   },
+   {
+    "sleeve": "Digital",
+    "ticker": "MU",
+    "mfpdf": "1.56",
+    "current": "1.56",
+    "guidance": "HOLD <= TARGET",
+    "rationale": "Memory-cycle risk",
+    "status": "EVIDENCE HOLD"
+   },
+   {
+    "sleeve": "Digital",
+    "ticker": "ORCL",
+    "mfpdf": "1.56",
+    "current": "1.56",
+    "guidance": "MAINTAIN",
+    "rationale": "Cloud/database exposure",
+    "status": "EVIDENCE HOLD"
+   },
+   {
+    "sleeve": "Digital",
+    "ticker": "TXN",
+    "mfpdf": "1.56",
+    "current": "1.56",
+    "guidance": "MAINTAIN",
+    "rationale": "Analog quality",
+    "status": "EVIDENCE HOLD"
+   },
+   {
+    "sleeve": "Digital",
+    "ticker": "VRT",
+    "mfpdf": "1.55",
+    "current": "1.55",
+    "guidance": "HOLD <= TARGET",
+    "rationale": "AI infra concentration",
+    "status": "EVIDENCE HOLD"
+   },
+   {
+    "sleeve": "Industrials",
+    "ticker": "DHR",
+    "mfpdf": "3.00",
+    "current": "3.00",
+    "guidance": "SELECTIVE ADD",
+    "rationale": "Quality industrial/health tools",
+    "status": "EVIDENCE HOLD"
+   },
+   {
+    "sleeve": "Industrials",
+    "ticker": "RTX",
+    "mfpdf": "2.99",
+    "current": "2.99",
+    "guidance": "MAINTAIN",
+    "rationale": "Defense/aerospace resilience",
+    "status": "EVIDENCE HOLD"
+   },
+   {
+    "sleeve": "Industrials",
+    "ticker": "DE",
+    "mfpdf": "1.77",
+    "current": "1.77",
+    "guidance": "SELECTIVE ADD",
+    "rationale": "Q3 beat; ag cycle watch",
+    "status": "EVIDENCE HOLD"
+   },
+   {
+    "sleeve": "Industrials",
+    "ticker": "CAT",
+    "mfpdf": "1.56",
+    "current": "1.56",
+    "guidance": "SELECTIVE ADD",
+    "rationale": "Infrastructure priority",
+    "status": "EVIDENCE HOLD"
+   },
+   {
+    "sleeve": "Industrials",
+    "ticker": "ETN",
+    "mfpdf": "1.56",
+    "current": "1.56",
+    "guidance": "SELECTIVE ADD",
+    "rationale": "Electrification leader",
+    "status": "EVIDENCE HOLD"
+   },
+   {
+    "sleeve": "Industrials",
+    "ticker": "GE",
+    "mfpdf": "1.56",
+    "current": "1.56",
+    "guidance": "SELECTIVE ADD",
+    "rationale": "Aerospace quality",
+    "status": "EVIDENCE HOLD"
+   },
+   {
+    "sleeve": "Industrials",
+    "ticker": "PH",
+    "mfpdf": "1.56",
+    "current": "1.56",
+    "guidance": "SELECTIVE ADD",
+    "rationale": "Motion/control quality",
+    "status": "EVIDENCE HOLD"
+   },
+   {
+    "sleeve": "Industrials",
+    "ticker": "TT",
+    "mfpdf": "1.56",
+    "current": "1.56",
+    "guidance": "MAINTAIN",
+    "rationale": "Efficiency infrastructure",
+    "status": "EVIDENCE HOLD"
+   },
+   {
+    "sleeve": "Industrials",
+    "ticker": "UNP",
+    "mfpdf": "1.55",
+    "current": "1.55",
+    "guidance": "MAINTAIN",
+    "rationale": "Volume watch",
+    "status": "EVIDENCE HOLD"
+   },
+   {
+    "sleeve": "Financial",
+    "ticker": "CME",
+    "mfpdf": "3.02",
+    "current": "3.02",
+    "guidance": "MAINTAIN",
+    "rationale": "Volatility beneficiary",
+    "status": "EVIDENCE HOLD"
+   },
+   {
+    "sleeve": "Financial",
+    "ticker": "MMC",
+    "mfpdf": "2.00",
+    "current": "2.00",
+    "guidance": "MAINTAIN",
+    "rationale": "Risk infrastructure",
+    "status": "EVIDENCE HOLD"
+   },
+   {
+    "sleeve": "Financial",
+    "ticker": "GS",
+    "mfpdf": "1.56",
+    "current": "1.56",
+    "guidance": "MAINTAIN",
+    "rationale": "Capital markets exposure",
+    "status": "EVIDENCE HOLD"
+   },
+   {
+    "sleeve": "Financial",
+    "ticker": "JPM",
+    "mfpdf": "1.56",
+    "current": "1.56",
+    "guidance": "MAINTAIN",
+    "rationale": "Banking quality",
+    "status": "EVIDENCE HOLD"
+   },
+   {
+    "sleeve": "Financial",
+    "ticker": "VFH",
+    "mfpdf": "1.56",
+    "current": "1.56",
+    "guidance": "MAINTAIN",
+    "rationale": "Diversified financials",
+    "status": "EVIDENCE HOLD"
+   },
+   {
+    "sleeve": "Healthcare",
+    "ticker": "VHT",
+    "mfpdf": "2.06",
+    "current": "2.06",
+    "guidance": "SELECTIVE ADD",
+    "rationale": "Healthcare sleeve priority",
+    "status": "EVIDENCE HOLD"
+   },
+   {
+    "sleeve": "Healthcare",
+    "ticker": "SYK",
+    "mfpdf": "1.55",
+    "current": "1.55",
+    "guidance": "SELECTIVE ADD",
+    "rationale": "Medtech quality",
+    "status": "EVIDENCE HOLD"
+   },
+   {
+    "sleeve": "Energy",
+    "ticker": "LNG",
+    "mfpdf": "3.02",
+    "current": "3.02",
+    "guidance": "MAINTAIN / NO CHASE",
+    "rationale": "Geopolitical premium elevated",
+    "status": "EVIDENCE HOLD"
+   },
+   {
+    "sleeve": "Energy",
+    "ticker": "VPU",
+    "mfpdf": "3.02",
+    "current": "3.02",
+    "guidance": "MAINTAIN",
+    "rationale": "Defensive; rate sensitive",
+    "status": "EVIDENCE HOLD"
+   },
+   {
+    "sleeve": "Energy",
+    "ticker": "XOM",
+    "mfpdf": "2.56",
+    "current": "2.56",
+    "guidance": "MAINTAIN / NO CHASE",
+    "rationale": "Oil event premium",
+    "status": "EVIDENCE HOLD"
+   },
+   {
+    "sleeve": "Energy",
+    "ticker": "CVX",
+    "mfpdf": "1.56",
+    "current": "1.56",
+    "guidance": "MAINTAIN / NO CHASE",
+    "rationale": "Oil event premium",
+    "status": "EVIDENCE HOLD"
+   },
+   {
+    "sleeve": "Energy",
+    "ticker": "VDE",
+    "mfpdf": "1.56",
+    "current": "1.56",
+    "guidance": "MAINTAIN / NO CHASE",
+    "rationale": "Sector exposure sufficient",
+    "status": "EVIDENCE HOLD"
+   },
+   {
+    "sleeve": "Income",
+    "ticker": "JEPI",
+    "mfpdf": "3.02",
+    "current": "3.02",
+    "guidance": "MAINTAIN",
+    "rationale": "Income / volatility moderation",
+    "status": "EVIDENCE HOLD"
+   },
+   {
+    "sleeve": "Income",
+    "ticker": "JEPQ",
+    "mfpdf": "3.02",
+    "current": "3.02",
+    "guidance": "HOLD <= TARGET",
+    "rationale": "Tech overlap",
+    "status": "EVIDENCE HOLD"
+   }
+  ]
+ },
+ "zacks": {
+  "as_of": "2026-09-25",
+  "source": "Zacks Investment Research (bundled snapshot)",
+  "alias": {
+   "MMC": "MRSH"
+  },
+  "data": {
+   "COST": {
+    "rank": 3,
+    "text": "Hold",
+    "cap": 409227,
+    "er": "2026-12-10",
+    "etf": false
+   },
+   "JNJ": {
+    "rank": 3,
+    "text": "Hold",
+    "cap": 653613,
+    "er": "2026-10-13",
+    "etf": false
+   },
+   "MSFT": {
+    "rank": 3,
+    "text": "Hold",
+    "cap": 3832844,
+    "er": "2026-11-04",
+    "etf": false
+   },
+   "V": {
+    "rank": 3,
+    "text": "Hold",
+    "cap": 655564,
+    "er": "2026-10-27",
+    "etf": false
+   },
+   "GOOGL": {
+    "rank": 3,
+    "text": "Hold",
+    "cap": 4206142,
+    "er": "2026-11-04",
+    "etf": false
+   },
+   "MA": {
+    "rank": 3,
+    "text": "Hold",
+    "cap": 497267,
+    "er": "2026-10-29",
+    "etf": false
+   },
+   "AAPL": {
+    "rank": 3,
+    "text": "Hold",
+    "cap": 4977637,
+    "er": "2026-10-29",
+    "etf": false
+   },
+   "AMZN": {
+    "rank": 3,
+    "text": "Hold",
+    "cap": 2693019,
+    "er": "2026-10-29",
+    "etf": false
+   },
+   "AVGO": {
+    "rank": 3,
+    "text": "Hold",
+    "cap": 1684184,
+    "er": "2026-12-10",
+    "etf": false
+   },
+   "LLY": {
+    "rank": 3,
+    "text": "Hold",
+    "cap": 1114058,
+    "er": "2026-10-29",
+    "etf": false
+   },
+   "NVDA": {
+    "rank": 1,
+    "text": "Strong Buy",
+    "cap": 5424187,
+    "er": "2026-11-18",
+    "etf": false
+   },
+   "HD": {
+    "rank": 3,
+    "text": "Hold",
+    "cap": 292523,
+    "er": "2026-11-17",
+    "etf": false
+   },
+   "META": {
+    "rank": 3,
+    "text": "Hold",
+    "cap": 1914858,
+    "er": "2026-11-04",
+    "etf": false
+   },
+   "ANET": {
+    "rank": 1,
+    "text": "Strong Buy",
+    "cap": 260506,
+    "er": "2026-11-03",
+    "etf": false
+   },
+   "PANW": {
+    "rank": 3,
+    "text": "Hold",
+    "cap": 306537,
+    "er": "2026-11-18",
+    "etf": false
+   },
+   "AMAT": {
+    "rank": 2,
+    "text": "Buy",
+    "cap": 384895,
+    "er": "2026-11-12",
+    "etf": false
+   },
+   "CSCO": {
+    "rank": 2,
+    "text": "Buy",
+    "cap": 420674,
+    "er": "2026-11-11",
+    "etf": false
+   },
+   "KLAC": {
+    "rank": 2,
+    "text": "Buy",
+    "cap": 245237,
+    "er": "2026-11-04",
+    "etf": false
+   },
+   "MU": {
+    "rank": 3,
+    "text": "Hold",
+    "cap": 1222319,
+    "er": "2026-09-30",
+    "etf": false
+   },
+   "ORCL": {
+    "rank": 3,
+    "text": "Hold",
+    "cap": 414554,
+    "er": "2026-12-09",
+    "etf": false
+   },
+   "TXN": {
+    "rank": 3,
+    "text": "Hold",
+    "cap": 253947,
+    "er": "2026-10-20",
+    "etf": false
+   },
+   "VRT": {
+    "rank": 2,
+    "text": "Buy",
+    "cap": 97510,
+    "er": "2026-10-28",
+    "etf": false
+   },
+   "DHR": {
+    "rank": 3,
+    "text": "Hold",
+    "cap": 157813,
+    "er": "2026-10-21",
+    "etf": false
+   },
+   "RTX": {
+    "rank": 3,
+    "text": "Hold",
+    "cap": 255265,
+    "er": "2026-10-20",
+    "etf": false
+   },
+   "DE": {
+    "rank": 3,
+    "text": "Hold",
+    "cap": 186165,
+    "er": "2026-11-25",
+    "etf": false
+   },
+   "CAT": {
+    "rank": 2,
+    "text": "Buy",
+    "cap": 377660,
+    "er": "2026-11-04",
+    "etf": false
+   },
+   "ETN": {
+    "rank": 3,
+    "text": "Hold",
+    "cap": 170888,
+    "er": "2026-11-03",
+    "etf": false
+   },
+   "GE": {
+    "rank": 3,
+    "text": "Hold",
+    "cap": 339376,
+    "er": "2026-10-20",
+    "etf": false
+   },
+   "PH": {
+    "rank": 3,
+    "text": "Hold",
+    "cap": 123379,
+    "er": "2026-11-05",
+    "etf": false
+   },
+   "TT": {
+    "rank": 3,
+    "text": "Hold",
+    "cap": 99987,
+    "er": "2026-10-29",
+    "etf": false
+   },
+   "UNP": {
+    "rank": 3,
+    "text": "Hold",
+    "cap": 162652,
+    "er": "2026-10-22",
+    "etf": false
+   },
+   "CME": {
+    "rank": 4,
+    "text": "Sell",
+    "cap": 95101,
+    "er": "2026-10-21",
+    "etf": false
+   },
+   "MRSH": {
+    "rank": 3,
+    "text": "Hold",
+    "cap": 81660,
+    "er": "2026-10-15",
+    "etf": false
+   },
+   "GS": {
+    "rank": 3,
+    "text": "Hold",
+    "cap": 272376,
+    "er": "2026-10-13",
+    "etf": false
+   },
+   "JPM": {
+    "rank": 3,
+    "text": "Hold",
+    "cap": 911917,
+    "er": "2026-10-13",
+    "etf": false
+   },
+   "SYK": {
+    "rank": 3,
+    "text": "Hold",
+    "cap": 104470,
+    "er": "2026-10-29",
+    "etf": false
+   },
+   "LNG": {
+    "rank": 3,
+    "text": "Hold",
+    "cap": 55463,
+    "er": "2026-10-29",
+    "etf": false
+   },
+   "XOM": {
+    "rank": 3,
+    "text": "Hold",
+    "cap": 665637,
+    "er": "2026-10-30",
+    "etf": false
+   },
+   "CVX": {
+    "rank": 3,
+    "text": "Hold",
+    "cap": 403946,
+    "er": "2026-10-30",
+    "etf": false
+   },
+   "VFH": {
+    "rank": 3,
+    "text": "Hold",
+    "cap": null,
+    "er": null,
+    "etf": true
+   },
+   "VHT": {
+    "rank": 1,
+    "text": "Strong Buy",
+    "cap": null,
+    "er": null,
+    "etf": true
+   },
+   "VPU": {
+    "rank": 2,
+    "text": "Buy",
+    "cap": null,
+    "er": null,
+    "etf": true
+   },
+   "VDE": {
+    "rank": 1,
+    "text": "Strong Buy",
+    "cap": null,
+    "er": null,
+    "etf": true
+   },
+   "JEPI": {
+    "rank": 0,
+    "text": "",
+    "cap": null,
+    "er": null,
+    "etf": true
+   },
+   "JEPQ": {
+    "rank": 0,
+    "text": "",
+    "cap": null,
+    "er": null,
+    "etf": true
+   }
+  }
+ }
+}

@@ -199,7 +199,7 @@ CHECKLISTS = {
         Item('mird', 'Publish the MIRD weekly risk dashboard', '04 Committee Operations · publications',
              _report_issued('mird'), '/reports'),
         Item('mwir', 'Publish the MWIR and related dashboards', '05 Workbench Guide · step 6',
-             _report_issued('mwir'), '/reports'),
+             _report_issued('mwir'), '/mwir'),
     ),
     MONTHLY: (
         Item('bands', 'Monthly allocation review: certified band exceptions', 'Rebalancing · 04 calendar',

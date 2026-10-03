@@ -6,6 +6,7 @@ import secrets
 
 from flask import Blueprint, abort, flash, redirect, render_template, request, url_for
 
+from .. import mwir as MW
 from .. import ops
 from ..connectors import last_run, research, weights, zacks
 from .auth import ROLES, actor, admin_required, current_user, repo, set_user
@@ -21,6 +22,7 @@ SETTINGS = (
     ('zacks_rank_field', 'Rank field in the response', 'name or dotted path, e.g. zacks_rank'),
     ('zacks_market_cap_field', 'Market cap field in the response', 'e.g. market_cap'),
     ('zacks_market_cap_unit', 'Market cap unit returned', 'B (billions), M (millions) or RAW (dollars)'),
+    ('zacks_earnings_field', 'Next earnings date field (optional)', 'default: next_report_date · feeds the MWIR screen'),
     ('zacks_research_url', 'Zacks research endpoint (optional)', 'URL template returning research items'),
     ('zacks_research_list_field', 'Research list field', 'default: items'),
     ('sec_contact', 'Contact e-mail for SEC EDGAR', 'required by the SEC for automated access'),
@@ -37,7 +39,8 @@ def data():
     return render_template('data.html', runs={k: last_run(store, k) for k in ('zacks', 'weights', 'research')},
                            log=list(reversed(store.get('data_log', [])))[:25], inbox=research.open_items(store),
                            zacks_ready=bool(cfg['zacks_url'] and cfg['api_key']),
-                           sec_ready=bool(store['settings'].get('sec_contact')))
+                           sec_ready=bool(store['settings'].get('sec_contact')),
+                           snap=MW.snapshot(store), snap_live=bool((store.get('zacks') or {}).get('data')))
 
 
 @bp.route('/data/zacks', methods=['POST'])

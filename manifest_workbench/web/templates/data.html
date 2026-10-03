@@ -7,13 +7,13 @@
 <div class="grid g3">
   <div class="card">
     <h2>Zacks Rank &amp; market cap {{ badge('Ready' if zacks_ready else 'Setup required') }}</h2>
-    <p class="small muted">Updates the MASR registry (Zacks Rank, market cap) and PEW-004 candidates. Every rank change is logged to Research Intelligence and as an RCC-002 evidence record.</p>
+    <p class="small muted">Updates the MASR registry (Zacks Rank, market cap) and PEW-004 candidates. Every rank change is logged to Research Intelligence and as an RCC-002 evidence record. Rank, market cap and next earnings date also feed the MWIR holdings validation screen (data as of <b>{{ snap.as_of }}</b>{% if not snap_live %}, bundled snapshot{% endif %}).</p>
     <p class="small">{{ runs.zacks.summary if runs.zacks else 'Never pulled' }}{% if runs.zacks %}<br><span class="muted">{{ runs.zacks.ts|replace('T', ' ') }} · {{ runs.zacks.actor }}</span>{% endif %}</p>
     {% if can_edit() %}
     <form method="post" action="/data/zacks">{{ csrf() }}<button class="gold" {{ 'disabled' if not zacks_ready }}>Pull from Zacks</button></form>
     {% if not zacks_ready %}<p class="small muted">Enter your Zacks endpoint and key in <a href="/settings">Settings</a>.</p>{% endif %}
     <form method="post" action="/data/zacks" enctype="multipart/form-data" style="margin-top:10px">{{ csrf() }}
-      <label>…or upload a Zacks screen / portfolio CSV</label><input type="file" name="file" accept=".csv" required><button class="small ghost">Upload</button></form>
+      <label>…or upload a Zacks screen / portfolio CSV (Ticker, Zacks Rank, Market Cap, optional Next EPS Report Date)</label><input type="file" name="file" accept=".csv" required><button class="small ghost">Upload</button></form>
     {% endif %}
   </div>
   <div class="card">

@@ -6,7 +6,9 @@ import datetime as dt
 
 from flask import Blueprint, abort, flash, render_template, request, session, url_for
 
+from .. import mwir as MW
 from .. import ops
+from .. import reports as RP
 from .. import reviews as RV
 from ..connectors import last_run
 from ..connectors.research import open_items
@@ -50,10 +52,19 @@ def console():
         review = RV.get(store, kind, today())
         rid, start, end, due = RV.period(kind, today())
         done, total = RV.progress(w, review) if review else (0, len(RV.CHECKLISTS[kind]))
-        current[kind] = {'id': rid, 'review': review, 'done': done, 'total': total, 'end': end}
+        current[kind] = {'id': rid, 'review': review, 'done': done, 'total': total, 'end': end,
+                         'start': start}
+    # this week's steps reuse the weekly review's live checks, so the two always agree
+    wk = current[RV.WEEKLY]
+    review = wk['review'] or {'id': wk['id'], 'kind': RV.WEEKLY, 'start': wk['start'].isoformat(),
+                              'end': wk['end'].isoformat(), 'items': {}}
+    checks = {r['key']: r for r in RV.evaluate(w, review)}
+    mwir = store['reports'].get(RP.report_id('mwir', today())[0])
+    mwir_cert = MW.model(mwir['doc'], MW.snapshot(store))['cert'] if mwir and mwir.get('doc') else None
     return render_template('console.html', con=cisc.console, c=cisc.controls, d=cisc.data, dc=cisc.decision,
                            rcc1=w.rcc001()['state'], rcc4=w.rcc004()['state'], pew=w.pew().control,
-                           reviews=current, inbox=len(open_items(store)),
+                           reviews=current, inbox=len(open_items(store)), checks=checks, mwir=mwir,
+                           mwir_cert=mwir_cert, mwir_label=MW.label(mwir['doc']) if mwir_cert else '', zacks_as_of=MW.snapshot(store).get('as_of'),
                            runs={k: last_run(store, k) for k in ('zacks', 'weights', 'research')})
 
 
@@ -332,4 +343,10 @@ def nav_counts():
         store = repo().read()
     except Exception:  # pragma: no cover
         return {}
-    return {'nav_inbox': len(open_items(store)), 'url_for': url_for}
+    from .. import reports as RP
+    from . import nav
+    from .auth import current_user
+    inbox = len(open_items(store))
+    mwir = store['reports'].get(RP.report_id('mwir', today())[0])
+    badges = {'inbox': inbox or None, 'mwir': (mwir or {}).get('status') or 'Start'}
+    return {'nav_inbox': inbox, 'url_for': url_for, **nav.context(badges, current_user())}

@@ -4,13 +4,18 @@ A report starts as a *draft*: a snapshot of the workbench tables for the period 
 an auto-written narrative per section. The operator edits narratives, hides sections or
 adds commentary, refreshes the data if needed, previews, and then *issues* the report,
 which renders the PDF, versions it and records the publication in Committee Operations.
+
+The MWIR is the exception: it is the official 8-page weekly report (see ``mwir.py``), kept as
+a document that carries forward week to week rather than as auto-written sections.
 """
 
 from __future__ import annotations
 
+import copy
 import datetime as dt
 from pathlib import Path
 
+from . import mwir as MW
 from . import reviews as RV
 from .engine import Workbench
 
@@ -161,11 +166,6 @@ def _governance(text=GOVERNANCE):
 
 
 # =========================================================================== report bodies
-
-def _mwir(wb, start, end):
-    return [_summary(wb), _decisions(wb), _portfolio_health(wb), _research(wb, start, end), _pipeline(wb),
-            _committee(wb, start, end), _governance()]
-
 
 def _mird(wb, start, end):
     d = wb.cisc().data
@@ -328,7 +328,7 @@ def _mandate_value(r):
     return fmt(v)
 
 
-BUILDERS = {'mwir': _mwir, 'mird': _mird, 'mor': _mor, 'qer': _qer, 'mipr': _mipr}
+BUILDERS = {'mird': _mird, 'mor': _mor, 'qer': _qer, 'mipr': _mipr}
 
 
 # =========================================================================== lifecycle
@@ -365,8 +365,14 @@ def create_draft(store: dict, kind: str, actor: str, today: dt.date) -> dict:
         'files': (existing or {}).get('files', []),
         'created': dt.datetime.now().isoformat(timespec='seconds'), 'created_by': actor,
         'updated': None, 'updated_by': None, 'snapshot_as_of': today.isoformat(),
-        'sections': BUILDERS[kind](wb, start.isoformat(), end.isoformat()),
+        'sections': [] if kind == 'mwir' else BUILDERS[kind](wb, start.isoformat(), end.isoformat()),
     }
+    if kind == 'mwir':
+        draft['layout'] = 'official'
+        draft['title'] = 'MWIR — Weekly Institutional Report'
+        draft['doc'] = copy.deepcopy(existing['doc']) if existing and existing.get('doc') \
+            else MW.new_doc(store, _prior_mwir(store, start), start)
+        draft['period_label'] = MW.label(draft['doc'])
     store['reports'][rid] = draft
     _audit(store, actor, rid, 'draft created')
     return draft
@@ -375,6 +381,10 @@ def create_draft(store: dict, kind: str, actor: str, today: dt.date) -> dict:
 def refresh(store: dict, rid: str, actor: str, today: dt.date) -> dict:
     """Re-snapshot the data; edited narratives and inclusion choices are kept."""
     draft = _draft(store, rid)
+    if draft.get('doc'):
+        draft['snapshot_as_of'] = today.isoformat()  # the MWIR reads live data directly
+        _touch(draft, actor)
+        return draft
     wb = Workbench(store, today)
     fresh = {s['key']: s for s in BUILDERS[draft['type']](wb, draft['period_start'], draft['period_end'])}
     for sec in draft['sections']:
@@ -441,10 +451,22 @@ def reset_narrative(store: dict, rid: str, actor: str, key: str) -> dict:
     return draft
 
 
-def issue(store: dict, rid: str, actor: str, today: dt.date, out_dir: Path) -> dict:
+def issue(store: dict, rid: str, actor: str, today: dt.date, out_dir: Path, override: str = '') -> dict:
     """Render the final PDF, version it and record the publication."""
     from .pdf import render
     draft = _draft(store, rid)
+    if draft.get('doc'):
+        snap = MW.snapshot(store)
+        cert = MW.model(draft['doc'], snap)['cert']
+        if not cert['ok'] and not override.strip():
+            raise ValueError('Control assertions are failing (HOLD · CONTROLS FAILING). Fix them, or give an '
+                             'override reason to issue with the HOLD certification.')
+        draft['zacks'] = copy.deepcopy(snap)  # freeze the screen data with the issued version
+        draft['period_label'] = MW.label(draft['doc'])
+        draft['certification'] = cert['label']
+        draft['override'] = override.strip() or None
+        if override.strip():
+            _audit(store, actor, rid, f'issued with failing controls: {override.strip()}')
     draft['version'] = draft.get('version', 0) + 1
     draft.update({'status': 'Issued', 'issued': dt.datetime.now().isoformat(timespec='seconds'),
                   'issued_by': actor})
@@ -485,6 +507,58 @@ def _record_publication(store, draft, today, actor):
                                    'action': 'set', 'table': 'publications', 'record': name, 'field': k,
                                    'old': row.get(k), 'new': v})
             row[k] = v
+
+
+# =========================================================================== MWIR document
+
+def _prior_mwir(store, start: dt.date):
+    """The most recent earlier MWIR document, to carry forward."""
+    prior = [r for r in store['reports'].values() if r.get('type') == 'mwir' and r.get('doc')
+             and r['period_start'] < start.isoformat()]
+    return max(prior, key=lambda r: r['period_start'])['doc'] if prior else None
+
+
+def mwir_save(store: dict, rid: str, actor: str, form) -> dict:
+    draft = _draft(store, rid)
+    MW.apply_form(draft['doc'], form)
+    draft['period_label'] = MW.label(draft['doc'])
+    _touch(draft, actor)
+    return draft
+
+
+def mwir_import(store: dict, rid: str, actor: str, text: str, filename: str = '') -> tuple:
+    draft = _draft(store, rid)
+    msg, ok = MW.import_csv(store, draft['doc'], text)
+    draft['period_label'] = MW.label(draft['doc'])
+    _touch(draft, actor)
+    _audit(store, actor, rid, f'holdings loaded from {filename or "CSV"}')
+    return msg, ok
+
+
+def mwir_import_json(store: dict, rid: str, actor: str, text: str) -> dict:
+    draft = _draft(store, rid)
+    draft['doc'] = MW.import_json(text)
+    draft['period_label'] = MW.label(draft['doc'])
+    _touch(draft, actor)
+    _audit(store, actor, rid, 'document imported from the browser builder')
+    return draft
+
+
+def mwir_fill_baseline(store: dict, rid: str, actor: str) -> int:
+    draft = _draft(store, rid)
+    n = MW.fill_baseline(store, draft['doc'])
+    _touch(draft, actor)
+    return n
+
+
+def mwir_add_events(store: dict, rid: str, actor: str) -> int:
+    draft = _draft(store, rid)
+    have = MW.lines(draft['doc'].get('events'))
+    new = [e for e in MW.upcoming_events(store, draft['doc'])
+           if not any(e.split('|')[1].strip() in h for h in have)]
+    draft['doc']['events'] = '\n'.join(have + new)
+    _touch(draft, actor)
+    return len(new)
 
 
 def _draft(store, rid):

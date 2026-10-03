@@ -1,0 +1,11 @@
+{% from '_macros.html' import badge %}
+<div class="spread"><b>Certification</b><span class="badge {{ 'ok' if v.cert.ok else 'bad' }}">{{ v.cert.label }}</span></div>
+<div class="small" style="margin:6px 0">Gauge <b>{{ v.zone.value }}</b> <span class="badge" style="background:{{ v.zone.color }};color:#fff">{{ v.zone.label }}</span> ·
+  {{ v.stats.count }} positions · total <b>{{ v.stats.total_fmt }}</b> ·
+  <span style="color:{{ '#1e7b4a' if v.stats.total_ok else '#b3261e' }}">{{ 'sums to 100%' if v.stats.total_ok else 'does not sum to 100%' }}</span></div>
+<ul class="checks">
+  {% for lbl, res, ok in v.checks %}<li><span>{{ lbl }}</span><span class="mono" style="color:{{ '#1e7b4a' if ok else '#b3261e' }}">{{ res }}</span></li>{% endfor %}
+  {% set c = v.zk.counts %}
+  <li><span>Zacks screen</span><span>Tier 1 {{ c['TIER 1'] }} · Pass {{ c.PASS }} · <b style="color:#9a6400">Review {{ c.REVIEW }}</b> · ETF {{ c.ETF }} · No data {{ c['NO DATA'] }}</span></li>
+</ul>
+{% if v.zk.counts.REVIEW %}<div class="small muted" style="margin-top:6px">Review: {{ v.zk.review_text }}</div>{% endif %}

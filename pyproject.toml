@@ -21,5 +21,5 @@ manifest-workbench = "manifest_workbench.cli:main"
 packages = ["manifest_workbench", "manifest_workbench.connectors", "manifest_workbench.web"]
 
 [tool.setuptools.package-data]
-manifest_workbench = ["data/seed.json", "data/docs.json"]
+manifest_workbench = ["data/seed.json", "data/docs.json", "data/mwir_seed.json"]
 "manifest_workbench.web" = ["templates/*.html", "static/*"]

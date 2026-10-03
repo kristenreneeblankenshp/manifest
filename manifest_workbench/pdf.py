@@ -65,7 +65,10 @@ def _table(spec, width):
     return [_p(spec['title'], H3), t]
 
 
-def render(draft: dict, path, final: bool = False) -> None:
+def render(draft: dict, path, final: bool = False, snap: dict = None) -> None:
+    if draft.get('doc'):  # the official MWIR layout
+        from .mwir_pdf import render as render_mwir
+        return render_mwir(draft, path, final, snap)
     wide = draft['type'] in ('mipr', 'qer')
     pagesize = landscape(LETTER) if wide else LETTER
     doc = SimpleDocTemplate(str(path), pagesize=pagesize, leftMargin=0.6 * inch, rightMargin=0.6 * inch,
