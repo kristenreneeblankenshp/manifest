@@ -52,12 +52,13 @@
   var jump = document.getElementById('jump');
   var urls = {};
   document.querySelectorAll('#jump-list option').forEach(function (o) { urls[o.value] = o.dataset.url; });
-  function go() { var u = urls[jump.value]; if (u) window.location = u; }
+  function nav(u) { if (window.__wbNav) window.__wbNav(u); else window.location = u; }  // __wbNav: in-Claude build
+  function go() { var u = urls[jump.value]; if (u) nav(u); }
   jump.addEventListener('change', go);
   jump.addEventListener('keydown', function (e) {
     if (e.key !== 'Enter') return;
     var v = jump.value.toLowerCase(), hit = Object.keys(urls).find(function (k) { return k.toLowerCase().indexOf(v) >= 0; });
-    if (hit) window.location = urls[hit];
+    if (hit) nav(urls[hit]);
   });
   document.addEventListener('keydown', function (e) {
     if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') { e.preventDefault(); jump.focus(); jump.select(); }

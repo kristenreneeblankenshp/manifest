@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import secrets
 
-from flask import Blueprint, abort, flash, redirect, render_template, request, url_for
+from flask import Blueprint, abort, current_app, flash, redirect, render_template, request, url_for
 
 from .. import mwir as MW
 from .. import ops
@@ -38,14 +38,22 @@ def data():
     cfg = zacks.config(store)
     return render_template('data.html', runs={k: last_run(store, k) for k in ('zacks', 'weights', 'research')},
                            log=list(reversed(store.get('data_log', [])))[:25], inbox=research.open_items(store),
-                           zacks_ready=bool(cfg['zacks_url'] and cfg['api_key']),
-                           sec_ready=bool(store['settings'].get('sec_contact')),
+                           zacks_ready=bool(cfg['zacks_url'] and cfg['api_key']) or _claude(),
+                           sec_ready=bool(store['settings'].get('sec_contact')) or _claude(),
+                           claude=_claude(),
                            snap=MW.snapshot(store), snap_live=bool((store.get('zacks') or {}).get('data')))
+
+
+def _claude() -> bool:
+    return current_app.config.get('CONNECTORS') == 'claude'
 
 
 @bp.route('/data/zacks', methods=['POST'])
 def zacks_pull():
     upload = request.files.get('file')
+    if _claude() and not (upload and upload.filename):
+        flash('The Zacks connector is not available in this view. Upload a Zacks CSV instead.', 'error')
+        return back('data.data')
     if upload and upload.filename:
         text = upload.read().decode('utf-8-sig', errors='replace')
         res = mutate(lambda s: zacks.run(s, actor(), today(), csv_text=text, source=f'Zacks CSV {upload.filename}'))
@@ -61,6 +69,9 @@ def zacks_pull():
 
 @bp.route('/data/research', methods=['POST'])
 def research_pull():
+    if _claude():
+        flash('The research connector is not available in this view.', 'error')
+        return redirect(url_for('data.data') + '#inbox')
     days = int(request.form.get('days') or 7)
     res = mutate(lambda s: research.run(s, actor(), today(), days=days))
     if res and res is not True:

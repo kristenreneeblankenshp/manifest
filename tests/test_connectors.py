@@ -190,6 +190,28 @@ class ResearchTest(unittest.TestCase):
         self.assertTrue(any('CIK=MU' in u for u in asked))
 
 
+class ConnectorIngestTest(unittest.TestCase):
+    """Results fetched by a Claude connector go through the same apply/ingest paths."""
+
+    def test_research_ingest_dedupes_and_logs(self):
+        store = fresh()
+        items = [{'source': 'Zacks News', 'ticker': 'MU', 'form': 'News', 'title': 'Headline',
+                  'date': '2026-10-02', 'url': 'https://www.zacks.com/a', 'summary': 'x' * 900}]
+        first = research.ingest(store, 'Ada', TODAY, items, '1 security')
+        again = research.ingest(store, 'Ada', TODAY, items, '1 security')
+        self.assertEqual((first['added'], again['added']), (1, 0))
+        self.assertEqual(len(store['inbox'][0]['summary']), 500)
+        self.assertEqual(store['data_log'][-1]['connector'], 'research')
+
+    def test_zacks_apply_and_log(self):
+        store = fresh()
+        summary = zacks.apply_and_log(store, 'Ada', TODAY, {'MU': {'rank': 4, 'market_cap': 1222.3,
+                                                                   'er': '2026-12-16'}}, [], 'Zacks Data connector')
+        self.assertEqual(summary['read'], 1)
+        self.assertEqual(store['zacks']['data']['MU']['er'], '2026-12-16')
+        self.assertEqual(store['data_log'][-1]['connector'], 'zacks')
+
+
 class RedactTest(unittest.TestCase):
     def test_secrets_masked_in_logged_urls(self):
         red = _redact('https://x.example/rank?symbol=MU&api_key=SECRET&token=abc')
