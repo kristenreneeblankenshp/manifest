@@ -2,8 +2,8 @@ services:
   - type: web
     name: manifest-workbench
     runtime: docker
-    dockerfilePath: ./Dockerfile
-    dockerContext: .
+    dockerfilePath: ./app/Dockerfile
+    dockerContext: ./app
     plan: starter
     healthCheckPath: /api/version
     envVars:
