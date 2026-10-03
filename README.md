@@ -23,6 +23,9 @@ It runs two ways over the same engine:
   reviews and report PDFs (see [Web console](#web-console) below)
 - a **terminal console** (`manifest-workbench`) that covers every sheet from the command line
 
+The repository also contains `mwir/`, a browser tool that builds the weekly MWIR report PDF
+with a Zacks holdings screen. See [`mwir/README.md`](mwir/README.md).
+
 ## Install and run
 
 ```bash
