@@ -1,2 +1,3 @@
 # Lets CI run the full suite (web console, PDF reports and the workbook golden test).
 -e .[web,xlsx]
+PyYAML>=6.0

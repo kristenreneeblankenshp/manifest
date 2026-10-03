@@ -1,0 +1,56 @@
+# Standing rules for the Manifest MWIR. These change rarely; the weekly file
+# (weeks/YYYY-MM-DD.yaml) holds everything that changes week to week.
+
+report:
+  short_name: MANIFEST MWIR
+  prepared_for: Manifest Institutional Investment System
+
+# MWIR-WGT-001 monitoring bands: 75%-125% of target, lower bound floored at
+# 1.00%, upper bound capped at 4.00%. Weights in percent.
+bands:
+  lower_pct_of_target: 75
+  upper_pct_of_target: 125
+  floor: 1.00
+  cap: 4.00
+
+# Executable model size. The build fails certification if the holdings CSV
+# does not contain exactly this many positions.
+expected_positions: 45
+
+# Allowed guidance actions in the holding matrix. Anything else fails the
+# vocabulary check (catches typos before publication).
+guidance_actions:
+  - MAINTAIN
+  - SELECTIVE ADD
+  - EVENT HOLD
+  - HOLD <= TARGET
+  - MAINTAIN / NO CHASE
+  - TRIM
+  - EXIT
+  - INITIATE
+
+# Sleeve order here is the order used on the allocation page.
+sleeves:
+  strategic:   {name: Strategic Anchors,           short: Strategic,   color: "#13294B"}
+  growth:      {name: Growth Compounders,          short: Growth,      color: "#1F7A8C"}
+  digital:     {name: Digital Infrastructure / AI, short: Digital,     color: "#2A9D8F"}
+  industrials: {name: Industrials / Infrastructure, short: Industrials, color: "#3C8D5A"}
+  financial:   {name: Financial Infrastructure,    short: Financial,   color: "#D4A62A"}
+  healthcare:  {name: Healthcare Leadership,       short: Healthcare,  color: "#7B61A8"}
+  energy:      {name: Energy / Natural Resources,  short: Energy,      color: "#C8704A"}
+  income:      {name: Income / Risk Management,    short: Income,      color: "#62788E"}
+
+# PLACEHOLDER thresholds. The real green/yellow/orange/red cut-offs are an
+# open question with the client (see the automation spec); replace these
+# once confirmed. Zones are checked top-down: first `min` the score meets wins.
+gauge_zones:
+  - {min: 70, color: "#3C8D5A", label: GREEN - RISK ON}
+  - {min: 55, color: "#D4A62A", label: YELLOW - NEUTRAL / RISK CONTROL}
+  - {min: 40, color: "#E08A3C", label: ORANGE - DEFENSIVE}
+  - {min: 0,  color: "#C0504D", label: RED - CAPITAL PRESERVATION}
+
+# Component scores are 0-10.
+component_zones:
+  - {min: 6, color: "#2A9D8F"}
+  - {min: 3, color: "#D4A62A"}
+  - {min: 0, color: "#C8704A"}
