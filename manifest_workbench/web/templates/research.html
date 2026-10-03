@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% from '_macros.html' import badge %}
+{% block title %}Research command{% endblock %}
+{% block heading %}Research command · MOPS-003{% endblock %}
+{% block sub %}Research signal → evidence review → MIAR update → thesis assessment → conviction decision → portfolio-engineering referral{% endblock %}
+{% block content %}
+<div class="grid g4">
+  <a class="tile {{ s1.readiness|status }}" href="/rcc/1"><div class="k">RCC-001 readiness</div><div class="v small">{{ s1.readiness }}</div><div class="small muted">{{ s1.control_exceptions }} control exceptions</div></a>
+  <a class="tile {{ s2.readiness|status }}" href="/rcc/2"><div class="k">RCC-002 evidence</div><div class="v small">{{ s2.readiness }}</div><div class="small muted">{{ s2.total_records }} records · {{ s2.open }} open · {{ s2.overdue }} overdue</div></a>
+  <a class="tile {{ s3.readiness|status }}" href="/rcc/3"><div class="k">RCC-003 MIAR</div><div class="v small">{{ s3.readiness }}</div><div class="small muted">{{ s3.coverage }}</div></a>
+  <a class="tile {{ s4.readiness|status }}" href="/rcc/4"><div class="k">RCC-004 MASR</div><div class="v small">{{ s4.readiness }}</div><div class="small muted">{{ s4.capacity }} · {{ s4.stage_gates }}</div></a>
+</div>
+<div class="grid g3" style="margin-top:14px">
+  <div class="card"><h2>Intake</h2><p class="small">{{ inbox }} pulled item(s) awaiting triage.</p><a class="btn gold" href="/data#inbox">Research inbox</a> <a class="btn ghost" href="/t/evidence/new">Log evidence manually</a></div>
+  <div class="card"><h2>Dossiers &amp; registry</h2><p class="small">Maintain MIAR dossiers and canonical MASR identity.</p><a class="btn ghost" href="/t/miar">MIAR registry</a> <a class="btn ghost" href="/t/review">Review log</a> <a class="btn ghost" href="/t/masr">MASR registry</a></div>
+  <div class="card"><h2>Candidates</h2><p class="small">{{ s4.active_candidates }} active · {{ s4.pew_referrals }} referred to PEW-004.</p><a class="btn gold" href="/pipeline">Pipeline board</a></div>
+</div>
+{% endblock %}

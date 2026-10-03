@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% from '_macros.html' import badge, csrf %}
+{% block title %}Reports{% endblock %}
+{% block heading %}Report studio{% endblock %}
+{% block sub %}Draft from live data · edit the narrative · preview · issue the PDF{% endblock %}
+{% block content %}
+<div class="grid g3">
+{% for r in current %}
+  <div class="card">
+    <h2>{{ r.code }} {{ badge(r.report.status if r.report else 'Not Started') }}</h2>
+    <div><b>{{ r.title }}</b></div>
+    <div class="small muted">{{ r.cycle|capitalize }} · {{ r.label }}</div>
+    {% if r.report and r.report.files %}<div class="small">Latest: <a href="/reports/{{ r.id }}/file/{{ r.report.files[-1].file }}">v{{ r.report.files[-1].version }} PDF</a> · {{ r.report.files[-1].issued[:10] }}</div>{% endif %}
+    <div class="row" style="margin-top:10px">
+      {% if r.report %}<a class="btn gold" href="/reports/{{ r.id }}">Open {{ 'draft' if r.report.status == 'Draft' else 'report' }}</a>
+      {% elif can_edit() %}<form method="post" action="/reports/new/{{ r.kind }}">{{ csrf() }}<button class="gold">Create draft</button></form>{% endif %}
+    </div>
+  </div>
+{% endfor %}
+</div>
+<div class="card" style="margin-top:14px"><h2>All reports</h2>
+<table class="t"><tr><th>Report</th><th>Period</th><th>Status</th><th>Versions</th><th>Last change</th></tr>
+{% for r in drafts %}<tr><td><a href="/reports/{{ r.id }}">{{ r.title }}</a></td><td>{{ r.period_label }}</td><td>{{ badge(r.status) }}</td>
+  <td>{% for f in r.files %}<a href="/reports/{{ r.id }}/file/{{ f.file }}">v{{ f.version }}</a> {% endfor %}</td>
+  <td class="small">{{ (r.updated or r.created)|replace('T', ' ') }} · {{ r.updated_by or r.created_by }}</td></tr>
+{% else %}<tr><td colspan="5" class="muted">No reports yet.</td></tr>{% endfor %}</table></div>
+{% endblock %}

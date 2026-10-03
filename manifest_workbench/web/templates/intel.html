@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% from '_macros.html' import badge, show %}
+{% block title %}Research intelligence{% endblock %}
+{% block heading %}Research intelligence workspace{% endblock %}
+{% block sub %}Populate only verified current research · the console reads the first entries of each section · Zacks rank changes are logged here automatically{% endblock %}
+{% block content %}
+<div class="grid g2">
+{% for spec, rows in sections %}
+  <div class="card"><h2>{{ spec.title.split(': ', 1)[-1] }} <span class="row">{% if can_edit() %}<a class="btn small gold" href="/t/{{ spec.name }}/new">+ Add</a>{% endif %}<a class="small" href="/t/{{ spec.name }}">all</a></span></h2>
+  <table class="t"><tr><th>#</th>{% for f in spec.fields %}<th>{{ f.header }}</th>{% endfor %}</tr>
+  {% for r in rows %}<tr><td><a href="/t/{{ spec.name }}/{{ r._slot }}">{{ r._slot }}</a></td>{% for f in spec.fields %}<td>{{ show(f, r.get(f.key), ['status', 'direction']) }}</td>{% endfor %}</tr>
+  {% else %}<tr><td colspan="{{ spec.fields|length + 1 }}" class="muted">No entries.</td></tr>{% endfor %}</table></div>
+{% endfor %}
+</div>
+{% endblock %}

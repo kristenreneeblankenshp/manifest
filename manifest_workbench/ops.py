@@ -117,10 +117,23 @@ def parse_assignments(table: S.Table, pairs: Iterable[str], today: dt.date) -> d
 
 # --------------------------------------------------------------------------- record lookup
 
-def find(store: dict, table: str, key: str) -> tuple:
-    """Locate a stored record by its primary key; returns (index, record)."""
-    rows = store[table]
-    if table in ('portfolio', 'conviction', 'miar'):
+POSITIONAL = ('portfolio', 'conviction', 'miar', 'roles', 'scenario')
+
+
+def find(store: dict, table: str, key: Optional[str]) -> tuple:
+    """Locate a stored record by its primary key; returns (index, record).
+
+    Positional tables are addressed by holding symbol, registers by record ID, fixed and
+    slot tables by key value, unique key prefix or slot number (``3`` or ``#3``), and
+    single-record tables need no key.
+    """
+    spec = S.TABLES[table]
+    if spec.mode == 'single':
+        return None, store.setdefault(table, {})
+    if key is None or str(key).strip() == '':
+        raise OpError(f'{table}: say which record (e.g. {_example(spec)})')
+    rows = store.setdefault(table, [])
+    if table in POSITIONAL:
         for pos, alloc in enumerate(store['portfolio']):
             if same(alloc.get('symbol'), key):
                 while len(rows) <= pos:
@@ -134,11 +147,28 @@ def find(store: dict, table: str, key: str) -> tuple:
             if same(ticker, key) or same(r.get('masr_id'), key):
                 return pos, r
         raise OpError(f"No MASR registry record for '{key}'")
-    field = S.KEYS[table]
+    field = spec.key
     for pos, r in enumerate(rows):
         if same(r.get(field), key):
             return pos, r
+    if spec.mode in ('slots', 'fixed'):
+        text = str(key).strip().lstrip('#')
+        if text.isdigit() and 1 <= int(text) <= spec.capacity:
+            pos = int(text) - 1
+            while len(rows) <= pos:
+                rows.append({})
+            return pos, rows[pos]
+        wanted = _canon(key)
+        hits = [(pos, r) for pos, r in enumerate(rows)
+                if isinstance(r.get(field), str) and _canon(r[field]).startswith(wanted)]
+        if len(hits) == 1:
+            return hits[0]
     raise OpError(f"No {table} record '{key}'")
+
+
+def _example(spec):
+    return {'positional': 'NVDA', 'register': 'an ID', 'fixed': 'a key or row number',
+            'slots': 'a row number such as 1'}.get(spec.mode, '')
 
 
 # --------------------------------------------------------------------------- audit
@@ -158,8 +188,14 @@ def _check_editable(store: dict, table: S.Table, record: dict, field: S.Field) -
     if field.kind in (S.AUTO, S.LINK):
         raise OpError(f'{field.header} ({field.col}) is calculated/linked and cannot be edited')
     if field.kind == S.LOCKED:
-        raise OpError(f'{field.header} ({field.col}) is certified MFPDF data. Changes require a '
-                      'new certified MFPDF version through PEW-007; the workbench may not alter it')
+        if table.name == 'portfolio':
+            raise OpError(f'{field.header} ({field.col}) is certified MFPDF data. Changes require a '
+                          'new certified MFPDF version through PEW-007; the workbench may not alter it')
+        raise OpError(f'{field.header} ({field.col}) is part of the adopted, frozen record. Changes '
+                      'require a documented, version-controlled amendment')
+    if table.name == 'mandate' and record.get('control_id') in S.MANDATE_FORMULA_ROWS \
+            and field.key in ('operating_value', 'status'):
+        raise OpError(f"{field.header} of {record['control_id']} is calculated by formula")
     if table.name == 'masr' and record.get('_linked') is not None:
         if field.key in S.MASR_CERTIFIED_LINKED:
             raise OpError(f'{field.header} is linked to the certified MFPDF for certified holdings')
@@ -198,7 +234,9 @@ def set_fields(store: dict, table_name: str, key: str, pairs: Iterable[str], act
 
 def add_record(store: dict, table_name: str, pairs: Iterable[str], actor: str,
                today: dt.date) -> dict:
-    """Create a record in a register (evidence, review, masr, pipeline)."""
+    """Create a record in a register (evidence, review, masr, pipeline) or a slot table."""
+    if S.TABLES[table_name].mode == 'slots':
+        return _add_slot(store, table_name, pairs, actor, today)
     if table_name not in ('evidence', 'review', 'masr', 'pipeline'):
         raise OpError(f'Records cannot be added to {table_name}')
     table = S.TABLES[table_name]
@@ -249,8 +287,56 @@ def add_record(store: dict, table_name: str, pairs: Iterable[str], actor: str,
     return record
 
 
+# Slot tables whose key is an operating identifier generated as prefix + number.
+SLOT_IDS = {'actions': ('OP-', 3), 'decisions': ('DC-', 3), 'questions': ('Q', 0),
+            'projects': ('P', 0), 'priorities': ('', 0)}
+
+
+def _add_slot(store, table_name, pairs, actor, today):
+    table = S.TABLES[table_name]
+    rows = store.setdefault(table_name, [])
+    while len(rows) < table.capacity:
+        rows.append({})
+    free = next((i for i, r in enumerate(rows) if not any(not blank(v) for v in r.values())), None)
+    if free is None:
+        raise OpError(f'{table.title} is full ({table.capacity} rows); clear a row first')
+    record = {}
+    for fkey, (field, value) in parse_assignments(table, pairs, today).items():
+        if field.kind in (S.AUTO, S.LINK, S.LOCKED):
+            raise OpError(f'{field.header} ({field.col}) cannot be entered')
+        if value is not None:
+            record[fkey] = value
+    if not record:
+        raise OpError('Nothing to add')
+    if table_name in SLOT_IDS and blank(record.get(table.key)):
+        prefix, width = SLOT_IDS[table_name]
+        used = [int(str(r.get(table.key))[len(prefix):]) for r in rows
+                if str(r.get(table.key) or '').startswith(prefix)
+                and str(r.get(table.key))[len(prefix):].isdigit()]
+        record[table.key] = f'{prefix}{max(used, default=0) + 1:0{width}d}'
+    _check_unique(store, table_name, table.key, record.get(table.key), None)
+    rows[free] = record
+    audit(store, actor, 'add', table_name, _label(store, table_name, record, free))
+    return record
+
+
+def clear_record(store: dict, table_name: str, key: str, actor: str) -> dict:
+    """Empty one row of a slot table (research intelligence, committee lists, decisions)."""
+    table = S.TABLES[table_name]
+    if table.mode != 'slots':
+        raise OpError(f'{table_name} records cannot be cleared; they are part of an auditable record')
+    pos, record = find(store, table_name, key)
+    label = _label(store, table_name, record, pos)
+    old = dict(record)
+    store[table_name][pos] = {}
+    audit(store, actor, 'clear', table_name, label, None, old, None)
+    return old
+
+
 UNIQUE = {('masr', 'masr_id'): 'canonical MASR ID', ('masr', 'ticker'): 'ticker',
-          ('miar', 'miar_id'): 'canonical MIAR ID'}
+          ('miar', 'miar_id'): 'canonical MIAR ID', ('actions', 'id'): 'action ID',
+          ('decisions', 'id'): 'decision ID', ('questions', 'id'): 'question ID',
+          ('projects', 'id'): 'project ID'}
 
 
 def _check_unique(store: dict, table_name: str, fkey: str, value, record: dict) -> None:
@@ -280,12 +366,18 @@ def next_id(store: dict, table_name: str, on_date) -> str:
 
 
 def _label(store, table_name, record, pos=None) -> str:
-    if table_name in ('portfolio', 'conviction', 'miar') and pos is not None:
+    table = S.TABLES[table_name]
+    if table.mode == 'single':
+        return table_name
+    if table_name in POSITIONAL and pos is not None:
         return store['portfolio'][pos]['symbol']
     if table_name == 'masr':
         linked = record.get('_linked')
         return store['portfolio'][linked]['symbol'] if linked is not None else record.get('ticker', '?')
-    return str(record.get(S.KEYS[table_name], '?'))
+    value = record.get(table.key)
+    if blank(value) and pos is not None:
+        return f'#{pos + 1}'
+    return str(value if not blank(value) else '?')
 
 
 # --------------------------------------------------------------------------- stage gates

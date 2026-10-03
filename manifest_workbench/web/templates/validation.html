@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% from '_macros.html' import badge, csrf %}
+{% block title %}Validation &amp; certification{% endblock %}
+{% block heading %}Scenario validation &amp; certification · PEW-007{% endblock %}
+{% block sub %}A scenario stays non-operational until every blocking review is approved and a new MFPDF version is issued{% endblock %}
+{% block content %}
+<div class="grid g4">
+  <div class="tile {{ cert.overall_readiness|status }}"><div class="k">Overall readiness</div><div class="v small">{{ cert.overall_readiness }}</div></div>
+  <div class="tile {{ cert.certification_state|status }}"><div class="k">Certification state</div><div class="v small">{{ cert.certification_state }}</div></div>
+  <div class="tile"><div class="k">Scenario</div><div class="v small">{{ p.lab.scenario_id }} — {{ p.lab.scenario_name }}</div></div>
+  <div class="tile"><div class="k">Proposed version</div><div class="v small">{{ cert.proposed_version or '—' }}</div></div>
+</div>
+<div class="card" style="margin-top:14px"><h2>Automated validation tests</h2>
+<table class="t"><tr><th>Test</th><th>Validation test</th><th>Result</th><th>Standard</th><th>Status</th><th>Authority</th></tr>
+{% for t in tests %}<tr><td>{{ t.id }}</td><td>{{ t.test }}</td><td>{{ t.result|pct if t.result is float and t.id in ('VAL-001','VAL-002','VAL-003','VAL-006','VAL-007','VAL-008') else t.result }}</td><td class="small">{{ t.standard }}</td><td>{{ badge(t.status) }}</td><td class="small">{{ t.authority }}</td></tr>{% endfor %}</table></div>
+
+<div class="card" style="margin-top:14px"><h2>Formal certification workflow</h2>
+<table class="t"><tr><th>Review stage</th><th>Blocking?</th><th>Status</th><th>Reviewed</th><th>Record decision</th></tr>
+{% for r in workflow %}<tr><td>{{ r.stage }}</td><td>{{ r.blocking }}</td><td>{{ badge(r.status) }}</td><td class="small">{{ r.reviewed_by or '' }} {{ r.review_date or '' }}{% if r.notes %}<div class="muted">{{ r.notes }}</div>{% endif %}</td>
+  <td>{% if can_edit() %}<form method="post" action="/validation/workflow/{{ loop.index }}" class="inline">{{ csrf() }}
+    <select name="status">{% for s in ['Pending', 'Approved', 'Rejected', 'Not Required'] %}<option {{ 'selected' if s == r.status }}>{{ s }}</option>{% endfor %}</select>
+    <input name="evidence_ref" placeholder="Evidence ref" value="{{ r.evidence_ref or '' }}" size="12"><input name="notes" placeholder="Decision / notes" value="{{ r.notes or '' }}" size="18"><button class="small">Record</button></form>{% endif %}</td></tr>{% endfor %}</table>
+<p class="small muted">Recording a decision stamps your name and today's date as the reviewer.</p></div>
+
+<div class="grid g2" style="margin-top:14px">
+  <div class="card"><h2>Materiality &amp; construction controls <a class="small" href="/t/validation/_">Edit</a></h2>
+    <div class="kv">{% for f in S.CERTIFICATION.fields if f.col.startswith('B') %}<div>{{ f.header }}</div><div>{{ cert.get(f.key)|pct if f.vtype == 'percent' else cert.get(f.key) }}</div>{% endfor %}</div></div>
+  <div class="card"><h2>Certification change register <a class="small" href="/t/changes">Edit</a></h2>
+    <table class="t"><tr><th>ID</th><th>Symbol / sleeve</th><th>Type</th><th class="num">Delta</th><th>Outcome</th></tr>
+    {% for c in changes if c.symbol_sleeve or c.change_type %}<tr><td><a href="/t/changes/{{ c.change_id }}">{{ c.change_id }}</a></td><td>{{ c.symbol_sleeve }}</td><td>{{ c.change_type }}</td><td class="num">{{ c.delta|pct if c.delta != '' else '' }}</td><td>{{ badge(c.outcome) }}</td></tr>
+    {% else %}<tr><td colspan="5" class="muted">No changes registered.</td></tr>{% endfor %}</table></div>
+</div>
+{% endblock %}

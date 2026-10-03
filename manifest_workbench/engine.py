@@ -183,6 +183,7 @@ class Workbench:
     def __init__(self, store: dict, today: Optional[dt.date] = None):
         self.store = store
         self.today = today or dt.date.today()
+        self._pew = self._cisc = None
         self.portfolio = self._portfolio()
         self.conviction = self._conviction()
         self.pew004 = self._pew004()
@@ -193,7 +194,42 @@ class Workbench:
         self.pipeline = self._pipeline()
 
     def table(self, name):
-        return getattr(self, name)
+        """Computed rows of any row table (see :mod:`manifest_workbench.schema`)."""
+        if name in ('portfolio', 'conviction', 'pew004', 'evidence', 'miar', 'review', 'masr',
+                    'pipeline'):
+            return getattr(self, name)
+        pew_views = {'mandate': 'mandate', 'sleeves': 'sleeves', 'roles': 'roles',
+                     'scenario': 'scenario', 'workflow': 'workflow', 'changes': 'changes'}
+        if name in pew_views:
+            return getattr(self.pew(), pew_views[name])
+        if name == 'composite':
+            rows = self.cisc().controls['components']
+        else:
+            rows = [dict(r) for r in self.store.get(name, [])]
+        for i, r in enumerate(rows, 1):
+            r['_slot'] = i
+        return rows
+
+    def record(self, name):
+        """Computed values of a single-record table (controls, lab, validation)."""
+        return {'controls': lambda: self.cisc().controls, 'lab': lambda: self.pew().lab,
+                'validation': lambda: self.pew().certification}[name]()
+
+    def pew(self):
+        if self._pew is None:
+            from .pew import PEW
+            self._pew = PEW(self)
+        return self._pew
+
+    def cisc(self):
+        if self._cisc is None:
+            from .cisc import CISC
+            self._cisc = CISC(self)
+        return self._cisc
+
+    def cells(self):
+        from .cells import workbook_cells
+        return workbook_cells(self, self.pew(), self.cisc())
 
     # ------------------------------------------------------------------ MFPDF
 

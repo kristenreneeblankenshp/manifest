@@ -1,0 +1,7 @@
+{% extends 'base.html' %}
+{% block title %}Controlled lists{% endblock %}
+{% block heading %}Controlled validation lists{% endblock %}
+{% block sub %}97 RCC Lists · 98 PEW Lists · do not modify without a documented amendment{% endblock %}
+{% block content %}
+<div class="grid g3">{% for name, values in lists.items() %}<div class="card"><h2>{{ name }}</h2>{% for v in values %}<div class="small">{{ v }}</div>{% endfor %}</div>{% endfor %}</div>
+{% endblock %}

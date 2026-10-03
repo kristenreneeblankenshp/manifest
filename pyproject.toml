@@ -4,20 +4,22 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "manifest-workbench"
-version = "0.4.0"
-description = "Console application for the Manifest Workbench: CISC-001 / MOPS-003 RCC-004 MASR Registry & Candidate Pipeline"
+version = "0.5.0"
+description = "Manifest Workbench: CISC-001 / MOPS-002 / MOPS-003 console and hosted web app"
 readme = "README.md"
 requires-python = ">=3.9"
 dependencies = []
 
 [project.optional-dependencies]
 xlsx = ["openpyxl>=3.1"]
+web = ["flask>=3.0", "reportlab>=4.0", "gunicorn>=22"]
 
 [project.scripts]
 manifest-workbench = "manifest_workbench.cli:main"
 
 [tool.setuptools]
-packages = ["manifest_workbench"]
+packages = ["manifest_workbench", "manifest_workbench.connectors", "manifest_workbench.web"]
 
 [tool.setuptools.package-data]
-manifest_workbench = ["data/seed.json"]
+manifest_workbench = ["data/seed.json", "data/docs.json"]
+"manifest_workbench.web" = ["templates/*.html", "static/*"]

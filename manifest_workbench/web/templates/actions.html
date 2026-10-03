@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% from '_macros.html' import badge, csrf, nxt %}
+{% block title %}Actions{% endblock %}
+{% block heading %}Committee Operations &amp; Steward's Notebook{% endblock %}
+{% block sub %}Operating actions stay distinct from committee decisions · use the explicit decision flag{% endblock %}
+{% block content %}
+{% macro status_form(table, r, options) %}{% if can_edit() %}
+<form method="post" action="/actions/{{ table }}/{{ r._slot }}/status" class="inline">{{ csrf() }}
+  <select name="status" onchange="this.form.submit()">{% for o in options %}<option {{ 'selected' if o == r.status }}>{{ o }}</option>{% endfor %}{% if r.status and r.status not in options %}<option selected>{{ r.status }}</option>{% endif %}</select>
+</form>{% else %}{{ badge(r.status) }}{% endif %}{% endmacro %}
+{% macro remove(table, r) %}{% if can_edit() %}<form method="post" action="/actions/{{ table }}/{{ r._slot }}/clear" onsubmit="return confirm('Remove this row? The removal is recorded in the audit trail.')">{{ csrf() }}<button class="danger small" title="Remove">✕</button></form>{% endif %}{% endmacro %}
+
+<div class="card">
+  <h2>Action register</h2>
+  <table class="t"><tr><th>ID</th><th>Category</th><th>Action</th><th>Owner</th><th>Due</th><th>Priority</th><th>Committee?</th><th>Status</th><th></th></tr>
+  {% for r in t.actions %}<tr><td>{{ r.id }}</td><td>{{ r.category }}</td><td>{{ r.action }}<div class="small muted">{{ r.linked_record }}</div></td><td>{{ r.owner }}</td><td>{{ r.due_date or '' }}</td><td>{{ r.priority }}</td><td>{{ r.committee_decision }}</td>
+    <td>{{ status_form('actions', r, ['Open', 'In Progress', 'Planned', 'Completed', 'Deferred']) }}</td><td>{{ remove('actions', r) }}</td></tr>{% endfor %}</table>
+  {% if can_edit() %}<details class="more"><summary>+ New action</summary>
+  <form method="post" action="/actions/actions/new" class="form-grid" style="margin-top:10px">{{ csrf() }}
+    <div class="wide"><label>Action</label><input name="action" required style="width:100%"></div>
+    <div><label>Category</label><input name="category"></div><div><label>Owner</label><input name="owner"></div>
+    <div><label>Due</label><input type="date" name="due_date"></div>
+    <div><label>Priority</label><select name="priority"><option>High</option><option selected>Medium</option><option>Low</option></select></div>
+    <div><label>Status</label><select name="status"><option>Open</option><option>Planned</option><option>In Progress</option></select></div>
+    <div><label>Requires committee decision?</label><select name="committee_decision"><option>No</option><option>Yes</option></select></div>
+    <div><label>Linked record</label><input name="linked_record"></div>
+    <div><button class="gold">Add action</button></div></form></details>{% endif %}
+</div>
+
+<div class="grid g3" style="margin-top:14px">
+  {% for table, label, textkey in [('priorities', "This week's priorities", 'priority'), ('questions', 'Questions for committee', 'question'), ('projects', 'Long-term projects', 'project')] %}
+  <div class="card"><h2>{{ label }}</h2>
+    {% for r in t[table] %}<div class="spread" style="border-bottom:1px solid var(--line);padding:6px 0">
+      <div><b>{{ r.number or r.id }}</b> {{ r[textkey] }}<div class="small muted">{{ r.owner }}{{ ' · ' ~ r.due_date if r.due_date }}{{ ' · ' ~ r.evidence if r.evidence }}{{ ' · ' ~ r.deliverable if r.deliverable }}</div></div>
+      <div class="inline">{{ status_form(table, r, ['Open', 'Planned', 'In Progress', 'Pending Data', 'Done', 'Closed']) }}{{ remove(table, r) }}</div></div>{% endfor %}
+    {% if can_edit() %}<form method="post" action="/actions/{{ table }}/new" class="inline" style="margin-top:8px">{{ csrf() }}
+      <input name="{{ textkey }}" placeholder="Add…" required><input name="owner" placeholder="Owner" size="10"><input type="hidden" name="status" value="Open"><button class="small">Add</button></form>{% endif %}
+  </div>{% endfor %}
+</div>
+
+<div class="grid g3" style="margin-top:14px">
+  <div class="card"><h2>Publication status <a class="small" href="/reports">Report studio</a></h2>
+    <table class="t"><tr><th>Publication</th><th>Latest issue</th><th>Last</th><th>Next due</th><th>Status</th></tr>
+    {% for r in t.publications %}<tr><td>{{ r.publication }}</td><td class="small">{{ r.latest_issue }}</td><td>{{ r.last_published or '' }}</td><td>{{ r.next_due or '' }}</td><td>{{ badge(r.status) }}</td></tr>{% endfor %}</table></div>
+  <div class="card"><h2>Operational calendar <a class="small" href="/t/calendar">Edit</a></h2>
+    <table class="t">{% for r in t.calendar %}<tr><td>{{ r.date or 'TBD' }}</td><td>{{ r.event }}<div class="small muted">{{ r.cadence }} · {{ r.authority }}</div></td><td>{{ badge(r.status) }}</td></tr>{% endfor %}</table></div>
+  <div class="card"><h2>Certification register <a class="small" href="/t/certifications">Edit</a></h2>
+    <table class="t">{% for r in t.certifications %}<tr><td>{{ r.record }}<div class="small muted">{{ r.version }} · {{ r.certified or '' }}</div></td><td>{{ badge(r.status) }}</td></tr>{% endfor %}</table></div>
+</div>
+{% endblock %}

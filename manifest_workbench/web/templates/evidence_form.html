@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% from '_macros.html' import csrf, field_input %}
+{% block title %}Log evidence{% endblock %}
+{% block heading %}Log research item as RCC-002 evidence{% endblock %}
+{% block sub %}{{ item.source }} · {{ item.ticker }} · {{ item.title }} — pre-filled; confirm or adjust before saving{% endblock %}
+{% block content %}
+<div class="card">
+  {% if item.url %}<p><a href="{{ item.url }}" target="_blank" rel="noopener">Open the source ↗</a></p>{% endif %}
+  <form method="post" class="form-grid">{{ csrf() }}
+  {% for f in table.fields if f.kind == 'input' and f.key != 'evidence_id' %}
+    <div class="{{ 'wide' if f.key in ('summary', 'source_ref', 'notes') }}"><label>{{ f.header }} ({{ f.col }})</label>{{ field_input(f, values.get(f.key)) }}</div>
+  {% endfor %}
+  <div class="wide row"><button class="gold">Save evidence record</button><a class="btn ghost" href="/data#inbox">Cancel</a></div>
+  </form>
+</div>
+{% endblock %}

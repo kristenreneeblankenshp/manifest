@@ -70,7 +70,11 @@ def fmt(value, vtype: str = S.TEXT) -> str:
     if isinstance(value, dt.date):
         return value.isoformat()
     if isinstance(value, float):
-        return f'{value:.2f}'.rstrip('0').rstrip('.') if not value.is_integer() else str(int(value))
+        if value.is_integer():
+            return str(int(value))
+        if abs(value) < 0.005:
+            return f'{value:g}'
+        return f'{value:.2f}'.rstrip('0').rstrip('.')
     return str(value)
 
 
@@ -87,16 +91,20 @@ def table(style: Style, headers, rows, status_cols=(), max_col=34, total_width=N
     widths = [min(max_col, max(min(len(str(headers[i])), 10), *(len(r[i]) for r in rows)))
               for i in range(ncol)]
     budget = total_width - 2 * (ncol - 1) - 2
-    # Shrink the widest free-text columns first; keep short columns (IDs, dates, codes) whole.
+    status_idx = {headers.index(c) for c in status_cols if c in headers}
+    # Shrink the widest free-text columns first; keep short columns (IDs, dates, codes) and
+    # status columns whole as long as possible.
     for floor_cap in (16, 6):
         floor = [min(w, floor_cap) for w in widths]
         floor[0] = widths[0]  # the record key stays readable
+        if floor_cap == 16:
+            for i in status_idx:
+                floor[i] = widths[i]
         while sum(widths) > budget:
             slack = [w - f for w, f in zip(widths, floor)]
             if max(slack) <= 0:
                 break
             widths[slack.index(max(slack))] -= 1
-    status_idx = {headers.index(c) for c in status_cols if c in headers}
     out = ['  ' + '  '.join(style.paint(_clip(str(h), widths[i]).ljust(widths[i]), BOLD)
                             for i, h in enumerate(headers))]
     out.append('  ' + '  '.join('─' * w for w in widths))

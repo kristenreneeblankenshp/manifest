@@ -171,3 +171,57 @@ class StageGateTest(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
+
+class OperatingTablesTest(unittest.TestCase):
+    def test_slot_add_clear_and_ids(self):
+        store = fresh()
+        rec = ops.add_record(store, 'actions', ['action=Load Q4 weights', 'status=open'], 'tester', TODAY)
+        self.assertEqual((rec['id'], rec['status']), ('OP-007', 'Open'))
+        self.assertEqual(store['actions'][6], rec)
+        dec = ops.add_record(store, 'decisions', ['decision=Review MU'], 'tester', TODAY)
+        self.assertEqual(dec['id'], 'DC-004')
+        q = ops.add_record(store, 'questions', ['question=Any Zacks #5?'], 'tester', TODAY)
+        self.assertEqual(q['id'], 'Q6')
+        with self.assertRaises(ops.OpError):
+            ops.add_record(store, 'actions', ['id=OP-001', 'action=dup'], 'tester', TODAY)
+        ops.clear_record(store, 'actions', 'OP-007', 'tester')
+        self.assertEqual(store['actions'][6], {})
+        self.assertEqual(store['audit'][-1]['action'], 'clear')
+        with self.assertRaises(ops.OpError):
+            ops.clear_record(store, 'mandate', 'PEW-001-01', 'tester')
+        for i in range(8):
+            ops.add_record(store, 'intel-review', [f'symbol=T{i}'], 'tester', TODAY)
+        with self.assertRaises(ops.OpError):
+            ops.add_record(store, 'intel-review', ['symbol=FULL'], 'tester', TODAY)
+
+    def test_addressing(self):
+        store = fresh()
+        self.assertEqual(ops.find(store, 'workflow', 'research suff')[0], 1)   # unique prefix
+        self.assertEqual(ops.find(store, 'priorities', '#3')[0], 2)            # row number
+        self.assertEqual(ops.find(store, 'composite', 'macro regime')[0], 0)
+        self.assertEqual(ops.find(store, 'roles', 'nvda')[0], 11)
+        self.assertEqual(ops.find(store, 'controls', None)[1]['console_id'], 'CISC-001')
+        with self.assertRaises(ops.OpError):
+            ops.find(store, 'workflow', 'review')                              # ambiguous
+
+    def test_frozen_and_formula_fields(self):
+        store = fresh()
+        for table, key, pair in (('mandate', 'PEW-001-09', 'status=PASS'),
+                                 ('mandate', 'PEW-001-01', 'standard=S&P 500'),
+                                 ('composite', 'Macro Regime', 'component=Macro'),
+                                 ('workflow', 'MFPDF Version Issuance', 'blocking=No'),
+                                 ('controls', None, 'console_id=CISC-002'),
+                                 ('scenario', 'NVDA', 'effective_weight=5%'),
+                                 ('sleeves', 'Strategic Anchors', 'purpose=x'),
+                                 ('lab', None, 'scenario_total=1')):
+            with self.subTest(table=table, pair=pair), self.assertRaises(ops.OpError):
+                ops.set_fields(store, table, key, [pair], 'tester', TODAY)
+        ops.set_fields(store, 'mandate', 'PEW-001-02', ['F=Loaded', 'status=ACTIVE'], 'tester', TODAY)
+        ops.set_fields(store, 'validation', None, ['position_threshold=1%'], 'tester', TODAY)
+        self.assertAlmostEqual(store['validation']['position_threshold'], 0.01)
+        ops.set_fields(store, 'scenario', 'NVDA', ['J=3.1%', 'rationale=AI'], 'tester', TODAY)
+        self.assertAlmostEqual(store['scenario'][11]['scenario_weight'], 0.031)
+        ops.set_fields(store, 'workflow', 'Portfolio Engineering', ['status=approved'], 'tester', TODAY)
+        self.assertEqual(store['workflow'][0]['status'], 'Approved')
+        self.assertEqual(store['portfolio'][11]['target_weight'], 0.0268)  # certified MFPDF untouched

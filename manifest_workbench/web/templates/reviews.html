@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% from '_macros.html' import badge, csrf %}
+{% block title %}Reviews{% endblock %}
+{% block heading %}Review manager{% endblock %}
+{% block sub %}Weekly, monthly and quarterly reviews per the operating specs · checks read live workbench data{% endblock %}
+{% block content %}
+<div class="grid g3">
+{% for r in current %}
+  <div class="card">
+    <h2>{{ r.label }} {{ badge(r.review.status if r.review else 'Not Started') }}</h2>
+    <div class="small muted">{{ r.id.split('-', 1)[1] }} · {{ r.start }} – {{ r.end }} · due {{ r.due }}</div>
+    <div class="progress"><i style="width:{{ (100 * r.done / r.total)|round }}%"></i></div>
+    <div class="small">{{ r.done }} of {{ r.total }} items confirmed · {{ r.auto_ok }} checks currently passing</div>
+    <div style="margin-top:10px">
+    {% if r.review %}<a class="btn gold" href="/reviews/{{ r.id }}">Open review</a>
+    {% elif can_edit() %}<form method="post" action="/reviews/start/{{ r.kind }}">{{ csrf() }}<button class="gold">Start {{ r.kind }} review</button></form>{% endif %}
+    </div>
+  </div>
+{% endfor %}
+</div>
+<div class="card" style="margin-top:14px"><h2>History</h2>
+<table class="t"><tr><th>Review</th><th>Period</th><th>Status</th><th>Signed off</th></tr>
+{% for r in history %}<tr><td><a href="/reviews/{{ r.id }}">{{ r.id }}</a></td><td>{{ r.start }} – {{ r.end }}</td><td>{{ badge(r.status) }}</td><td>{{ r.signed_by or '' }} {{ (r.signed_at or '')[:10] }}</td></tr>
+{% else %}<tr><td colspan="4" class="muted">No reviews yet.</td></tr>{% endfor %}</table></div>
+{% endblock %}

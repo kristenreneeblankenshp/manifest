@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% from '_macros.html' import badge, csrf %}
+{% block title %}{{ label }}{% endblock %}
+{% block heading %}{{ label }} · {{ review.id.split('-', 1)[1] }}{% endblock %}
+{% block sub %}{{ review.start }} – {{ review.end }} · due {{ review.due }} · {{ review.status }}{% endblock %}
+{% block content %}
+{% set done = rows|selectattr('done')|list|length %}
+<div class="card">
+  <div class="spread"><h2>Checklist {{ badge(review.status) }}</h2><span class="small">{{ done }} / {{ rows|length }} confirmed</span></div>
+  <div class="progress"><i style="width:{{ (100 * done / rows|length)|round }}%"></i></div>
+  {% for r in rows %}
+  <div class="check {{ 'done' if r.done }}" id="{{ r.key }}">
+    <div class="dot">{{ '✓' if r.done else loop.index }}</div>
+    <div>
+      <b>{{ r.text }}</b> <a class="small" href="{{ r.link }}">open →</a>
+      <div class="small muted">{{ r.source }}</div>
+      <div class="small" style="margin-top:3px">{% if r.auto_ok is sameas true %}{{ badge('Check passing') }}{% elif r.auto_ok is sameas false %}{{ badge('Check not met') }}{% endif %} {{ r.detail }}</div>
+      {% if r.done %}<div class="small muted">Confirmed by {{ r.by }} · {{ (r.at or '')|replace('T', ' ') }}{% if r.note %} · “{{ r.note }}”{% endif %}</div>{% endif %}
+    </div>
+    <div>{% if can_edit() and review.status != 'Completed' %}
+      {% if not r.done %}<form method="post" action="/reviews/{{ review.id }}/item/{{ r.key }}" class="inline">{{ csrf() }}
+        <input name="note" placeholder="{{ 'Exception note (required)' if r.auto_ok is sameas false else 'Note (optional)' }}" size="24">
+        <input type="hidden" name="done" value="1"><button class="small gold">Confirm</button></form>
+      {% else %}<form method="post" action="/reviews/{{ review.id }}/item/{{ r.key }}">{{ csrf() }}<input type="hidden" name="done" value="0"><button class="small ghost">Undo</button></form>{% endif %}
+    {% endif %}</div>
+  </div>
+  {% endfor %}
+</div>
+
+<div class="card" style="margin-top:14px">
+  {% if review.status == 'Completed' %}
+    <h2>Signed off {{ badge('Completed') }}</h2>
+    <p>Signed off by <b>{{ review.signed_by }}</b> on {{ (review.signed_at or '')|replace('T', ' ') }}.</p>
+    {% if review.notes %}<p>{{ review.notes }}</p>{% endif %}
+    {% if can_edit() %}<form method="post" action="/reviews/{{ review.id }}/reopen" class="inline">{{ csrf() }}<input name="reason" placeholder="Reason for reopening" required size="40"><button class="small ghost">Reopen</button></form>{% endif %}
+  {% elif can_edit() %}
+    <h2>Sign off</h2>
+    <form method="post" action="/reviews/{{ review.id }}/signoff">{{ csrf() }}
+      <textarea name="notes" placeholder="Review conclusions (optional). A no-action outcome is valid and explicit."></textarea>
+      <button class="gold" style="margin-top:8px" {{ 'disabled' if done < rows|length }}>Sign off review</button>
+      {% if done < rows|length %}<span class="small muted">Confirm every item first.</span>{% endif %}
+    </form>
+  {% endif %}
+</div>
+{% endblock %}

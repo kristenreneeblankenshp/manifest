@@ -10,6 +10,15 @@ Field kinds follow the workbook colour convention:
 * ``auto``   -- black text: formula / calculated output. Never stored.
 * ``link``   -- green text: linked from another worksheet. Never stored.
 * ``locked`` -- certified MFPDF data. Stored, but may not be edited.
+
+Table modes describe how records are addressed:
+
+* ``positional`` -- one row per certified holding, addressed by symbol.
+* ``register``   -- append-only controlled register (RCC), addressed by record ID.
+* ``slots``      -- fixed-capacity operating list; rows can be added and cleared.
+* ``fixed``      -- fixed rows with locked identities (mandate controls, sleeves ...).
+* ``single``     -- one record of named cells (dashboard controls, scenario header).
+  For single tables ``Field.col`` holds the cell reference (``B6``).
 """
 
 from __future__ import annotations
@@ -44,6 +53,9 @@ class Table:
     first_row: int
     capacity: int
     fields: tuple
+    mode: str = 'register'
+    key: str = ''
+    title: str = ''
 
     def field(self, name: str) -> Field:
         """Resolve a field by key, column letter or header (case-insensitive)."""
@@ -62,8 +74,8 @@ class Table:
         return [f.key for f in self.fields if kind is None or f.kind == kind]
 
 
-def _t(name, sheet, first_row, capacity, *fields):
-    return Table(name, sheet, first_row, capacity, tuple(fields))
+def _t(name, sheet, first_row, capacity, *fields, mode='register', key='', title=''):
+    return Table(name, sheet, first_row, capacity, tuple(fields), mode, key, title)
 
 
 F = Field
@@ -84,6 +96,7 @@ ALLOCATION = _t(
     F('rebalancing_action', 'L', 'Rebalancing Action', AUTO),
     F('conviction_tier', 'M', 'Conviction Tier', INPUT, TEXT, L.MFPDF_CONVICTION_TIER),
     F('research_status', 'N', 'Research Status', INPUT, TEXT, L.MFPDF_RESEARCH_STATUS),
+    mode='positional', key='symbol', title='Certified MFPDF allocation',
 )
 
 CONVICTION = _t(
@@ -104,6 +117,7 @@ CONVICTION = _t(
     F('next_review_date', 'N', 'Next Review Date', INPUT, DATE),
     F('decision_state', 'O', 'Decision State', AUTO),
     F('committee_rationale', 'P', 'Committee Rationale', INPUT),
+    mode='positional', key='symbol', title='PEW-005 conviction & thesis control',
 )
 
 PEW004 = _t(
@@ -133,6 +147,7 @@ PEW004 = _t(
     F('committee_decision', 'W', 'Committee Decision', INPUT, TEXT, L.PEW_COMMITTEE_DECISION),
     F('notes', 'X', 'Evidence / Notes'),
     F('status', 'Y', 'Status', AUTO),
+    mode='fixed', key='candidate_id', title='PEW-004 candidate comparison',
 )
 
 EVIDENCE = _t(
@@ -170,6 +185,7 @@ EVIDENCE = _t(
     F('control_status', 'AE', 'Control Status', AUTO),
     F('referral_eligibility', 'AF', 'Referral Eligibility', AUTO),
     F('notes', 'AG', 'Notes / Exception Rationale'),
+    mode='register', key='evidence_id', title='RCC-002 evidence ledger',
 )
 
 MIAR = _t(
@@ -207,6 +223,7 @@ MIAR = _t(
     F('certified_by', 'AE', 'Last Certified / Reviewed By'),
     F('certification_date', 'AF', 'Certification Date', INPUT, DATE),
     F('notes', 'AG', 'Notes / Exception Rationale'),
+    mode='positional', key='ticker', title='RCC-003 MIAR dossier registry',
 )
 
 REVIEWS = _t(
@@ -235,6 +252,7 @@ REVIEWS = _t(
     F('control_status', 'U', 'Control Status', AUTO),
     F('notes', 'V', 'Notes / Exception Rationale'),
     F('source_ref', 'W', 'Source / Internal Memo Reference'),
+    mode='register', key='review_id', title='RCC-003 MIAR review log',
 )
 
 MASR = _t(
@@ -274,6 +292,7 @@ MASR = _t(
     F('approved_by', 'AG', 'Approved / Reviewed By'),
     F('approval_date', 'AH', 'Approval / Review Date', INPUT, DATE),
     F('notes', 'AI', 'Notes / Source / Exception Rationale'),
+    mode='register', key='ticker', title='RCC-004 MASR registry',
 )
 
 # Registry fields that are linked to the certified MFPDF for Certified Portfolio
@@ -326,18 +345,345 @@ PIPELINE = _t(
     F('closure_reason', 'AO', 'Closure / Removal Reason', INPUT, TEXT, L.CLOSURE_REASON),
     F('closed_by', 'AP', 'Closed By'),
     F('closed_date', 'AQ', 'Closed Date', INPUT, DATE),
+    mode='register', key='candidate_id', title='RCC-004 candidate pipeline',
 )
 
-TABLES = {t.name: t for t in (ALLOCATION, CONVICTION, PEW004, EVIDENCE, MIAR, REVIEWS, MASR, PIPELINE)}
+# =========================================================================== CISC-001
+
+CONTROLS = _t(
+    'controls', '01 Dashboard Controls', 6, 1,
+    F('report_date', 'B6', 'Report Date', INPUT, DATE),
+    F('console_id', 'B7', 'Console ID', LOCKED),
+    F('edition', 'B8', 'Edition', LOCKED),
+    F('data_status', 'B9', 'Data Status'),
+    F('previous_week_score', 'B10', 'Previous Week Score', INPUT, NUMBER),
+    F('confidence', 'B11', 'Confidence', INPUT, PERCENT),
+    F('next_review', 'B12', 'Next Review', INPUT, DATE),
+    F('mwir_status', 'B13', 'MWIR Status'),
+    F('weight_total', 'C24', 'Composite Weight Total', AUTO, PERCENT),
+    F('composite_score', 'B27', 'Composite Alignment Score', AUTO, NUMBER),
+    F('weekly_change', 'B28', 'Weekly Change', AUTO, NUMBER),
+    F('posture', 'B29', 'Current Posture', AUTO),
+    F('compass_bias', 'B30', 'Compass Bias', AUTO),
+    F('classification', 'B31', 'Score Classification', AUTO),
+    F('prototype_note', 'B32', 'Prototype Note'),
+    mode='single', title='CISC-001 dashboard controls (weekly operating inputs)',
+)
+
+COMPOSITE = _t(
+    'composite', '01 Dashboard Controls', 16, 8,
+    F('component', 'A', 'Composite Component', LOCKED),
+    F('score', 'B', 'Score (-1 to +1)', INPUT, NUMBER),
+    F('weight', 'C', 'Weight', INPUT, PERCENT),
+    F('contribution', 'D', 'Contribution', AUTO, NUMBER),
+    mode='fixed', key='component', title='Composite alignment components',
+)
+
+INTEL_REVIEW = _t(
+    'intel-review', '03 Research Intelligence', 7, 8,
+    F('symbol', 'A', 'Symbol'),
+    F('company', 'B', 'Company'),
+    F('reason', 'C', 'Reason'),
+    F('trigger', 'D', 'Trigger'),
+    F('priority', 'E', 'Priority', INPUT, TEXT, L.PRIORITY),
+    F('due_date', 'F', 'Due Date', INPUT, DATE),
+    F('status', 'G', 'Status', INPUT, TEXT, L.REVIEW_QUEUE_STATUS),
+    mode='slots', key='symbol', title='Research intelligence: companies requiring review',
+)
+INTEL_EVENTS = _t(
+    'intel-events', '03 Research Intelligence', 19, 8,
+    F('date', 'A', 'Date', INPUT, DATE),
+    F('symbol', 'B', 'Symbol'),
+    F('company', 'C', 'Company'),
+    F('event', 'D', 'Event'),
+    F('status', 'E', 'Status', INPUT, TEXT, L.EVENT_STATUS),
+    mode='slots', key='symbol', title='Research intelligence: earnings / event calendar',
+)
+INTEL_ZACKS = _t(
+    'intel-zacks', '03 Research Intelligence', 31, 8,
+    F('date', 'A', 'Date', INPUT, DATE),
+    F('symbol', 'B', 'Symbol'),
+    F('prior_rank', 'C', 'Prior Rank', INPUT, INT, L.ZACKS_RANK),
+    F('current_rank', 'D', 'Current Rank', INPUT, INT, L.ZACKS_RANK),
+    F('direction', 'E', 'Direction', INPUT, TEXT, L.ZACKS_DIRECTION),
+    F('notes', 'F', 'Notes'),
+    mode='slots', key='symbol', title='Research intelligence: Zacks Rank changes',
+)
+INTEL_MERRILL = _t(
+    'intel-merrill', '03 Research Intelligence', 43, 8,
+    F('date', 'A', 'Date', INPUT, DATE),
+    F('symbol', 'B', 'Symbol'),
+    F('rating_action', 'C', 'Rating / Action'),
+    F('price_target_change', 'D', 'Price Target Change'),
+    F('thesis_impact', 'E', 'Thesis Impact'),
+    F('source_ref', 'F', 'Source Reference'),
+    F('status', 'G', 'Status', INPUT, TEXT, L.MERRILL_UPDATE_STATUS),
+    mode='slots', key='symbol', title='Research intelligence: Merrill research updates',
+)
+INTEL_MIAR = _t(
+    'intel-miar', '03 Research Intelligence', 55, 8,
+    F('symbol', 'A', 'Symbol'),
+    F('review_type', 'B', 'Review Type'),
+    F('last_updated', 'C', 'Last Updated', INPUT, DATE),
+    F('due_date', 'D', 'Due Date', INPUT, DATE),
+    F('owner', 'E', 'Owner'),
+    F('status', 'F', 'Status', INPUT, TEXT, L.MIAR_UPDATE_STATUS),
+    mode='slots', key='symbol', title='Research intelligence: MIAR updates',
+)
+INTEL_THESIS = _t(
+    'intel-thesis', '03 Research Intelligence', 67, 8,
+    F('symbol', 'A', 'Symbol'),
+    F('current_conviction', 'B', 'Current Conviction'),
+    F('proposed_conviction', 'C', 'Proposed Conviction'),
+    F('reason', 'D', 'Reason'),
+    F('due_date', 'E', 'Due Date', INPUT, DATE),
+    F('authority', 'F', 'Authority'),
+    F('status', 'G', 'Status', INPUT, TEXT, L.REVIEW_QUEUE_STATUS),
+    mode='slots', key='symbol', title='Research intelligence: thesis / conviction reviews',
+)
+
+ACTIONS = _t(
+    'actions', '04 Committee Operations', 7, 14,
+    F('id', 'A', 'ID'),
+    F('category', 'B', 'Category'),
+    F('action', 'C', 'Action'),
+    F('owner', 'D', 'Owner'),
+    F('due_date', 'E', 'Due Date', INPUT, DATE),
+    F('priority', 'F', 'Priority', INPUT, TEXT, L.PRIORITY),
+    F('status', 'G', 'Status', INPUT, TEXT, L.ACTION_STATUS),
+    F('committee_decision', 'H', 'Requires Committee Decision?', INPUT, TEXT, L.YES_NO),
+    F('linked_record', 'I', 'Linked Record'),
+    mode='slots', key='id', title='Committee operations: action register',
+)
+PRIORITIES = _t(
+    'priorities', '04 Committee Operations', 8, 10,
+    F('number', 'J', 'No.'),
+    F('priority', 'K', "This Week's Priority"),
+    F('owner', 'L', 'Owner'),
+    F('due_date', 'M', 'Due Date', INPUT, DATE),
+    F('status', 'N', 'Status'),
+    mode='slots', key='number', title="Steward's notebook: this week's priorities",
+)
+QUESTIONS = _t(
+    'questions', '04 Committee Operations', 21, 10,
+    F('id', 'J', 'ID'),
+    F('question', 'K', 'Question for Committee'),
+    F('evidence', 'L', 'Evidence'),
+    F('owner', 'M', 'Owner'),
+    F('status', 'N', 'Status'),
+    mode='slots', key='id', title="Steward's notebook: questions for committee",
+)
+PROJECTS = _t(
+    'projects', '04 Committee Operations', 34, 10,
+    F('id', 'J', 'ID'),
+    F('project', 'K', 'Long-Term Project'),
+    F('owner', 'L', 'Owner'),
+    F('deliverable', 'M', 'Deliverable'),
+    F('status', 'N', 'Status'),
+    mode='slots', key='id', title="Steward's notebook: long-term projects",
+)
+PUBLICATIONS = _t(
+    'publications', '04 Committee Operations', 25, 8,
+    F('publication', 'A', 'Publication'),
+    F('latest_issue', 'B', 'Latest Issue'),
+    F('last_published', 'C', 'Last Published', INPUT, DATE),
+    F('next_due', 'D', 'Next Due', INPUT, DATE),
+    F('status', 'E', 'Status', INPUT, TEXT, L.PUBLICATION_STATUS),
+    F('owner', 'F', 'Owner'),
+    mode='slots', key='publication', title='Committee operations: publication status',
+)
+CALENDAR = _t(
+    'calendar', '04 Committee Operations', 37, 12,
+    F('date', 'A', 'Date', INPUT, DATE),
+    F('event', 'B', 'Event'),
+    F('cadence', 'C', 'Cadence'),
+    F('authority', 'D', 'Authority'),
+    F('status', 'E', 'Status'),
+    mode='slots', key='event', title='Committee operations: operational calendar',
+)
+CERTIFICATIONS = _t(
+    'certifications', '04 Committee Operations', 51, 12,
+    F('record', 'A', 'Record'),
+    F('version', 'B', 'Version'),
+    F('certified', 'C', 'Certified / Frozen', INPUT, DATE),
+    F('review_cadence', 'D', 'Review Cadence'),
+    F('status', 'E', 'Status'),
+    F('authority', 'F', 'Authority'),
+    mode='slots', key='record', title='Committee operations: certification register',
+)
+
+DECISIONS = _t(
+    'decisions', '02 Decision Center', 28, 20,
+    F('id', 'A', 'ID'),
+    F('date_opened', 'B', 'Date Opened', INPUT, DATE),
+    F('category', 'C', 'Category'),
+    F('decision', 'D', 'Decision'),
+    F('evidence', 'E', 'Evidence'),
+    F('recommendation', 'F', 'Recommendation'),
+    F('authority', 'G', 'Authority'),
+    F('owner', 'H', 'Owner'),
+    F('due_date', 'I', 'Due Date', INPUT, DATE),
+    F('committee_decision', 'J', 'Requires Committee Decision?', INPUT, TEXT, L.YES_NO),
+    F('status', 'K', 'Status', INPUT, TEXT, L.DECISION_STATUS),
+    # Application extension (not in the v0.4 sheet): the recorded outcome of the decision.
+    F('resolution', 'L', 'Resolution / Outcome'),
+    mode='slots', key='id', title='Decision Center: manual decision register',
+)
+
+# =========================================================================== MOPS-002 PEW
+
+MANDATE = _t(
+    'mandate', '07 Mandate & Constraints', 6, 28,
+    F('control_id', 'A', 'Control ID', LOCKED),
+    F('domain', 'B', 'Domain', LOCKED),
+    F('objective', 'C', 'Objective / Constraint', LOCKED),
+    F('standard', 'D', 'Adopted Standard', LOCKED),
+    F('classification', 'E', 'Classification', LOCKED, TEXT, L.CONSTRAINT_TYPE),
+    F('operating_value', 'F', 'Operating Value / Current State'),
+    F('test', 'G', 'Test / Trigger', LOCKED),
+    F('status', 'H', 'Status'),
+    F('authority', 'I', 'Authority', LOCKED),
+    F('effect', 'J', 'Engineering Effect', LOCKED),
+    F('notes', 'K', 'Notes / Source'),
+    mode='fixed', key='control_id', title='PEW-001 mandate & constraints register',
+)
+# Mandate rows whose value and status are formulas (PEW-001-09..12, 25, 26).
+MANDATE_FORMULA_ROWS = ('PEW-001-09', 'PEW-001-10', 'PEW-001-11', 'PEW-001-12', 'PEW-001-25',
+                        'PEW-001-26')
+
+SLEEVES = _t(
+    'sleeves', '08 Sleeve Architecture', 5, 8,
+    F('sleeve', 'A', 'Production Sleeve', LOCKED),
+    F('purpose', 'B', 'Institutional Purpose', LOCKED),
+    F('positions', 'C', 'Positions', LINK, INT),
+    F('equities', 'D', 'Equities', LINK, INT),
+    F('etfs', 'E', 'ETFs', LINK, INT),
+    F('certified_target', 'F', 'Certified Target', LINK, PERCENT),
+    F('actual', 'G', 'Actual Allocation', AUTO, PERCENT),
+    F('scenario', 'H', 'Scenario Allocation', AUTO, PERCENT),
+    F('delta', 'I', 'Scenario Delta', AUTO, PERCENT),
+    F('range_low', 'J', 'Planning Range Low', AUTO, PERCENT),
+    F('range_high', 'K', 'Planning Range High', AUTO, PERCENT),
+    F('role_control', 'L', 'Role Control', AUTO),
+    F('conviction_assigned', 'M', 'Conviction Assigned', AUTO, INT),
+    F('conviction_completeness', 'N', 'Conviction Completeness', AUTO, PERCENT),
+    F('decision_state', 'O', 'Sleeve Decision State', AUTO),
+    F('committee_note', 'P', 'Committee Note'),
+    mode='fixed', key='sleeve', title='PEW-002 sleeve architecture',
+)
+
+ROLES = _t(
+    'roles', '09 Role Assignment', 5, 47,
+    F('sleeve', 'A', 'Production Sleeve', LINK),
+    F('symbol', 'B', 'Symbol', LINK),
+    F('security', 'C', 'Security', LINK),
+    F('security_type', 'D', 'Type', LINK),
+    F('certified_role', 'E', 'Certified Portfolio Role', LINK),
+    F('functional_role', 'F', 'Functional Role', INPUT, TEXT, L.FUNCTIONAL_ROLE),
+    F('role_priority', 'G', 'Role Priority', INPUT, TEXT, L.ROLE_PRIORITY),
+    F('core_eligibility', 'H', 'Core Eligibility', INPUT, TEXT, L.CORE_ELIGIBILITY),
+    F('five_year_evidence', 'I', 'Five-Year Evidence Status', INPUT, TEXT, L.FIVE_YEAR_EVIDENCE),
+    F('thesis_horizon', 'J', 'Thesis Horizon', INPUT, TEXT, L.HOLDING_PERIOD),
+    F('duplication_risk', 'K', 'Duplication Risk', INPUT, TEXT, L.RISK_CLASS),
+    F('complementarity', 'L', 'Complementarity Score (1–5)', INPUT, INT, (1, 2, 3, 4, 5)),
+    F('role_decision', 'M', 'Role Decision', INPUT, TEXT, L.ROLE_DECISION),
+    F('notes', 'N', 'Role / Replacement Notes'),
+    F('control_status', 'O', 'Control Status', AUTO),
+    mode='positional', key='symbol', title='PEW-003 portfolio role assignment',
+)
+
+LAB = _t(
+    'lab', '12 Allocation Lab', 4, 1,
+    F('scenario_id', 'B4', 'Scenario ID'),
+    F('scenario_name', 'E4', 'Scenario Name'),
+    F('prepared_date', 'J4', 'Prepared Date', INPUT, DATE),
+    F('scenario_status', 'M4', 'Scenario Status', AUTO),
+    F('certified_total', 'B6', 'Certified Total', AUTO, PERCENT),
+    F('scenario_total', 'E6', 'Scenario Total', AUTO, PERCENT),
+    F('funding_balance', 'H6', 'Funding Balance', AUTO, PERCENT),
+    F('changed_positions', 'K6', 'Changed Positions', AUTO, INT),
+    F('gross_turnover', 'N6', 'Gross Turnover', AUTO, PERCENT),
+    F('band_exceptions', 'Q6', 'Band Exceptions', AUTO, INT),
+    F('actual_total', 'B7', 'Current Actual Total', AUTO, PERCENT),
+    F('actual_loaded', 'E7', 'Actual Weights Loaded', AUTO),
+    F('readiness', 'H7', 'Implementation Readiness', AUTO),
+    mode='single', title='PEW-006 allocation lab scenario',
+)
+
+SCENARIO = _t(
+    'scenario', '12 Allocation Lab', 11, 47,
+    F('sleeve', 'A', 'Production Sleeve', LINK),
+    F('symbol', 'B', 'Symbol', LINK),
+    F('security', 'C', 'Security', LINK),
+    F('security_type', 'D', 'Type', LINK),
+    F('role', 'E', 'Certified Portfolio Role', LINK),
+    F('certified_target', 'F', 'Certified Target', LINK, PERCENT),
+    F('lower_band', 'G', 'Lower Band', LINK, PERCENT),
+    F('upper_band', 'H', 'Upper Band', LINK, PERCENT),
+    F('actual_weight', 'I', 'Actual Weight', LINK, PERCENT),
+    F('scenario_weight', 'J', 'Scenario Weight Input', INPUT, PERCENT),
+    F('effective_weight', 'K', 'Effective Scenario Weight', AUTO, PERCENT),
+    F('change', 'L', 'Change vs Certified', AUTO, PERCENT),
+    F('funding', 'M', 'Funding / Use', AUTO),
+    F('band_test', 'N', 'Certified Band Test', AUTO),
+    F('trigger', 'O', 'Decision Trigger', AUTO),
+    F('rationale', 'P', 'Committee Rationale'),
+    F('validation_state', 'Q', 'Validation State', AUTO),
+    F('abs_change', 'R', 'Absolute Change', AUTO, PERCENT),
+    mode='positional', key='symbol', title='PEW-006 scenario allocation schedule',
+)
+
+CERTIFICATION = _t(
+    'validation', '13 Validation & Cert', 6, 1,
+    F('turnover_threshold', 'B6', 'Gross turnover materiality threshold', INPUT, PERCENT),
+    F('position_threshold', 'B7', 'Single-position materiality threshold', INPUT, PERCENT),
+    F('sleeve_threshold', 'B8', 'Sleeve-shift materiality threshold', INPUT, PERCENT),
+    F('total_tolerance', 'B9', 'Target-total tolerance', INPUT, NUMBER),
+    F('equity_min', 'B10', 'Preferred equity minimum', INPUT, INT),
+    F('equity_max', 'B11', 'Preferred equity maximum', INPUT, INT),
+    F('equity_ceiling', 'B12', 'Operating equity ceiling', INPUT, INT),
+    F('overall_readiness', 'J12', 'Overall Readiness', AUTO),
+    F('proposed_version', 'J38', 'Proposed MFPDF Version'),
+    F('effective_date', 'K38', 'Effective Date', INPUT, DATE),
+    F('certification_state', 'L38', 'Certification State', AUTO),
+    mode='single', title='PEW-007 validation controls and certification state',
+)
+
+WORKFLOW = _t(
+    'workflow', '13 Validation & Cert', 38, 7,
+    F('stage', 'A', 'Review Stage', LOCKED),
+    F('status', 'B', 'Status', INPUT, TEXT, L.CERTIFICATION_STATUS),
+    F('reviewed_by', 'C', 'Reviewed By'),
+    F('review_date', 'D', 'Review Date', INPUT, DATE),
+    F('evidence_ref', 'E', 'Evidence Reference'),
+    F('notes', 'F', 'Decision / Notes'),
+    F('blocking', 'G', 'Blocking?', LOCKED),
+    mode='fixed', key='stage', title='PEW-007 formal certification workflow',
+)
+
+CHANGES = _t(
+    'changes', '13 Validation & Cert', 49, 10,
+    F('change_id', 'A', 'Change ID', LOCKED),
+    F('symbol_sleeve', 'B', 'Symbol / Sleeve'),
+    F('change_type', 'C', 'Change Type', INPUT, TEXT, L.CHANGE_TYPE),
+    F('certified_weight', 'D', 'Certified Weight', INPUT, PERCENT),
+    F('proposed_weight', 'E', 'Proposed Weight', INPUT, PERCENT),
+    F('delta', 'F', 'Delta', AUTO, PERCENT),
+    F('rationale', 'G', 'Rationale / Evidence'),
+    F('outcome', 'H', 'Certification Outcome', INPUT, TEXT, L.CHANGE_OUTCOME),
+    mode='fixed', key='change_id', title='PEW-007 certification change register',
+)
+
+TABLES = {t.name: t for t in (
+    ALLOCATION, CONVICTION, PEW004, EVIDENCE, MIAR, REVIEWS, MASR, PIPELINE,
+    CONTROLS, COMPOSITE, INTEL_REVIEW, INTEL_EVENTS, INTEL_ZACKS, INTEL_MERRILL, INTEL_MIAR,
+    INTEL_THESIS, ACTIONS, PRIORITIES, QUESTIONS, PROJECTS, PUBLICATIONS, CALENDAR,
+    CERTIFICATIONS, DECISIONS, MANDATE, SLEEVES, ROLES, LAB, SCENARIO, CERTIFICATION, WORKFLOW,
+    CHANGES)}
+INTEL_TABLES = ('intel-review', 'intel-events', 'intel-zacks', 'intel-merrill', 'intel-miar',
+                'intel-thesis')
+COMMITTEE_TABLES = ('actions', 'priorities', 'questions', 'projects', 'publications', 'calendar',
+                    'certifications')
 
 # Primary key used to address a record from the command line.
-KEYS = {
-    'portfolio': 'symbol',
-    'conviction': 'symbol',
-    'pew004': 'candidate_id',
-    'evidence': 'evidence_id',
-    'miar': 'ticker',
-    'review': 'review_id',
-    'masr': 'ticker',
-    'pipeline': 'candidate_id',
-}
+KEYS = {t.name: t.key for t in TABLES.values() if t.key}

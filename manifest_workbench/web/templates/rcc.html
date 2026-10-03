@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% from '_macros.html' import badge %}
+{% set titles = {1: 'RCC-001 Executive Research Control Center', 2: 'RCC-002 Research Intake & Evidence Ledger', 3: 'RCC-003 MIAR Dossier Control', 4: 'RCC-004 MASR Registry & Candidate Pipeline'} %}
+{% block title %}RCC-00{{ n }}{% endblock %}
+{% block heading %}{{ titles[n] }}{% endblock %}
+{% block sub %}MOPS-003 · research may recommend; it may not change allocations or authorize trading{% endblock %}
+{% block content %}
+<div class="grid g4">
+{% for k, v in d.state.items() %}<div class="tile {{ v|status if v is string else '' }}"><div class="k">{{ k|replace('_', ' ') }}</div><div class="v {{ 'small' if v is string }}">{{ v }}</div></div>{% endfor %}
+</div>
+{% if d.controls %}<div class="card" style="margin-top:14px"><h2>Control exceptions</h2>
+<table class="t"><tr><th>#</th><th>Control / trigger</th><th class="num">Count</th><th>State</th><th>Required action</th><th>Authority</th><th>Destination</th></tr>
+{% for c in d.controls %}<tr><td>{{ c.priority }}</td><td>{{ c.control }}</td><td class="num">{{ c.count }}</td><td>{{ badge(c.state) }}</td><td>{{ c.action }}</td><td>{{ c.authority }}</td><td>{{ c.destination }}</td></tr>{% endfor %}</table></div>{% endif %}
+{% if n == 1 %}<div class="grid g2" style="margin-top:14px">
+  <div class="card"><h2>Research intelligence snapshot</h2><table class="t">{% for a, c in d.snapshot %}<tr><td>{{ a }}</td><td class="num">{{ c }}</td></tr>{% endfor %}</table></div>
+  <div class="card"><h2>Module roadmap</h2><table class="t">{% for m in d.roadmap %}<tr><td>{{ m[0] }}</td><td>{{ m[1] }}</td><td>{{ badge(m[2]) }}</td></tr>{% endfor %}</table></div></div>{% endif %}
+{% if n == 2 %}<div class="grid g2" style="margin-top:14px">
+  <div class="card"><h2>Evidence activity <a class="small" href="/t/evidence">Ledger</a></h2><table class="t"><tr><th>Activity</th><th class="num">Total</th><th class="num">Open</th><th class="num">Crit/High</th><th class="num">Overdue</th><th class="num">Routing</th></tr>
+  {% for a in d.activity %}<tr><td>{{ a.activity }}</td><td class="num">{{ a.total }}</td><td class="num">{{ a.open }}</td><td class="num">{{ a.critical_high }}</td><td class="num">{{ a.overdue }}</td><td class="num">{{ a.referral_ready }}</td></tr>{% endfor %}</table></div>
+  <div class="card"><h2>Routing summary</h2><table class="t">{% for c, n_, m in d.routing %}<tr><td>{{ c }}</td><td class="num">{{ n_ }}</td><td class="small muted">{{ m }}</td></tr>{% endfor %}</table></div></div>{% endif %}
+{% if n == 3 %}<div class="card" style="margin-top:14px"><h2>Sleeve MIAR coverage <a class="small" href="/t/miar">Registry</a></h2>
+<table class="t"><tr><th>Sleeve</th><th class="num">Records</th><th class="num">Complete</th><th class="num">Current</th><th class="num">Due</th><th class="num">Overdue</th><th class="num">Coverage</th><th>State</th></tr>
+{% for x in d.sleeves %}<tr><td>{{ x.sleeve }}</td><td class="num">{{ x.records }}</td><td class="num">{{ x.complete }}</td><td class="num">{{ x.current }}</td><td class="num">{{ x.update_due + x.review_due }}</td><td class="num">{{ x.overdue }}</td><td class="num">{{ x.coverage|pct(0) }}</td><td>{{ badge(x.primary) }}</td></tr>{% endfor %}</table></div>{% endif %}
+{% if n == 4 %}<div class="grid g2" style="margin-top:14px">
+  <div class="card"><h2>Registry composition <a class="small" href="/t/masr">Registry</a></h2><table class="t"><tr><th>Class</th><th class="num">Records</th><th class="num">Clear</th><th class="num">Exceptions</th></tr>{% for c in d.composition %}<tr><td>{{ c[0] }}</td><td class="num">{{ c[1] }}</td><td class="num">{{ c[2] }}</td><td class="num">{{ c[3] }}</td></tr>{% endfor %}</table></div>
+  <div class="card"><h2>Pipeline snapshot <a class="small" href="/pipeline">Board</a></h2><table class="t"><tr><th>Stage</th><th class="num">Records</th><th class="num">Gate pass</th><th class="num">Exceptions</th></tr>{% for c in d.stages %}<tr><td>{{ c[0] }}</td><td class="num">{{ c[1] }}</td><td class="num">{{ c[2] }}</td><td class="num">{{ c[3] }}</td></tr>{% endfor %}</table></div></div>{% endif %}
+{% endblock %}

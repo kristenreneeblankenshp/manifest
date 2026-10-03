@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+{% from '_macros.html' import badge, csrf %}
+{% block title %}{{ r.code }} {{ r.period_label }}{% endblock %}
+{% block heading %}{{ r.title }}{% endblock %}
+{% block sub %}{{ r.period_label }} · {{ r.status }}{% if r.version %} · last issued v{{ r.version }}{% endif %} · data as of {{ r.snapshot_as_of }}{% endblock %}
+{% block content %}
+{% set editable = r.status == 'Draft' and can_edit() %}
+<div class="card">
+  <div class="spread">
+    <div class="row">{{ badge(r.status) }}
+      {% for f in r.files %}<a class="btn small ghost" href="/reports/{{ r.id }}/file/{{ f.file }}">v{{ f.version }} PDF · {{ f.issued[:10] }}</a>{% endfor %}</div>
+    <div class="row">
+      <a class="btn ghost" href="/reports/{{ r.id }}/preview">Preview</a>
+      <a class="btn ghost" href="/reports/{{ r.id }}/draft.pdf" target="_blank">Draft PDF</a>
+      {% if editable %}
+        <form method="post" action="/reports/{{ r.id }}/refresh">{{ csrf() }}<button class="ghost" title="Re-snapshot the data; your edits are kept">Refresh data</button></form>
+        <form method="post" action="/reports/{{ r.id }}/issue" onsubmit="return confirm('Issue {{ r.code }} as version {{ r.version + 1 }}? This renders the final PDF and records the publication.')">{{ csrf() }}<button class="gold">Issue PDF v{{ r.version + 1 }}</button></form>
+      {% elif r.status == 'Issued' and can_edit() %}
+        <form method="post" action="/reports/{{ r.id }}/reopen">{{ csrf() }}<button class="ghost">Reopen to revise</button></form>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<form method="post" action="/reports/{{ r.id }}/save" style="margin-top:14px">{{ csrf() }}
+  <div class="card"><div class="form-grid">
+    <div class="wide"><label>Title</label><input name="title" value="{{ r.title }}" style="width:100%" {{ 'disabled' if not editable }}></div>
+    <div class="wide"><label>Subtitle</label><input name="subtitle" value="{{ r.subtitle }}" style="width:100%" {{ 'disabled' if not editable }}></div>
+  </div></div>
+
+  {% for s in r.sections %}
+  <div class="section-edit {{ 'off' if not s.include }}" id="{{ s.key }}" style="margin-top:12px">
+    <div class="spread">
+      {% if s.custom %}<input name="t_{{ s.key }}" value="{{ s.title }}" style="font-weight:700;font-size:15px" {{ 'disabled' if not editable }}>{% else %}<h3 style="margin:0;color:var(--navy)">{{ s.title }}</h3>{% endif %}
+      <div class="row">
+        <label style="margin:0"><input type="checkbox" name="i_{{ s.key }}" {{ 'checked' if s.include }} {{ 'disabled' if not editable }}> Include</label>
+        {% if editable and not s.custom and s.narrative != s.auto_narrative %}<button class="small ghost" formaction="/reports/{{ r.id }}/section/{{ s.key }}/reset">Reset text</button>{% endif %}
+        {% if editable and s.custom %}<button class="small danger" formaction="/reports/{{ r.id }}/section/{{ s.key }}/remove">Remove</button>{% endif %}
+      </div>
+    </div>
+    <textarea name="n_{{ s.key }}" rows="4" style="margin-top:8px" {{ 'disabled' if not editable }}>{{ s.narrative }}</textarea>
+    {% if not s.custom and s.narrative != s.auto_narrative %}<div class="small muted">Edited · generated text: {{ s.auto_narrative|truncate(160) }}</div>{% endif %}
+    {% for t in s.tables %}
+      <details class="more"><summary>{{ t.title }} · {{ t.rows|length }} row(s)</summary>
+      <div class="scroll"><table class="t" style="margin-top:6px"><tr>{% for c in t.columns %}<th>{{ c }}</th>{% endfor %}</tr>
+      {% for row in t.rows %}<tr>{% for v in row %}<td>{{ v }}</td>{% endfor %}</tr>{% else %}<tr><td colspan="{{ t.columns|length }}" class="muted">{{ t.empty }}</td></tr>{% endfor %}</table></div></details>
+    {% endfor %}
+  </div>
+  {% endfor %}
+
+  {% if editable %}
+  <div class="row" style="margin-top:12px">
+    <button class="gold" name="then" value="save">Save draft</button>
+    <button class="ghost" name="then" value="preview">Save &amp; preview</button>
+    <button class="ghost" name="then" value="pdf">Save &amp; draft PDF</button>
+  </div>
+  {% endif %}
+</form>
+
+{% if editable %}
+<div class="card" style="margin-top:14px"><h2>Add a section</h2>
+<form method="post" action="/reports/{{ r.id }}/section" class="form-grid">{{ csrf() }}
+  <div><label>Title</label><input name="title" placeholder="Steward's commentary" required></div>
+  <div><label>Insert after</label><select name="after">{% for s in r.sections %}<option value="{{ s.key }}" {{ 'selected' if loop.first }}>{{ s.title }}</option>{% endfor %}</select></div>
+  <div class="wide"><label>Text</label><textarea name="narrative" rows="3"></textarea></div>
+  <div><button class="gold">Add section</button></div>
+</form></div>
+{% endif %}
+{% endblock %}
