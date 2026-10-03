@@ -1,4 +1,4 @@
-"""MWIR: the model ported from the browser builder, the PDF and the console workspace."""
+"""MWIR: the model, the PDF and the console workspace."""
 
 import datetime as dt
 import io
@@ -26,7 +26,7 @@ def model(doc=None, store=None):
 
 
 class BuilderParityTest(unittest.TestCase):
-    """The same expectations as mwir/test.js."""
+    """The calculations the official MWIR depends on (carried over from the browser builder's tests)."""
 
     def test_bands(self):
         self.assertEqual(M.band(3.49), '2.62–4.00%')

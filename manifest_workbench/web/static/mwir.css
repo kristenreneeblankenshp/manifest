@@ -1,4 +1,4 @@
-/* MWIR report pages — from the browser builder (mwir/mwir.css), without its input panel. */
+/* MWIR report pages: 11 x 8.5 in landscape sheets at 96 px/in. mwir_pdf.py follows the same layout. */
 :root {
   --ink: #1a1d24; --navy: #1d2b4a; --brass: #8a6a2e; --muted: #5b5f68; --soft: #3a3d45;
   --rule: #cfcac0; --hair: #ebe8e1; --paper: #fdfcf9; --tint: #f1eee6; --warn: #843710;

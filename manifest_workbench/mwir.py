@@ -1,7 +1,7 @@
 """The official Manifest Weekly Institutional Report (MWIR).
 
-A port of the browser MWIR builder (``mwir/``) into the workbench, so the weekly report is built
-from the workbench's own data:
+The weekly report in the layout of the 28 Aug 2026 official MWIR, built from the workbench's
+own data. (It replaces the standalone browser builder that used to live in ``mwir/``.)
 
 * each week's draft starts from the previous week's MWIR (holdings, guidance, narrative);
 * the holdings file (``Date, Symbol, Weights``) sets the executable targets, and tickers new to the
@@ -9,7 +9,7 @@ from the workbench's own data:
 * the Zacks validation screen reads the Zacks snapshot that the Zacks connector keeps current;
 * control assertions and the certification result are calculated, never typed.
 
-The document keeps the browser builder's field names, so a builder export can be imported as-is.
+The document keeps the browser builder's field names, so a document saved by that builder still imports as-is.
 """
 
 from __future__ import annotations
@@ -517,7 +517,7 @@ def apply_form(doc: dict, form) -> None:
 
 
 def import_json(text: str) -> dict:
-    """A document exported from the browser builder (its localStorage value) or from the console."""
+    """A document exported from the console, or one saved by the former browser builder (its localStorage value)."""
     data = json.loads(text)
     if isinstance(data, dict) and 'doc' in data and isinstance(data['doc'], dict):
         data = data['doc']

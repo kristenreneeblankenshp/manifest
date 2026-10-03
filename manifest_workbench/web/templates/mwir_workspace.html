@@ -127,7 +127,7 @@
       <div class="row"><a class="btn ghost small" href="/mwir/{{ r.id }}/export.json">Export document (JSON)</a></div>
       {% if editable %}
       <form method="post" action="/mwir/{{ r.id }}/import-json" enctype="multipart/form-data" style="margin-top:8px" onsubmit="return confirm('Replace this week\'s document with the imported one?')">{{ csrf() }}
-        <label>Import a document exported from here or from the browser MWIR builder (its saved JSON)</label>
+        <label>Import a document exported from here (or saved by the former browser MWIR builder)</label>
         <div class="row"><input type="file" name="file" accept=".json,application/json" required><button class="small">Import</button></div>
       </form>{% endif %}
     </details>
