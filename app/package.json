@@ -1,0 +1,21 @@
+{
+  "name": "app",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node --test test/workflow.test.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "compression": "^1.8.2",
+    "express": "^5.2.1",
+    "fast-xml-parser": "^5.11.2",
+    "hyperformula": "^3.4.0",
+    "jszip": "^3.10.2",
+    "xlsx": "^0.18.5"
+  }
+}
