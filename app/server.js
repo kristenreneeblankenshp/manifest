@@ -14,13 +14,28 @@ const PORT = process.env.PORT || 3000;
 
 (async () => {
   fs.mkdirSync(BACKUPS, { recursive: true });
-  if (!fs.existsSync(FILE)) fs.copyFileSync(path.join(DATA, 'original.xlsx'), FILE);
+  if (!fs.existsSync(FILE)) {
+    const seed = [path.join(DATA, 'original.xlsx'), path.join(__dirname, 'data', 'original.xlsx')].find((f) => fs.existsSync(f));
+    fs.copyFileSync(seed, FILE);
+  }
   let engine = new Engine(FILE); await engine.init();
   let actions = makeActions(engine);
   const metaCache = {};
   const tableMeta = (k) => (metaCache[k] = metaCache[k] || buildMeta(engine, k));
 
   const app = express();
+  // Shared-password gate (HTTP Basic). Required in production: the workbook is confidential.
+  const PASSWORD = process.env.APP_PASSWORD;
+  if (process.env.NODE_ENV === 'production' && !PASSWORD) { console.error('APP_PASSWORD must be set when NODE_ENV=production'); process.exit(1); }
+  if (PASSWORD) {
+    const crypto = require('crypto');
+    const eq = (a, b) => { const x = crypto.createHash('sha256').update(String(a)).digest(), y = crypto.createHash('sha256').update(String(b)).digest(); return crypto.timingSafeEqual(x, y); };
+    app.use((req, res, next) => {
+      const m = /^Basic (.+)$/.exec(req.headers.authorization || ''); const pass = m ? Buffer.from(m[1], 'base64').toString().split(':').slice(1).join(':') : '';
+      if (m && eq(pass, PASSWORD)) return next();
+      res.set('WWW-Authenticate', 'Basic realm="Manifest Workbench"').status(401).send('Authentication required');
+    });
+  }
   app.use(compression()); app.use(express.json({ limit: '4mb' }));
   app.use(express.static(path.join(__dirname, 'public')));
   app.use('/mwir', express.static(path.join(__dirname, '..', 'mwir'))); // MWIR report builder

@@ -37,3 +37,11 @@ npm test           # end-to-end workflow test on a scratch copy
 * HyperFormula is used under its GPLv3 community license key (`gpl-v3`); obtain a commercial license if you distribute this app.
 * No authentication is built in (single trusted team on a private network); the "Acting as" name is stamped on every audit entry.
 * Excel can open the file while the app runs, but avoid saving it from Excel at the same time as app edits.
+
+## Deploying online
+
+Set `APP_PASSWORD` (the app refuses to start in production without it; sign in with any username and that password) and keep `/data` on a persistent disk — it holds the live workbook, snapshots and audit trail. Run **one** instance only.
+
+* **Render:** New → Blueprint → pick this repo, set the blueprint path to `app/render.yaml` (the repo root `render.yaml` is the separate Python app), set `APP_PASSWORD`. Needs a paid instance because of the persistent disk.
+* **Any Docker host (Fly.io, Railway, VM):** `docker build -t manifest-workbench app && docker run -p 3000:3000 -e APP_PASSWORD=... -v mw-data:/data manifest-workbench`. First start seeds `/data/workbook.xlsx` from the bundled baseline.
+* Put TLS in front (all of the above do this for you). Basic auth is a stopgap; use SSO before wider rollout.

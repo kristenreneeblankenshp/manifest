@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: manifest-workbench
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    plan: starter
+    healthCheckPath: /api/version
+    envVars:
+      - key: APP_PASSWORD
+        sync: false        # set this in the Render dashboard
+    disk:
+      name: workbook-data
+      mountPath: /data
+      sizeGB: 1
