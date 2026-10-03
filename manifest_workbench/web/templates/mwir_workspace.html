@@ -161,8 +161,8 @@
     var f = document.getElementById('preview');
     try { var el = f.contentDocument.getElementById(map[key]); if (el) el.scrollIntoView(); } catch (e) {}
   }
-  tabs.forEach(function (t) { t.addEventListener('click', function () { history.replaceState(null, '', '#' + t.dataset.tab); show(t.dataset.tab); }); });
-  show((location.hash || '#holdings').slice(1).replace(/[^a-z]/g, '') || 'holdings');
+  tabs.forEach(function (t) { t.addEventListener('click', function () { try { history.replaceState(null, '', '#' + t.dataset.tab); } catch (e) {} show(t.dataset.tab); }); });
+  show((window.__wbHash || location.hash || '#holdings').slice(1).replace(/[^a-z]/g, '') || 'holdings');
 
   var form = document.getElementById('mwir-form');
   if (!form || form.querySelector('fieldset').disabled) return;
@@ -179,7 +179,7 @@
         var f = document.getElementById('preview'), y = 0;
         try { y = f.contentWindow.scrollY; } catch (e) {}
         f.onload = function () { try { f.contentWindow.scrollTo(0, y); } catch (e) {} };
-        f.contentWindow.location.reload();
+        if (window.__wbReloadFrame) window.__wbReloadFrame(f); else f.contentWindow.location.reload();
       })
       .catch(function () { saved.textContent = 'Not saved — check your connection'; });
     return pending;

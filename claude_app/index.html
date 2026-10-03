@@ -1,0 +1,719 @@
+<title>Manifest Workbench Console</title>
+<style>
+/* Layout: the workbench app fills the frame; this shell only shows the start-up screen,
+   a save-status pill, toasts and conflict notices. Palette follows the console's navy / gold. */
+:root {
+  --navy: #0b1f3a; --navy-2: #13294b; --gold: #c9a227; --gold-ink: #8a6a12;
+  --bg: #f4f6f9; --card: #ffffff; --ink: #1b2430; --muted: #5b6675; --line: #dde2e9;
+  --ok: #1e7b4a; --bad: #b3261e; --warn-bg: #fdf1d6; --warn: #7a5000;
+  --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0a1426; --card: #111d33; --ink: #e5eaf2; --muted: #9aa6b8; --line: #24344f;
+  --gold-ink: #e3bf55; --warn-bg: #3a2c0e; --warn: #f0c46a; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #0a1426; --card: #111d33; --ink: #e5eaf2; --muted: #9aa6b8; --line: #24344f;
+  --gold-ink: #e3bf55; --warn-bg: #3a2c0e; --warn: #f0c46a; color-scheme: dark }
+[hidden] { display: none !important; }
+html, body { height: 100%; }
+body { background: var(--bg); color: var(--ink); font: 14px/1.5 var(--sans); }
+#app { position: fixed; inset: 0; width: 100%; height: 100%; border: 0; background: #f4f6f9; }
+.boot { min-height: 100%; display: grid; place-items: center; padding-block: 32px; padding-inline: 16px; }
+.boot .panel { width: min(560px, 100%); background: var(--card); border: 1px solid var(--line); border-top: 4px solid var(--gold);
+  border-radius: 10px; padding: 26px 28px; display: grid; gap: 16px; }
+.boot .brand b { display: block; font-size: 15px; letter-spacing: .08em; color: var(--ink); }
+.boot .brand span { font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--gold-ink); }
+.boot h1 { margin: 0; font-size: 22px; line-height: 1.25; text-wrap: balance; }
+.boot p { margin: 0; color: var(--muted); max-width: 62ch; }
+.steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.steps li { display: grid; grid-template-columns: 20px 1fr auto; gap: 10px; align-items: center; }
+.steps li i { width: 12px; height: 12px; border-radius: 50%; border: 2px solid var(--line); justify-self: center; }
+.steps li.run i { border-color: var(--gold); border-top-color: transparent; animation: spin 0.9s linear infinite; }
+.steps li.done i { background: var(--ok); border-color: var(--ok); }
+.steps li.fail i { background: var(--bad); border-color: var(--bad); }
+.steps li small { color: var(--muted); font-family: var(--mono); font-size: 11.5px; font-variant-numeric: tabular-nums; }
+@keyframes spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .steps li.run i { animation: none; } }
+.err { border: 1px solid var(--bad); color: var(--bad); border-radius: 8px; padding: 10px 12px; white-space: pre-wrap;
+  font-family: var(--mono); font-size: 12px; max-height: 220px; overflow: auto; }
+.pill { position: fixed; left: 12px; bottom: calc(10px + env(safe-area-inset-bottom, 0px)); z-index: 5; display: flex; align-items: center;
+  gap: 7px; padding: 4px 10px; border-radius: 999px; background: rgba(11, 31, 58, .92); color: #d6deea; font-size: 11.5px; max-width: 200px; }
+.pill i { width: 7px; height: 7px; border-radius: 50%; background: #8c9bbb; flex: none; }
+.pill.ok i { background: #4cc38a; } .pill.busy i { background: var(--gold); } .pill.bad i { background: #f27e75; }
+.toast { position: fixed; left: 50%; transform: translateX(-50%); bottom: calc(18px + env(safe-area-inset-bottom, 0px)); z-index: 8;
+  max-width: min(560px, calc(100vw - 32px)); background: var(--navy); color: #fff; padding: 9px 16px; border-radius: 8px;
+  box-shadow: 0 6px 24px rgba(0,0,0,.25); white-space: pre-line; }
+.notice { position: fixed; top: calc(8px + env(safe-area-inset-top, 0px)); left: 50%; transform: translateX(-50%); z-index: 9;
+  width: min(640px, calc(100vw - 32px)); background: var(--warn-bg); color: var(--warn); border: 1px solid var(--warn);
+  border-radius: 8px; padding: 10px 14px; display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; }
+.notice span { flex: 1 1 260px; min-width: 0; }
+.notice button, .backbtn { border: 1px solid currentColor; background: var(--card); color: var(--ink); border-radius: 6px;
+  padding: 5px 12px; font: inherit; font-weight: 600; cursor: pointer; }
+.backbtn { position: fixed; top: calc(10px + env(safe-area-inset-top, 0px)); left: 12px; z-index: 6; border-color: var(--line); }
+button:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+</style>
+
+<div class="boot" id="boot">
+  <div class="panel">
+    <div class="brand"><b>MANIFEST WORKBENCH</b><span>Chief Investment Steward Console · CISC-001</span></div>
+    <h1>Opening your workbench</h1>
+    <p>The full console runs inside this page: the workbook engine, decisions, reviews, the MWIR and report PDFs. Your data is saved to Claude as you work.</p>
+    <ul class="steps" id="steps">
+      <li data-step="py"><i></i><span>Load the Python runtime</span><small></small></li>
+      <li data-step="app"><i></i><span>Unpack the workbench</span><small></small></li>
+      <li data-step="data"><i></i><span>Load your saved data</span><small></small></li>
+      <li data-step="start"><i></i><span>Start the console</span><small></small></li>
+    </ul>
+    <p style="font-size:12.5px">The first open downloads about 14 MB. Later opens are faster.</p>
+    <div class="err" id="bootErr" hidden></div>
+  </div>
+</div>
+<iframe id="app" title="Manifest Workbench" hidden></iframe>
+<button class="backbtn" id="back" type="button" hidden>← Back to the console</button>
+<div class="pill" id="pill" hidden><i></i><span id="pillText">Starting</span></div>
+<div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+<div class="notice" id="notice" hidden><span id="noticeText"></span><button type="button" id="noticeA"></button><button type="button" id="noticeB"></button></div>
+
+<script src="py/pyodide.js"></script>
+<script>
+(function () {
+  'use strict';
+  var DATAFILE = '/data/manifest_workbench.json';
+  var REPORTS = '/data/reports';
+  var META = 'workbench/meta';
+  var CHUNK = 180000;
+  var STATIC = '/bundle/app/manifest_workbench/web/static/';
+  var ZACKS = 'Zacks Data';
+  var S = { py: null, bridge: null, db: null, downloads: null, mcp: null, user: null, storage: 'none', readOnly: false,
+            path: '/', lastAppPath: '/', version: null, oldChunks: 0, savedFiles: {}, lastJson: null,
+            saving: false, dirty: false, conflict: false, css: {}, name: '' };
+  var $ = function (id) { return document.getElementById(id); };
+  var appFrame = $('app');
+  var enc = new TextEncoder(), dec = new TextDecoder();
+
+  // ------------------------------------------------------------------ start-up screen
+  var t0 = performance.now();
+  function step(name, state, note) {
+    var li = document.querySelector('[data-step="' + name + '"]');
+    if (!li) return;
+    li.className = state;
+    li.querySelector('small').textContent = note || (state === 'done' ? ((performance.now() - t0) / 1000).toFixed(1) + ' s' : '');
+  }
+  function bootFail(message) {
+    var e = $('bootErr'); e.hidden = false; e.textContent = message;
+  }
+
+  // ------------------------------------------------------------------ status, toasts, notices
+  function pill(state, text) {
+    var p = $('pill'); p.hidden = false; p.className = 'pill ' + state; $('pillText').textContent = text;
+  }
+  var toastTimer = null;
+  function toast(text, ms) {
+    var t = $('toast'); t.textContent = text; t.hidden = false;
+    clearTimeout(toastTimer); toastTimer = setTimeout(function () { t.hidden = true; }, ms || 5000);
+  }
+  function notice(text, a, onA, b, onB) {
+    $('noticeText').textContent = text;
+    var A = $('noticeA'), B = $('noticeB');
+    A.textContent = a || ''; A.hidden = !a; A.onclick = function () { $('notice').hidden = true; if (onA) onA(); };
+    B.textContent = b || ''; B.hidden = !b; B.onclick = function () { $('notice').hidden = true; if (onB) onB(); };
+    $('notice').hidden = false;
+  }
+  function savedLabel() {
+    var time = new Date().toTimeString().slice(0, 5);
+    if (S.storage === 'db') return 'Saved to Claude · ' + time;
+    if (S.storage === 'browser') return 'Saved in this browser · ' + time;
+    return 'Not saved';
+  }
+
+  // ------------------------------------------------------------------ Python requests
+  var chain = Promise.resolve();
+  function serial(fn) { var p = chain.then(fn, fn); chain = p.catch(function () {}); return p; }
+
+  function pyRequest(method, url, fields, files, headers) {
+    return serial(function () {
+      var res = S.bridge.request(method, url, S.py.toPy(fields || []), S.py.toPy(files || []), S.py.toPy(headers || {}));
+      var o = res.toJs({ dict_converter: Object.fromEntries }); res.destroy();
+      if (method !== 'GET') schedulePersist();
+      return o;
+    });
+  }
+
+  function cssFile(name) {
+    if (!(name in S.css)) {
+      try { S.css[name] = S.py.FS.readFile(STATIC + name, { encoding: 'utf8' }); } catch (e) { S.css[name] = ''; }
+    }
+    return S.css[name];
+  }
+
+  var SHIM = '(' + function () {
+    var WB; try { WB = window.parent.WB; } catch (e) {}
+    if (!WB) return;
+    window.WB = WB;
+    window.__wbNav = function (u) { WB.go(u); };
+    window.__wbHash = WB.pendingHash || '';
+    window.__wbReloadFrame = function (f) { WB.renderInto(f, f.dataset.wbSrc, true); };
+    window.confirm = function () { return true; };
+    window.alert = function (m) { WB.toast(String(m)); };
+    var nativeFetch = window.fetch;
+    function local(u) {  // a path inside the app, or null for other sites
+      try { var x = new URL(u, location.href); return x.origin === WB.origin ? x.pathname + x.search : null; }
+      catch (e) { return null; }
+    }
+    window.fetch = function (input, init) {
+      var path = local(typeof input === 'string' ? input : (input && input.url) || '');
+      if (path) return WB.fetch(path, init || {});
+      return nativeFetch.apply(window, arguments);
+    };
+    HTMLFormElement.prototype.submit = function () { WB.submitForm(this, null); };
+    document.addEventListener('click', function (e) {
+      if (e.defaultPrevented || e.button !== 0) return;
+      var a = e.target.closest && e.target.closest('a[href]');
+      if (!a) return;
+      var h = a.getAttribute('href') || '';
+      if (h.charAt(0) === '#') {
+        e.preventDefault();
+        var el = document.getElementById(h.slice(1)); if (el) el.scrollIntoView({ block: 'start' });
+        return;
+      }
+      if (h.charAt(0) === '/' && h.charAt(1) !== '/') { e.preventDefault(); WB.go(h); return; }
+      if (/^https?:/i.test(h)) { a.target = '_blank'; a.rel = 'noopener'; }
+    });
+    document.addEventListener('submit', function (e) {
+      if (e.defaultPrevented) return;
+      var f = e.target; if (!(f instanceof HTMLFormElement)) return;
+      e.preventDefault(); WB.submitForm(f, e.submitter);
+    });
+    function ready() {
+      document.querySelectorAll('iframe[data-wb-src]').forEach(function (f) {
+        if (!f.dataset.wbLoaded) { f.dataset.wbLoaded = '1'; WB.renderInto(f, f.dataset.wbSrc, false); }
+      });
+      var h = window.__wbHash;
+      if (h && h.length > 1) { var el = document.getElementById(h.slice(1)); if (el) el.scrollIntoView({ block: 'start' }); }
+    }
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', ready); else ready();
+  }.toString() + ')();';
+  // In this build you are signed in by Claude, so Sign out is hidden.
+  var EXTRA_CSS = '.top form[action="/logout"]{display:none!important}';
+
+  function prepare(html) {
+    html = html.replace(/<link rel="stylesheet" href="\/static\/([\w.-]+)">/g, function (m, f) { return '<style>' + cssFile(f) + '</style>'; });
+    html = html.replace(/<iframe([^>]*?)\ssrc="(\/[^"]*)"/g, '<iframe$1 data-wb-src="$2"');
+    var inject = '<style>' + EXTRA_CSS + '</style><script>' + SHIM + '<\/script>';
+    return /<head[^>]*>/i.test(html) ? html.replace(/<head[^>]*>/i, function (m) { return m + inject; }) : inject + html;
+  }
+
+  function isDownload(r) {
+    return /attachment/i.test(r.disposition || '') || /pdf|octet-stream|csv/i.test(r.ctype || '');
+  }
+  function filenameFor(r, url) {
+    var m = /filename\*?=(?:UTF-8'')?"?([^";]+)"?/i.exec(r.disposition || '');
+    var name = m ? decodeURIComponent(m[1]) : (url || 'download').split('?')[0].split('/').filter(Boolean).slice(-2).join('-');
+    if (/pdf/i.test(r.ctype) && !/\.pdf$/i.test(name)) name += '.pdf';
+    return name;
+  }
+
+  async function download(r, url) {
+    var name = filenameFor(r, url);
+    if (!S.downloads) { toast('Downloads are not available in this view. ' + name + ' was not saved.'); return; }
+    try {
+      await S.downloads.save({ filename: name, data: new Blob([r.body]) });
+      toast('Saved ' + name);
+    } catch (e) {
+      if (e && e.code === 'declined') return;
+      toast('Could not save ' + name + (e && e.message ? ': ' + e.message : ''));
+    }
+  }
+
+  function showHtml(r, hash) {
+    var html = dec.decode(r.body);
+    S.path = r.path;
+    var standalone = html.indexOf('class="app"') < 0;
+    if (!standalone) S.lastAppPath = r.path;
+    WB.pendingHash = hash ? '#' + hash : (r.fragment ? '#' + r.fragment : '');
+    appFrame.srcdoc = prepare(html);
+    $('back').hidden = !standalone;
+  }
+
+  async function handle(r, url, hash) {
+    if (isDownload(r)) return download(r, url);
+    if (/text\/html/i.test(r.ctype)) return showHtml(r, hash);
+    return download(r, url);
+  }
+
+  async function go(url) {
+    var parts = String(url).split('#');
+    if (!parts[0]) return;
+    var r = await pyRequest('GET', parts[0]);
+    return handle(r, parts[0], parts[1]);
+  }
+
+  async function formParts(fd) {
+    var fields = [], files = [];
+    for (var pair of fd.entries()) {
+      var k = pair[0], v = pair[1];
+      if (typeof v === 'string') fields.push([k, v]);
+      else if (v && v.name) files.push([k, v.name, new Uint8Array(await v.arrayBuffer()), v.type || '']);
+    }
+    return { fields: fields, files: files };
+  }
+
+  async function submitForm(form, submitter) {
+    var method = (form.getAttribute('method') || 'get').toUpperCase();
+    var action = form.getAttribute('action') || S.path;
+    var fd = new FormData(form);
+    if (submitter && submitter.name) fd.append(submitter.name, submitter.value || '');
+    if (method === 'GET') {
+      var qs = new URLSearchParams(Array.from(fd.entries()).filter(function (p) { return typeof p[1] === 'string'; })).toString();
+      return go(action.split('?')[0] + (qs ? '?' + qs : ''));
+    }
+    var p = await formParts(fd);
+    var target = action.split('#')[0].split('?')[0];
+    if (target === '/data/zacks' && !p.files.length) return pullZacks(p.fields);
+    if (target === '/data/research') return pullResearch(p.fields);
+    pill('busy', 'Working…');
+    try {
+      var r = await pyRequest('POST', action, p.fields, p.files);
+      await handle(r, action);
+    } finally { if (!S.saving) refreshPill(); }
+  }
+
+  async function wbFetch(url, init) {
+    var method = (init.method || 'GET').toUpperCase();
+    var headers = {};
+    if (init.headers) new Headers(init.headers).forEach(function (v, k) { headers[k] = v; });
+    var p = { fields: [], files: [] };
+    var body = init.body;  // FormData from a page frame is another realm's: check its shape, not its class
+    if (body && typeof body.entries === 'function' && typeof body.append === 'function') p = await formParts(body);
+    else if (typeof body === 'string') p.fields = Array.from(new URLSearchParams(body).entries());
+    var r = await pyRequest(method, url, p.fields, p.files, headers);
+    return new Response(r.body, { status: r.status, headers: { 'Content-Type': r.ctype } });
+  }
+
+  async function renderInto(frame, src, keepScroll) {
+    var y = 0;
+    try { y = frame.contentWindow.scrollY; } catch (e) {}
+    var r = await pyRequest('GET', src);
+    frame.dataset.wbSrc = src;
+    frame.onload = function () { if (keepScroll) { try { frame.contentWindow.scrollTo(0, y); } catch (e) {} } frame.onload = null; };
+    frame.srcdoc = prepare(dec.decode(r.body));
+  }
+
+  var WB = window.WB = { go: go, submitForm: submitForm, fetch: wbFetch, renderInto: renderInto, toast: toast, pendingHash: '',
+                         origin: location.origin };
+  $('back').addEventListener('click', function () { go(S.lastAppPath || '/'); });
+
+  // ------------------------------------------------------------------ connectors (Zacks Data)
+  function connectorProblem(e) {
+    var FIX = { needs_reauth: 'Reconnect Zacks Data in claude.ai Settings → Connectors, then try again.',
+                server_not_connected: 'Add the Zacks Data connector in claude.ai Settings → Connectors, then try again.',
+                not_in_manifest: 'Allow Zacks Data for this page when Claude asks, then try again.',
+                blocked_by_policy: 'Your organization does not allow Zacks Data here.' };
+    return FIX[e && e.code] || ('The Zacks connector did not answer' + (e && e.message ? ': ' + e.message : '.'));
+  }
+  async function callZacks(tool, input) {
+    try { return await S.mcp.callTool(ZACKS, tool, input, { cache: false }); }
+    catch (e) {
+      if (e && e.retryable) {
+        await new Promise(function (r) { setTimeout(r, (e.retryAfterMs || 1500) + Math.random() * 800); });
+        return S.mcp.callTool(ZACKS, tool, input, { cache: false });
+      }
+      throw e;
+    }
+  }
+  function textOf(res) {
+    if (res.payload !== undefined && res.payload !== null) return res.payload;
+    return (res.content || []).filter(function (c) { return c.type === 'text'; }).map(function (c) { return c.text; }).join('\n');
+  }
+  function isoDate(v) {
+    if (!v) return null;
+    var s = String(v), m = /^(\d{4}-\d{2}-\d{2})/.exec(s);
+    if (m) return m[1];
+    m = /^(\d{1,2})\/(\d{1,2})\/(\d{4})/.exec(s);
+    return m ? m[3] + '-' + ('0' + m[1]).slice(-2) + '-' + ('0' + m[2]).slice(-2) : null;
+  }
+  function num(v) { if (v === null || v === undefined || v === '') return null; var n = Number(String(v).replace(/,/g, '')); return isNaN(n) ? null : n; }
+
+  // compare_stocks: a markdown "| field | T1 | T2 |" table or JSON records with dotted fields.
+  function parseCompare(payload) {
+    var out = {};
+    function rec(t, key, v) {
+      t = String(t || '').toUpperCase().trim(); if (!t) return;
+      var o = out[t] || (out[t] = {});
+      if (key === 'zacks_rank.value') o.rank = num(v);
+      else if (key === 'issue_attributes.market_cap') { var c = num(v); o.market_cap = c === null ? null : c / 1000; }
+      else if (key === 'reporting_dates.expected_reporting_date') o.er = isoDate(v) || o.er;
+      else if (key === 'fiscal_periods.next_eps_date' && !o.er) o.er = isoDate(v);
+    }
+    if (typeof payload === 'string') {
+      var tickers = null;
+      payload.split('\n').forEach(function (line) {
+        if (line.trim().charAt(0) !== '|') return;
+        var cells = line.split('|').slice(1, -1).map(function (c) { return c.trim(); });
+        if (!cells.length) return;
+        if (cells[0].toLowerCase() === 'field') { tickers = cells.slice(1); return; }
+        if (/^-+$/.test(cells[0].replace(/\s/g, '')) || !tickers) return;
+        tickers.forEach(function (t, i) { rec(t, cells[0], cells[i + 1]); });
+      });
+    } else {
+      (function walk(node) {
+        if (Array.isArray(node)) return node.forEach(walk);
+        if (!node || typeof node !== 'object') return;
+        var t = (node.company && node.company.ticker) || node['company.ticker'];
+        if (t) {
+          ['zacks_rank.value', 'issue_attributes.market_cap', 'reporting_dates.expected_reporting_date', 'fiscal_periods.next_eps_date']
+            .forEach(function (k) { var p = k.split('.'); var v = node[p[0]] ? node[p[0]][p[1]] : node[k]; if (v !== undefined) rec(t, k, v); });
+        }
+        Object.keys(node).forEach(function (k) { if (node[k] && typeof node[k] === 'object') walk(node[k]); });
+      })(payload);
+    }
+    return out;
+  }
+
+  async function pullZacks(fields) {
+    if (!S.mcp) { toast('The Zacks connector is not available in this view. Upload a Zacks CSV on Data & inbox instead.', 8000); return; }
+    var uni = JSON.parse(S.bridge.universe());
+    var targets = uni.equities, results = {}, errors = [], done = 0;
+    pill('busy', 'Zacks 0/' + targets.length);
+    async function batch(list) {
+      var tick = list.length === 1 ? [list[0], targets.find(function (t) { return t !== list[0]; }) || list[0]] : list;
+      var res;
+      try { res = await callZacks('compare_stocks', { tickers: tick, section: 'CREC', user_query: 'Pull Zacks Rank, market cap and next earnings date for the Manifest workbench' }); }
+      catch (e) {
+        if (e && e.code === 'tool_error') {
+          if (list.length > 1) { var mid = Math.ceil(list.length / 2); await batch(list.slice(0, mid)); await batch(list.slice(mid)); return; }
+          errors.push(list[0] + ': not covered by Zacks or renamed'); done++; return;
+        }
+        throw e;
+      }
+      var parsed = parseCompare(textOf(res));
+      list.forEach(function (t) {
+        var r = parsed[t];
+        if (r && (r.rank !== undefined || r.market_cap !== undefined)) results[t] = r; else errors.push(t + ': not in the Zacks response');
+      });
+      done += list.length;
+      pill('busy', 'Zacks ' + Math.min(done, targets.length) + '/' + targets.length);
+    }
+    try {
+      for (var i = 0; i < targets.length; i += 5) await batch(targets.slice(i, i + 5));
+    } catch (e) { toast(connectorProblem(e), 9000); refreshPill(); return; }
+    var out = JSON.parse(await serial(function () { return S.bridge.zacks_apply(JSON.stringify(results), JSON.stringify(errors)); }));
+    schedulePersist();
+    toast(out.text + (out.errors.length ? '\n' + out.errors.length + ' not retrieved: ' + out.errors.slice(0, 3).join('; ') : '') +
+      (uni.etfs.length ? '\nETF ranks keep their last values (' + uni.etfs.join(', ') + ').' : ''), 9000);
+    var next = (fields.find(function (f) { return f[0] === 'next'; }) || [])[1];
+    await go(next || S.path);
+  }
+
+  // get_real_time_news: JSON records or markdown "| field | value |" blocks with a Summary section.
+  function parseNews(payload) {
+    var items = [];
+    function add(o) {
+      var url = o.article_url || o.url; if (!url) return;
+      items.push({ source: 'Zacks News', ticker: String(o.matched_ticker || o.ticker || '').split(',')[0].toUpperCase(),
+                   form: o.category_name || 'News', title: o.subject || o.title || '', date: isoDate(o.publish_date) || '',
+                   url: url, summary: String(o.summary || '').slice(0, 500) });
+    }
+    if (typeof payload !== 'string') {
+      (function walk(n) { if (Array.isArray(n)) return n.forEach(walk); if (!n || typeof n !== 'object') return;
+        if (n.article_url || n.subject) add(n); else Object.keys(n).forEach(function (k) { walk(n[k]); }); })(payload);
+      return items;
+    }
+    var cur = null, inSummary = false;
+    payload.split('\n').forEach(function (line) {
+      var t = line.trim();
+      if (/^##\s/.test(t)) { inSummary = /^##\s+summary/i.test(t); return; }
+      if (t.charAt(0) === '|') {
+        var cells = t.split('|').slice(1, -1).map(function (c) { return c.trim(); });
+        if (cells.length < 2 || /^-+$/.test(cells[0].replace(/\s/g, '')) || cells[0] === 'field') return;
+        if (cells[0] === 'ticker' && cur && cur.article_url) { add(cur); cur = null; }
+        cur = cur || {}; cur[cells[0]] = cells[1]; inSummary = false; return;
+      }
+      if (inSummary && cur && t) cur.summary = (cur.summary ? cur.summary + ' ' : '') + t;
+    });
+    if (cur) add(cur);
+    return items;
+  }
+
+  async function pullResearch(fields) {
+    if (!S.mcp) { toast('The Zacks connector is not available in this view.', 8000); return; }
+    var days = Number((fields.find(function (f) { return f[0] === 'days'; }) || [])[1] || 7);
+    var since = new Date(Date.now() - days * 864e5).toISOString().slice(0, 10);
+    var targets = JSON.parse(S.bridge.universe()).equities, items = [], errors = [];
+    pill('busy', 'Research 0/' + targets.length);
+    try {
+      for (var i = 0; i < targets.length; i += 5) {
+        var list = targets.slice(i, i + 5);
+        try {
+          var res = await callZacks('get_real_time_news', { tickers: list, record_count: 3, user_query: 'Pull recent Zacks news for the Manifest workbench research inbox' });
+          parseNews(textOf(res)).forEach(function (it) { if (!it.date || it.date >= since) items.push(it); });
+        } catch (e) { if (e && e.code === 'tool_error') errors.push(list.join(', ') + ': no recent Zacks coverage'); else throw e; }
+        pill('busy', 'Research ' + Math.min(i + 5, targets.length) + '/' + targets.length);
+      }
+    } catch (e) { toast(connectorProblem(e), 9000); refreshPill(); return; }
+    var out = JSON.parse(await serial(function () {
+      return S.bridge.research_apply(JSON.stringify(items), targets.length + ' securities via Zacks news (last ' + days + ' days)', JSON.stringify(errors));
+    }));
+    schedulePersist();
+    toast(out.text, 7000);
+    await go('/data#inbox');
+  }
+
+  // ------------------------------------------------------------------ storage
+  function b64(bytes) {
+    var s = '', step = 0x8000;
+    for (var i = 0; i < bytes.length; i += step) s += String.fromCharCode.apply(null, bytes.subarray(i, i + step));
+    return btoa(s);
+  }
+  function unb64(str) { var s = atob(str), out = new Uint8Array(s.length); for (var i = 0; i < s.length; i++) out[i] = s.charCodeAt(i); return out; }
+  async function gzip(text) { return new Uint8Array(await new Response(new Blob([text]).stream().pipeThrough(new CompressionStream('gzip'))).arrayBuffer()); }
+  async function gunzip(bytes) { return new Response(new Blob([bytes]).stream().pipeThrough(new DecompressionStream('gzip'))).text(); }
+  function slices(str) { var out = []; for (var i = 0; i < str.length; i += CHUNK) out.push(str.slice(i, i + CHUNK)); return out.length ? out : ['']; }
+  function fileId(name) { return 'f-' + name.replace(/[^A-Za-z0-9_.\-]/g, '_'); }
+
+  // browser-only fallback (IndexedDB)
+  function idb() {
+    return new Promise(function (resolve, reject) {
+      var rq = indexedDB.open('manifest-workbench', 1);
+      rq.onupgradeneeded = function () { rq.result.createObjectStore('kv'); };
+      rq.onsuccess = function () { resolve(rq.result); }; rq.onerror = function () { reject(rq.error); };
+    });
+  }
+  async function idbGet(key) { var d = await idb(); return new Promise(function (res, rej) { var r = d.transaction('kv').objectStore('kv').get(key); r.onsuccess = function () { res(r.result); }; r.onerror = function () { rej(r.error); }; }); }
+  async function idbPut(key, val) { var d = await idb(); return new Promise(function (res, rej) { var tx = d.transaction('kv', 'readwrite'); tx.objectStore('kv').put(val, key); tx.oncomplete = function () { res(); }; tx.onerror = function () { rej(tx.error); }; }); }
+
+  async function loadSaved() {
+    if (S.storage === 'db') {
+      var m = await S.db.doc(META).get();
+      if (!m.exists) return null;
+      var meta = m.data(), parts = [];
+      for (var i = 0; i < meta.chunks; i++) {
+        var c = await S.db.doc('workbench/s-' + meta.version + '-' + i).get();
+        if (!c.exists) throw new Error('Part ' + (i + 1) + ' of the saved workbench is missing.');
+        parts.push(c.data().d);
+      }
+      var files = {};
+      for (var f of meta.files || []) {
+        var chunks = [];
+        for (var j = 0; j < (f.parts || 1); j++) {
+          var fd = await S.db.doc('workbench_files/' + f.id + (j ? '~' + j : '')).get();
+          if (fd.exists) chunks.push(fd.data().d);
+        }
+        if (chunks.length === (f.parts || 1)) { files[f.name] = unb64(chunks.join('')); S.savedFiles[f.name] = f; }
+      }
+      S.version = meta.version; S.oldChunks = meta.chunks;
+      return { json: await gunzip(unb64(parts.join(''))), files: files };
+    }
+    if (S.storage === 'browser') {
+      var v = await idbGet('workbench');
+      if (!v) return null;
+      Object.keys(v.files || {}).forEach(function (n) { S.savedFiles[n] = { name: n }; });
+      return v;
+    }
+    return null;
+  }
+
+  function reportFiles() {
+    try { return S.py.FS.readdir(REPORTS).filter(function (n) { return /\.pdf$/i.test(n); }); } catch (e) { return []; }
+  }
+
+  var persistTimer = null;
+  function schedulePersist() { clearTimeout(persistTimer); persistTimer = setTimeout(persist, 700); }
+
+  async function persist(force) {
+    if (S.storage === 'none' || S.readOnly) return;
+    if (S.conflict && !force) return;
+    if (S.saving) { S.dirty = true; return; }
+    S.saving = true;
+    try {
+      do { S.dirty = false; await saveOnce(force); force = false; } while (S.dirty);
+      pill('ok', savedLabel());
+    } catch (e) {
+      if (e && e.conflict) return;
+      var code = e && e.code;
+      if (code === 'not_granted' || code === 'permission_denied') {
+        S.readOnly = true; pill('bad', 'View only: changes are not saved');
+        toast('You can look around, but changes here are not saved: this workbench is view-only for you.', 9000);
+      } else if (code === 'quota_exceeded') {
+        pill('bad', 'Not saved: storage full');
+        toast('The workbench storage is full. Ask Claude to archive old issued PDFs.', 9000);
+      } else {
+        pill('bad', 'Not saved'); toast('Your last change was not saved' + (e && e.message ? ': ' + e.message : '') + '. It will retry with your next change.', 9000);
+      }
+    } finally { S.saving = false; }
+  }
+
+  async function saveOnce(force) {
+    var json = S.py.FS.readFile(DATAFILE, { encoding: 'utf8' });
+    var fresh = reportFiles().filter(function (n) { return !S.savedFiles[n]; });
+    if (json === S.lastJson && !fresh.length) return;
+    pill('busy', 'Saving…');
+    if (S.storage === 'browser') {
+      var files = {};
+      reportFiles().forEach(function (n) { files[n] = S.py.FS.readFile(REPORTS + '/' + n); });
+      await idbPut('workbench', { json: json, files: files });
+      fresh.forEach(function (n) { S.savedFiles[n] = { name: n }; });
+      S.lastJson = json;
+      return;
+    }
+    var cur = await S.db.doc(META).get();
+    var curVer = cur.exists ? cur.data().version : null;
+    if (curVer !== S.version && !force) { conflictFound(); throw { conflict: true }; }
+    for (var n of fresh) {
+      var parts = slices(b64(S.py.FS.readFile(REPORTS + '/' + n))), id = fileId(n);
+      for (var j = 0; j < parts.length; j++) await S.db.doc('workbench_files/' + id + (j ? '~' + j : '')).set({ d: parts[j], name: n, part: j });
+      S.savedFiles[n] = { name: n, id: id, parts: parts.length };
+    }
+    var chunks = slices(b64(await gzip(json)));
+    var ver = Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+    for (var i = 0; i < chunks.length; i++) await S.db.doc('workbench/s-' + ver + '-' + i).set({ d: chunks[i], i: i });
+    var files = Object.keys(S.savedFiles).map(function (k) { return S.savedFiles[k]; }).filter(function (f) { return f.id; });
+    await S.db.doc(META).set({ version: ver, chunks: chunks.length, files: files, bytes: json.length,
+                               savedAt: new Date().toISOString(), format: 'manifest-workbench/1 gzip+base64' });
+    var old = S.version, oldN = S.oldChunks;
+    S.version = ver; S.oldChunks = chunks.length; S.lastJson = json; S.conflict = false;
+    if (old) for (var k = 0; k < oldN; k++) { try { await S.db.doc('workbench/s-' + old + '-' + k).delete(); } catch (e) {} }
+  }
+
+  function conflictFound() {
+    S.conflict = true;
+    pill('bad', 'Changed elsewhere');
+    notice('This workbench was saved from another window or device after you opened it.',
+           'Load the latest', function () { location.reload(); },
+           'Keep my version', function () { persist(true); });
+  }
+
+  function refreshPill() { pill(S.storage === 'none' ? 'bad' : 'ok', S.storage === 'none' ? 'Not saved' : (S.lastJson ? savedLabel() : 'Ready')); }
+
+  // ------------------------------------------------------------------ boot
+  async function capability(name) {
+    try { return window.claude && window.claude.use ? await window.claude.use(name) : null; } catch (e) { return null; }
+  }
+
+  // Python sources ship as JSON ({files: [[path, text] | [path, null, base64]]}) because artifacts
+  // serve no archives. The standard library is packed back into the (uncompressed) zip Python imports from.
+  async function sources(url) {
+    var r = await fetch(url);
+    if (!r.ok) throw new Error('Could not load ' + url + ' (' + r.status + ')');
+    return (await r.json()).files;
+  }
+
+  function fileBytes(f) {
+    if (f[1] != null) return new TextEncoder().encode(f[1]);
+    var bin = atob(f[2]), out = new Uint8Array(bin.length);
+    for (var i = 0; i < bin.length; i++) out[i] = bin.charCodeAt(i);
+    return out;
+  }
+
+  var CRC = (function () {
+    var t = new Uint32Array(256);
+    for (var n = 0; n < 256; n++) { var c = n; for (var k = 0; k < 8; k++) c = c & 1 ? 0xEDB88320 ^ (c >>> 1) : c >>> 1; t[n] = c >>> 0; }
+    return t;
+  })();
+  function crc32(b) { var c = 0xFFFFFFFF; for (var i = 0; i < b.length; i++) c = CRC[(c ^ b[i]) & 0xFF] ^ (c >>> 8); return (c ^ 0xFFFFFFFF) >>> 0; }
+
+  function storedZip(files) {
+    var enc = new TextEncoder(), parts = [], central = [], offset = 0;
+    files.forEach(function (f) {
+      var name = enc.encode(f[0]), data = fileBytes(f), crc = crc32(data);
+      var h = new DataView(new ArrayBuffer(30));
+      h.setUint32(0, 0x04034b50, true); h.setUint16(4, 20, true); h.setUint16(6, 0x0800, true);
+      h.setUint16(8, 0, true); h.setUint16(10, 0, true); h.setUint16(12, 0x21, true);
+      h.setUint32(14, crc, true); h.setUint32(18, data.length, true); h.setUint32(22, data.length, true);
+      h.setUint16(26, name.length, true); h.setUint16(28, 0, true);
+      var c = new DataView(new ArrayBuffer(46));
+      c.setUint32(0, 0x02014b50, true); c.setUint16(4, 20, true); c.setUint16(6, 20, true); c.setUint16(8, 0x0800, true);
+      c.setUint16(10, 0, true); c.setUint16(12, 0, true); c.setUint16(14, 0x21, true);
+      c.setUint32(16, crc, true); c.setUint32(20, data.length, true); c.setUint32(24, data.length, true);
+      c.setUint16(28, name.length, true); c.setUint32(42, offset, true);
+      parts.push(new Uint8Array(h.buffer), name, data);
+      central.push(new Uint8Array(c.buffer), name);
+      offset += 30 + name.length + data.length;
+    });
+    var size = central.reduce(function (n, p) { return n + p.length; }, 0);
+    var e = new DataView(new ArrayBuffer(22));
+    e.setUint32(0, 0x06054b50, true); e.setUint16(8, files.length, true); e.setUint16(10, files.length, true);
+    e.setUint32(12, size, true); e.setUint32(16, offset, true);
+    var all = parts.concat(central, [new Uint8Array(e.buffer)]);
+    var out = new Uint8Array(offset + size + 22), at = 0;
+    all.forEach(function (p) { out.set(p, at); at += p.length; });
+    return out;
+  }
+
+  // Pyodide fetches its standard library by URL; answer that one request from memory.
+  async function startPython(stdlibZip) {
+    var url = new URL('py/stdlib.zip', location.href).href, nativeFetch = window.fetch;
+    window.fetch = function (input, init) {
+      var u = typeof input === 'string' ? input : (input && input.url) || String(input);
+      if (new URL(u, location.href).href === url) return Promise.resolve(new Response(stdlibZip, { headers: { 'Content-Type': 'application/zip' } }));
+      return nativeFetch.apply(this, arguments);
+    };
+    try { return await loadPyodide({ indexURL: new URL('py/', location.href).href, stdLibURL: url }); }
+    finally { window.fetch = nativeFetch; }
+  }
+
+  async function boot() {
+    var caps = Promise.all(['db', 'downloads', 'mcp', 'user'].map(capability));
+    var app = sources('bundle.json');
+    app.catch(function () {});
+    step('py', 'run');
+    try {
+      S.py = await startPython(storedZip(await sources('py/stdlib.json')));
+    } catch (e) { step('py', 'fail'); bootFail('Python could not start in this view.\n' + (e && e.message || e)); return; }
+    step('py', 'done');
+    step('app', 'run');
+    try {
+      (await app).forEach(function (f) {
+        var path = '/bundle/' + f[0];
+        S.py.FS.mkdirTree(path.slice(0, path.lastIndexOf('/')));
+        S.py.FS.writeFile(path, f[1] != null ? f[1] : fileBytes(f));
+      });
+      S.py.FS.mkdirTree(REPORTS);
+      S.py.runPython("import sys; sys.path[:0] = ['/bundle/site', '/bundle/app']");
+      S.bridge = S.py.pyimport('wb_bridge');
+    } catch (e) { step('app', 'fail'); bootFail('The workbench could not be unpacked.\n' + (e && e.message || e)); return; }
+    step('app', 'done');
+
+    step('data', 'run');
+    var got = await caps;
+    S.db = got[0]; S.downloads = got[1]; S.mcp = got[2]; S.user = got[3];
+    S.storage = S.db ? 'db' : (window.indexedDB ? 'browser' : 'none');
+    var saved = null;
+    try { saved = await loadSaved(); }
+    catch (e) {
+      if (S.storage === 'db') { step('data', 'fail'); bootFail('Your saved workbench could not be read.\n' + (e && e.message || e) + '\nReload to try again.'); return; }
+      S.storage = 'none';
+    }
+    if (saved) {
+      S.py.FS.writeFile(DATAFILE, saved.json);
+      Object.keys(saved.files || {}).forEach(function (n) { S.py.FS.writeFile(REPORTS + '/' + n, saved.files[n]); });
+    }
+    step('data', 'done', saved ? (saved.json.length / 1024).toFixed(0) + ' KB' : 'new workbench');
+
+    step('start', 'run');
+    try {
+      var name = '';
+      if (S.user) { try { var me = await S.user.me(); name = (me && me.name) || ''; } catch (e) {} }
+      S.name = S.bridge.boot(name);
+      if (saved) S.lastJson = S.py.FS.readFile(DATAFILE, { encoding: 'utf8' }) === saved.json ? saved.json : null;
+      var start = { mwir: '/mwir', decisions: '/decisions', data: '/data', reviews: '/reviews', reports: '/reports' }[location.hash.slice(1)] || '/';
+      var r = await pyRequest('GET', start);
+      appFrame.hidden = false;
+      await handle(r, start);
+    } catch (e) { step('start', 'fail'); bootFail('The console could not start.\n' + (e && e.message || e)); return; }
+    step('start', 'done');
+    $('boot').hidden = true;
+    if (S.storage === 'db' && S.db) {
+      S.db.doc(META).onSnapshot(function (snap) {
+        if (snap.exists && !snap.metadata.hasPendingWrites && S.version && snap.data().version !== S.version && !S.saving) conflictFound();
+      }, function () {});
+    }
+    if (S.storage === 'browser') toast('Claude storage is not available here, so changes are saved in this browser only.', 9000);
+    refreshPill();
+    persist();
+  }
+
+  boot();
+})();
+</script>

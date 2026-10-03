@@ -154,6 +154,25 @@ threads. On a platform without Docker, use the same command after `pip install '
 | `MANIFEST_PROXY=1` | Trust `X-Forwarded-*` headers from a reverse proxy or platform load balancer. It is on in the image. |
 | `ZACKS_API_KEY`, `SEC_CONTACT_EMAIL` | Connector credentials. These override *Settings*. |
 
+### In Claude
+
+`claude_app/` builds the same console as a Claude Artifact page. The page runs the app in the
+browser with [Pyodide](https://pyodide.org) and saves the workbench and issued PDFs in the
+artifact's storage. Zacks ranks, market caps, earnings dates and the research inbox come
+through the viewer's Zacks Data connector (`compare_stocks` and `get_real_time_news`), so the
+page needs no API key. `compare_stocks` covers equities only, so ETF ranks keep their last values.
+The viewer is signed in as the administrator under their Claude name.
+
+```bash
+npm install pyodide@0.28.3          # the browser runtime
+python claude_app/build.py --pyodide node_modules/pyodide --out dist/claude_app
+```
+
+Publish `dist/claude_app/index.html` as an Artifact with every other file in the folder
+attached, and declare the `db`, `downloads`, `mcp` (Zacks Data: `compare_stocks`,
+`get_real_time_news`) and `user` (profile) capabilities. Artifacts serve no archives, so the
+build ships the Python sources as JSON, and the page assembles them when it loads.
+
 To start from your own workbook instead of the bundled v0.4 inputs:
 `manifest-workbench --data data/manifest_workbench.json init --from-xlsx workbook.xlsx --force`.
 Back up the data directory like any database.

@@ -91,12 +91,9 @@ def run(store: dict, actor: str, today: dt.date, get=http_get, get_json=http_jso
     forms = [f.strip() for f in setting(store, 'sec_forms', default=DEFAULT_FORMS).split(',') if f.strip()]
     types = {r['symbol'].upper(): r.get('security_type') for r in store['portfolio']}
     tickers = tickers or [t for t in universe(store) if types.get(t) not in SKIP_TYPES]
-    inbox = store.setdefault('inbox', [])
-    known = {i['url'] for i in inbox if i.get('url')}
-    added, errors = 0, []
+    found, errors = [], []
     use_edgar = setting(store, 'sec_enabled', default='yes') != 'no'
     for ticker in tickers:
-        found = []
         try:
             if use_edgar:
                 found += _edgar_items(store, ticker, forms, since, get)
@@ -105,17 +102,27 @@ def run(store: dict, actor: str, today: dt.date, get=http_get, get_json=http_jso
             errors.append(f'{ticker}: {exc}')
             if 'contact e-mail' in str(exc):
                 break
+    return ingest(store, actor, today, found, f'{len(tickers)} securities (last {days} days)', errors)
+
+
+def ingest(store: dict, actor: str, today: dt.date, items, scope: str, errors=()) -> dict:
+    """Add pulled items to the triage inbox (deduplicated by URL) and log the run."""
+    inbox = store.setdefault('inbox', [])
+    known = {i['url'] for i in inbox if i.get('url')}
+    added = 0
+    for raw in items:
+        item = {k: raw.get(k, '') for k in ('source', 'ticker', 'form', 'title', 'date', 'url', 'summary')}
+        item['summary'] = str(item['summary'])[:500]
+        if item['url'] and item['url'] in known:
             continue
-        for item in found:
-            if item['url'] and item['url'] in known:
-                continue
-            item.update({'id': _next_id(inbox, today), 'status': 'New', 'pulled': today.isoformat()})
-            inbox.append(item)
+        item.update({'id': _next_id(inbox, today), 'status': 'New', 'pulled': today.isoformat()})
+        inbox.append(item)
+        if item['url']:
             known.add(item['url'])
-            added += 1
-    text = f'{added} new research items from {len(tickers)} securities (last {days} days)'
-    log_run(store, 'research', actor, text, errors, {'added': added})
-    return {'added': added, 'errors': errors, 'text': text}
+        added += 1
+    text = f'{added} new research items from {scope}'
+    log_run(store, 'research', actor, text, list(errors), {'added': added})
+    return {'added': added, 'errors': list(errors), 'text': text}
 
 
 def _next_id(inbox, today):

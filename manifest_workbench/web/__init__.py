@@ -41,6 +41,9 @@ def create_app(data_dir=None, testing=False) -> Flask:
         SESSION_COOKIE_SECURE=os.environ.get('MANIFEST_SECURE_COOKIES') == '1',
         PERMANENT_SESSION_LIFETIME=dt.timedelta(hours=12),
         TESTING=testing,
+        # 'claude' when the app runs inside a Claude artifact, where Zacks and research
+        # are pulled through the viewer's Claude connectors instead of HTTP.
+        CONNECTORS=os.environ.get('MANIFEST_CONNECTORS', ''),
     )
     repo = Repo(base / DATA_FILE)
     repo.ensure()

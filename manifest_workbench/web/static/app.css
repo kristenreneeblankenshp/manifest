@@ -127,7 +127,7 @@ details.more summary { cursor: pointer; color: var(--navy-3); font-size: 12.5px;
 .nav .group:first-child { padding-top: 6px; }
 .pill.quiet { background: rgba(255,255,255,.14); color: #d6deea; font-weight: 600; }
 .pill.done { background: #2f6f4f; color: #fff; }
-.top .title { min-width: 0; flex: 1; }
+.top .title { min-width: 0; flex: 1 1 240px; }
 .top .tools { flex-wrap: nowrap; }
 .jump { width: 190px; }
 .menu { display: none; }
@@ -144,6 +144,7 @@ details.more summary { cursor: pointer; color: var(--navy-3); font-size: 12.5px;
   .side { display: none; }
   .side.open { display: block; }
   .top { flex-wrap: wrap; }
+  .top .tools { flex-wrap: wrap; }
 }
 
 /* ---------- this week's steps ---------- */

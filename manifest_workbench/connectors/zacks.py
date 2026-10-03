@@ -303,6 +303,12 @@ def run(store: dict, actor: str, today: dt.date, get_json=http_json, csv_text: s
     else:
         results, errors = fetch(store, get_json=get_json)
         source = source or f'Zacks API {today.isoformat()}'
+    return apply_and_log(store, actor, today, results, errors, source)
+
+
+def apply_and_log(store: dict, actor: str, today: dt.date, results: dict, errors, source: str) -> dict:
+    """Apply already-fetched results (API, CSV or a Claude connector) and record the run."""
+    errors = list(errors)
     summary = apply(store, results, actor, today, source)
     text = (f"{len(results)} securities read; {summary['updated_masr']} registry and "
             f"{summary['updated_pew004']} PEW-004 rows updated; {len(summary['rank_changes'])} rank changes")

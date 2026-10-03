@@ -150,6 +150,23 @@ class PagesTest(WebTestCase):
         self.assertEqual(self.c.get('/t/mandate/new').status_code, 404)
 
 
+class ClaudeConnectorModeTest(WebTestCase):
+    def setUp(self):
+        super().setUp()
+        self.app.config['CONNECTORS'] = 'claude'
+
+    def test_data_page_offers_connector_pulls(self):
+        html = self.c.get('/data').get_data(as_text=True)
+        self.assertIn('Zacks Data connector in Claude', html)
+        self.assertNotIn('disabled>Pull from Zacks', html)
+
+    def test_server_side_pull_explains_instead_of_failing(self):
+        r = self.post('/data/zacks', follow_redirects=True)
+        self.assertIn('connector is not available', r.get_data(as_text=True))
+        r = self.post('/data/research', follow_redirects=True)
+        self.assertIn('connector is not available', r.get_data(as_text=True))
+
+
 class DecisionsAndActionsTest(WebTestCase):
     def test_add_and_resolve_decision(self):
         self.post('/decisions/new', {'decision': 'Approve MU trim', 'category': 'Portfolio Engineering',
