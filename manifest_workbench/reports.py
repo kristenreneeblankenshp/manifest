@@ -540,7 +540,7 @@ def mwir_import_json(store: dict, rid: str, actor: str, text: str) -> dict:
     draft['doc'] = MW.import_json(text)
     draft['period_label'] = MW.label(draft['doc'])
     _touch(draft, actor)
-    _audit(store, actor, rid, 'document imported from the browser builder')
+    _audit(store, actor, rid, 'document imported from JSON')
     return draft
 
 

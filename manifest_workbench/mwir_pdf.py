@@ -1,6 +1,6 @@
 """Render the official 8-page MWIR (11 x 8.5 in landscape) with ReportLab.
 
-Layout follows the browser builder's pages (``mwir/mwir.css``) at 0.75 pt per CSS pixel.
+Layout follows the console's HTML preview (``web/static/mwir.css``) at 0.75 pt per CSS pixel.
 Long narrative blocks shrink their type to fit their space instead of spilling off the page.
 """
 

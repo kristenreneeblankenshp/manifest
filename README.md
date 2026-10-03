@@ -23,9 +23,9 @@ It runs two ways over the same engine:
   reviews and report PDFs (see [Web console](#web-console) below)
 - a **terminal console** (`manifest-workbench`) that covers every sheet from the command line
 
-The weekly MWIR is built inside the web console, in the official 8-page layout of the
-`mwir/` browser builder (see [MWIR](#mwir) below). The standalone builder in `mwir/` still
-works on its own, and its saved documents can be imported into the console.
+The weekly MWIR is built inside the web console, in the official 8-page layout of the 28 Aug 2026
+MWIR (see [MWIR](#mwir) below). It replaces the standalone browser builder that used to live in
+`mwir/`; documents saved by that builder can still be imported.
 
 ## Install and run
 
@@ -92,7 +92,7 @@ Each week's MWIR opens from *MWIR* in the sidebar (or step 5 on the console):
    assertions are failing (`HOLD · CONTROLS FAILING`), issuing needs an override reason, which
    is printed on page 8 and recorded in the audit trail. *Reopen to revise* issues a new version.
 
-The calculations match the browser builder:
+The calculations:
 - **Bands:** 75–125% of target, floored at 1.00% and capped at 4.00%.
 - **Control assertions:** holdings present, a 100.00% total, Strategic Anchors matching the frozen
   total (defaulted from the certified portfolio, 22.51%), no BRK.B executable rows, nothing above
@@ -104,9 +104,9 @@ The calculations match the browser builder:
 
 The screen reads the **Zacks snapshot**. Every Zacks pull, by API or CSV, updates it with Zacks
 Rank, market cap and next earnings date. CSVs may carry a `Next EPS Report Date` column, and the
-API field is set in *Settings*. Until the first pull it uses the 25 Sep 2026 snapshot that ships
-with `mwir/zacks.js`. *More → Export* downloads the document as JSON, and *Import* accepts that
-file or a document saved by the browser builder.
+API field is set in *Settings*. Until the first pull it uses the 25 Sep 2026 snapshot bundled in
+`manifest_workbench/data/mwir_seed.json`. *More → Export* downloads the document as JSON, and
+*Import* accepts that file or a document saved by the former browser builder.
 
 ### Connector setup
 
@@ -334,5 +334,5 @@ python -m unittest discover -s tests -t .   # the golden test needs openpyxl; we
 - `connectors/`: Zacks (API and CSV), broker weights CSV and research (SEC EDGAR, Zacks research).
 - `reviews.py`: weekly, monthly and quarterly review checklists and sign-off.
 - `reports.py` and `pdf.py`: report drafts (MIRD, MOR, QER, MIPR, and the MWIR lifecycle) and PDF rendering.
-- `mwir.py` and `mwir_pdf.py`: the official MWIR (port of the `mwir/` builder) and its 8-page landscape PDF.
+- `mwir.py` and `mwir_pdf.py`: the official MWIR (document model, calculations, Zacks screen) and its 8-page landscape PDF.
 - `web/`: the Flask console (auth, pages, templates and styles).

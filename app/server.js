@@ -23,7 +23,6 @@ const PORT = process.env.PORT || 3000;
   const app = express();
   app.use(compression()); app.use(express.json({ limit: '4mb' }));
   app.use(express.static(path.join(__dirname, 'public')));
-  app.use('/mwir', express.static(path.join(__dirname, '..', 'mwir'))); // MWIR report builder
   const wrap = (fn) => async (req, res) => { try { res.json(await fn(req)); } catch (e) { console.error(e.message); res.status(e.extra || /Required|not an allowed|formula cell|not found|already|full|no free|Unknown|Must|Nothing|Stage/i.test(e.message) ? 400 : 500).json({ error: e.message }); } };
   const today = () => Math.floor(Date.now() / 86400000) + 25569;
 
