@@ -7,6 +7,11 @@ services:
     volumes:
       - manifest-data:/data
     environment:
+      MANIFEST_DATA_DIR: /data
+      # Optional fixed session key; otherwise one is generated and stored in /data.
+      MANIFEST_SECRET_KEY: ${MANIFEST_SECRET_KEY:-}
+      # Set to 1 when running behind a reverse proxy.
+      MANIFEST_PROXY: ${MANIFEST_PROXY:-1}
       # First administrator (only used while no users exist). Remove after first sign-in.
       MANIFEST_ADMIN_USER: ${MANIFEST_ADMIN_USER:-}
       MANIFEST_ADMIN_PASSWORD: ${MANIFEST_ADMIN_PASSWORD:-}
