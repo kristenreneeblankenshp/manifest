@@ -1,0 +1,242 @@
+# Manifest MWIR weekly inputs. Start each week with:
+#   python -m mwir new-week weeks/<last week>.yaml --holdings <new csv>
+# then edit the narrative, scores and guidance below.
+#
+# Text fields may use {placeholders} that are filled from the computed model
+# so numbers in the prose never drift from the tables:
+#   {total} {positions} {composite} {week_ending} {publication_date}
+#   {sleeve:<key>} e.g. {sleeve:strategic}
+
+week_ending: 2026-08-28
+publication_date: 2026-08-31
+status: official            # official | draft
+holdings_csv: ../holdings/2026-08-28.csv
+
+headline: CONSTRUCTIVE PARTICIPATION - HAWKISH FED / GEOPOLITICAL DISCIPLINE
+subhead: >-
+  Remain fully model-allocated, but do not expand aggregate risk. Strong
+  earnings and tighter credit spreads are offset by a more hawkish Fed path and
+  renewed Iran/oil escalation into publication morning.
+
+gauge:
+  composite: 62
+  prior_composite: 63
+  delta: -1
+  gamma: -1
+  delta_gamma_note: policy-event cooling
+
+compass:                    # [label, value, note]
+  - [FED RANGE, "3.50-3.75%", unchanged]
+  - [HY OAS, "2.63%", calm / improving]
+  - [10Y UST, "4.67%*", still restrictive]
+  - [VIX, "14.43", contained]
+
+executive_summary:          # [bold lead, text]
+  - - Portfolio posture
+    - >-
+      retain the {total} rules-governed Merrill executable model. The week
+      improved on earnings, credit and volatility, but Friday's hawkish Jackson
+      Hole message and renewed U.S.-Iran strikes into Aug. 31 argue against a
+      net risk increase.
+  - - Implementation
+    - >-
+      enforce MRGES-001. Berkshire Hathaway remains analytical only at 0.00%
+      executable. Release the prior NVIDIA event hold after the Aug. 26
+      evidence review, but keep semiconductor/networking exposure at
+      disciplined targets; place AVGO and PANW behind this week's earnings
+      gates.
+  - - Incremental capital
+    - >-
+      favor healthcare and quality industrials only when below approved bands.
+      Maintain energy exposure without chasing the publication-morning oil
+      spike.
+  - - Control boundary
+    - >-
+      actual account weights remain unavailable. This report publishes model
+      guidance and monitoring bands; it does not infer drift or authorize live
+      trades.
+
+footnote: >-
+  *Latest official FRED daily observation available for DGS10 was 4.67% on
+  Aug 27; Friday market yield moved higher after Jackson Hole.
+
+# ---- Page 2: signal dashboard -------------------------------------------
+components:                 # 0-10, order is display order
+  Growth: 5
+  Inflation: 4
+  Fed / Liquidity: 4
+  Credit: 9
+  Earnings: 9
+  Breadth: 6
+  Momentum: 6
+  Volatility: 7
+  Rates: 4
+  Geopolitics / Oil: 2
+
+risk_tape:
+  - [S&P 500, "+0.49%"]
+  - [Nasdaq Composite, "+0.85%"]
+  - [Dow Industrials, "+0.53%"]
+  - [VIX close, "14.43"]
+  - [WTI crude, "$83.40 Fri / ~$86.31 Mon"]
+  - [Brent crude, "$89.31 Fri / ~$90.97 Mon"]
+
+signal_interpretation:
+  - "Credit improved again: HY OAS fell to 2.63% on the latest official observation."
+  - "Financial stress remains below zero: STLFSI4 -0.8107 (latest published week)."
+  - NVIDIA Q2 results materially strengthened the earnings evidence set.
+  - Friday Jackson Hole guidance raised the probability of a September hike.
+  - Monday oil/geopolitical escalation offsets part of the week-ending improvement.
+  - Composite slips to 62 from 63; Gamma remains negative.
+
+decision_rule: >-
+  The signal mix supports full model participation with a defensive risk
+  budget: preserve quality anchors, healthcare, industrial infrastructure and
+  income ballast; allow NVIDIA to revert from event hold to maintain-at-target
+  after strong results; constrain AVGO/PANW additions through their evidence
+  gates; do not chase energy after the renewed geopolitical premium.
+official_posture: 100% MODEL ALLOCATION - SELECTIVE INTERNAL ROTATION ONLY
+
+# ---- Page 3: macro -----------------------------------------------------
+macro:                      # [heading, text]
+  - - RATES & LIQUIDITY
+    - >-
+      Fed target remains 3.50-3.75%. The latest official 10-year Treasury
+      observation was 4.67% on Aug. 27, down modestly from Aug. 21, but Chair
+      Kevin Warsh's Jackson Hole remarks reinforced a hawkish reaction and
+      increased September hike expectations.
+  - - INFLATION
+    - >-
+      The 10-year breakeven averaged 2.32% for the week ending Aug. 28.
+      Inflation remains the key policy constraint; renewed oil strength into
+      Aug. 31 raises the risk of headline re-acceleration.
+  - - CREDIT & STRESS
+    - >-
+      High-yield OAS tightened to 2.63% on Aug. 27. STLFSI4 was -0.8107 for the
+      week ending Aug. 21, still below zero and consistent with below-average
+      system stress. Credit is not validating broad de-risking.
+  - - EARNINGS
+    - >-
+      NVIDIA reported Q2 FY2027 revenue of $96.2B, +106% y/y, with Data Center
+      revenue of $89.0B, +117% y/y. The result clears the prior Aug. 26 event
+      gate, though concentration discipline remains in force.
+  - - GEOPOLITICS / OIL
+    - >-
+      WTI finished Aug. 28 at $83.40 and Brent at $89.31, both down on the
+      week. Renewed U.S.-Iran strikes over the weekend pushed Monday
+      indications to about $86.31 WTI and $90.97 Brent, restoring an
+      inflationary event premium.
+
+event_gates_title: FORWARD EVENT GATES - WEEK OF AUG 31
+event_gates:                # [date, event, action]
+  - [SEP 1, Palo Alto Networks, Maintain event hold; review cybersecurity evidence after release.]
+  - [SEP 3, Broadcom, Hold AVGO at or below target into earnings; reassess AI/networking concentration.]
+  - [SEP 4, U.S. payrolls, "Re-score growth, rates and Fed/liquidity after employment data."]
+
+# ---- Page 4: allocation ------------------------------------------------
+deployment_hierarchy:
+  - Selective adds - VHT, SYK, JNJ, LLY, DHR, DE, CAT, ETN, GE and PH - only when below band and after account controls.
+  - Maintain core anchors, NVIDIA at disciplined target after evidence review, financial infrastructure, income ballast and existing energy exposure.
+  - Constrain AVGO and PANW at or below target through this week's event gates; do not chase energy on the renewed geopolitical premium.
+
+# Analytical-only names: part of the MFPDF baseline, 0.00% executable. Their
+# baseline weight is redistributed pro rata inside `sleeve` (MRGES-001).
+excluded:
+  BRK.B:
+    name: Berkshire Hathaway
+    sleeve: strategic
+    mfpdf: 3.02
+    reason: Merrill coverage is unavailable
+
+# ---- Pages 5+: holding matrix -----------------------------------------
+# ticker: [sleeve, MFPDF baseline %, guidance, rationale, status (optional)]
+# Current executable targets come from the holdings CSV, not from here.
+default_status: EVIDENCE HOLD
+holdings:
+  COST:  [strategic, 3.02, MAINTAIN, Consumer resilience; redistributed anchor]
+  JNJ:   [strategic, 3.02, SELECTIVE ADD, Quality healthcare anchor]
+  MSFT:  [strategic, 3.02, MAINTAIN, AI platform; preserve discipline]
+  V:     [strategic, 2.88, MAINTAIN, Payments infrastructure]
+  GOOGL: [strategic, 2.84, MAINTAIN, AI/platform anchor]
+  MA:    [strategic, 1.60, MAINTAIN, Payments infrastructure]
+  AAPL:  [strategic, 1.56, MAINTAIN, Ecosystem anchor]
+  AMZN:  [strategic, 1.55, MAINTAIN, Cloud/commerce anchor]
+  AVGO:  [growth, 3.02, EVENT HOLD, Sep 3 earnings gate]
+  LLY:   [growth, 3.02, SELECTIVE ADD, Healthcare quality priority]
+  NVDA:  [growth, 2.68, MAINTAIN, Q2 gate cleared; strong AI demand]
+  HD:    [growth, 1.56, MAINTAIN, Q2 beat; guidance reaffirmed]
+  META:  [growth, 1.56, MAINTAIN, Platform quality]
+  ANET:  [growth, 1.55, HOLD <= TARGET, Networking concentration]
+  PANW:  [digital, 1.99, EVENT HOLD, Sep 1 earnings gate]
+  AMAT:  [digital, 1.56, HOLD <= TARGET, Semi-cycle restraint]
+  CSCO:  [digital, 1.56, HOLD <= TARGET, Networking overlap]
+  KLAC:  [digital, 1.56, HOLD <= TARGET, Semi-cycle restraint]
+  MU:    [digital, 1.56, HOLD <= TARGET, Memory-cycle risk]
+  ORCL:  [digital, 1.56, MAINTAIN, Cloud/database exposure]
+  TXN:   [digital, 1.56, MAINTAIN, Analog quality]
+  VRT:   [digital, 1.55, HOLD <= TARGET, AI infra concentration]
+  DHR:   [industrials, 3.00, SELECTIVE ADD, Quality industrial/health tools]
+  RTX:   [industrials, 2.99, MAINTAIN, Defense/aerospace resilience]
+  DE:    [industrials, 1.77, SELECTIVE ADD, Q3 beat; ag cycle watch]
+  CAT:   [industrials, 1.56, SELECTIVE ADD, Infrastructure priority]
+  ETN:   [industrials, 1.56, SELECTIVE ADD, Electrification leader]
+  GE:    [industrials, 1.56, SELECTIVE ADD, Aerospace quality]
+  PH:    [industrials, 1.56, SELECTIVE ADD, Motion/control quality]
+  TT:    [industrials, 1.56, MAINTAIN, Efficiency infrastructure]
+  UNP:   [industrials, 1.55, MAINTAIN, Volume watch]
+  CME:   [financial, 3.02, MAINTAIN, Volatility beneficiary]
+  MMC:   [financial, 2.00, MAINTAIN, Risk infrastructure]
+  GS:    [financial, 1.56, MAINTAIN, Capital markets exposure]
+  JPM:   [financial, 1.56, MAINTAIN, Banking quality]
+  VFH:   [financial, 1.56, MAINTAIN, Diversified financials]
+  VHT:   [healthcare, 2.06, SELECTIVE ADD, Healthcare sleeve priority]
+  SYK:   [healthcare, 1.55, SELECTIVE ADD, Medtech quality]
+  LNG:   [energy, 3.02, MAINTAIN / NO CHASE, Geopolitical premium elevated]
+  VPU:   [energy, 3.02, MAINTAIN, Defensive; rate sensitive]
+  XOM:   [energy, 2.56, MAINTAIN / NO CHASE, Oil event premium]
+  CVX:   [energy, 1.56, MAINTAIN / NO CHASE, Oil event premium]
+  VDE:   [energy, 1.56, MAINTAIN / NO CHASE, Sector exposure sufficient]
+  JEPI:  [income, 3.02, MAINTAIN, Income / volatility moderation]
+  JEPQ:  [income, 3.02, HOLD <= TARGET, Tech overlap]
+
+# ---- Final page: certification ----------------------------------------
+client_brief: >-
+  The Manifest portfolio remains fully allocated under its rules-governed
+  model, with a neutral/risk-control posture. Credit spreads tightened and
+  NVIDIA delivered strong earnings, but the Federal Reserve reinforced its
+  inflation-fighting stance at Jackson Hole and renewed U.S.-Iran conflict
+  lifted oil again into publication morning. Preserve the {positions}-position
+  Merrill executable model, selectively fund healthcare and quality industrials
+  only when below approved bands, maintain NVIDIA at target after its evidence
+  gate, and hold AVGO/PANW at or below target into this week's events.
+
+frozen_deliverables:
+  - MWIR-WGT-001 weight-guidance standard
+  - MFPDF Founders Edition v1.0 allocation
+  - MRGES-001 rules-governed execution standard
+  - "{positions}-position Merrill executable workbook v1.1"
+  - Prior MWIR continuity through Aug 21, 2026
+
+# Extra disclosure lines added under the computed control assertions.
+disclosures:
+  - [Live trade status, not authorized]
+  - [Composite formula, not retrieved; continuity judgment]
+  - [Conviction tier, not reconstructed]
+
+sources:
+  - Federal Reserve Bank of St. Louis - ICE BofA US HY OAS (BAMLH0A0HYM2)
+  - Federal Reserve Bank of St. Louis - 10-Year Treasury (DGS10)
+  - Cboe - VIX spot close, Aug 28, 2026
+  - Federal Reserve Bank of St. Louis - Financial Stress Index (STLFSI4)
+  - Reuters - Wall Street ends lower after Fed Chair Warsh reaffirms inflation fight, Aug 28, 2026
+  - NVIDIA Newsroom - Q2 FY2027 results, Aug 26, 2026
+  - Reuters - Oil settles lower on Fed policy / Hormuz signals, Aug 28, 2026
+  - Reuters - Oil rises after renewed U.S.-Iran military attacks, Aug 31, 2026
+  - "Reuters - Week Ahead: jobs report and Broadcom results, Aug 28, 2026"
+
+data_freshness: >-
+  Market levels use the latest published official observations available as of
+  the Aug. 31 publication run. Where Friday official series were not yet
+  posted, the report identifies the latest official observation rather than
+  fabricating a Friday value. Publication-morning geopolitical/oil moves are
+  treated as an event overlay, not as week-ending data.
