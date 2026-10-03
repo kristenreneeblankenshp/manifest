@@ -17,7 +17,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 
 bp = Blueprint('auth', __name__)
 ROLES = ('admin', 'editor', 'viewer')
-PUBLIC = {'auth.login', 'auth.setup', 'static'}
+PUBLIC = {'auth.login', 'auth.setup', 'auth.healthz', 'static'}
 
 
 def repo():
@@ -73,6 +73,10 @@ def load_user_and_guard():
         user = repo().read()['users'].get(username)
         if user:
             g.user = {'username': username, **user}
+    if request.method == 'POST':  # every form, signed in or not (login and setup included)
+        token, expected = request.form.get('_csrf', ''), session.get('_csrf', '')
+        if not expected or not hmac.compare_digest(token, expected):
+            abort(400, 'Invalid or missing form token; reload the page and try again.')
     if request.endpoint in PUBLIC or request.endpoint is None:
         return None
     if g.user is None:
@@ -80,9 +84,6 @@ def load_user_and_guard():
             return redirect(url_for('auth.setup'))
         return redirect(url_for('auth.login', next=request.path))
     if request.method == 'POST':
-        token = request.form.get('_csrf', '')
-        if not hmac.compare_digest(token, session.get('_csrf', '')):
-            abort(400, 'Invalid or missing form token; reload the page and try again.')
         if not can_edit() and request.endpoint not in ('auth.logout', 'core.set_as_of'):
             abort(403, 'Your role is read-only.')
     return None
@@ -95,6 +96,13 @@ def admin_required(view):
             abort(403, 'Administrator access required.')
         return view(*a, **kw)
     return wrapper
+
+
+@bp.route('/healthz')
+def healthz():
+    """Liveness check for hosting platforms: the data file is readable."""
+    repo().read()
+    return {'status': 'ok'}
 
 
 @bp.route('/login', methods=['GET', 'POST'])

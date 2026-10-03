@@ -76,6 +76,18 @@ class AuthTest(WebTestCase):
         self.assertEqual(r.status_code, 302)
         self.assertIn('/login', r.headers['Location'])
 
+    def test_login_and_setup_need_form_token(self):
+        anon = self.app.test_client()
+        r = anon.post('/login', data={'username': 'ada', 'password': PASSWORD})
+        self.assertEqual(r.status_code, 400)
+        fresh = create_app(tempfile.mkdtemp(), testing=True).test_client()
+        r = fresh.post('/setup', data={'name': 'X', 'username': 'x', 'password': PASSWORD, 'confirm': PASSWORD})
+        self.assertEqual(r.status_code, 400)
+
+    def test_health_check_is_public(self):
+        r = self.app.test_client().get('/healthz')
+        self.assertEqual((r.status_code, r.get_json()), (200, {'status': 'ok'}))
+
     def test_setup_closed_after_first_admin(self):
         r = self.app.test_client().get('/setup')
         self.assertEqual(r.status_code, 302)

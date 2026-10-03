@@ -123,6 +123,14 @@ file or a document saved by the browser builder.
 
 ### Hosting
 
+**Fastest: one click on Render.**
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/kristenreneeblankenshp/manifest)
+Sign in to Render with GitHub, allow it to read this repository, enter an admin username and a
+password of 10 or more characters when prompted, and apply. Render builds the image, attaches a
+1 GB disk at `/data` and gives you an `https://manifest-workbench-….onrender.com` address. Sign in
+there with the admin account. The blueprint is `render.yaml`. The disk needs a paid instance
+(Starter). Every push to `main` redeploys.
+
 The app is one Python process with a JSON data file guarded by a file lock, so run a
 **single instance with a persistent disk**. The disk holds the data file, issued PDFs and
 the session key.
