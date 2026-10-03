@@ -1,0 +1,537 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>RCC-004 MASR Console</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=Newsreader:opsz,wght@6..72,500;6..72,600&display=swap" rel="stylesheet">
+<style>
+body{margin:0;font-family:'IBM Plex Sans',system-ui,sans-serif;background:#F3F0E8;color:#1C2229}
+button{font-family:inherit}
+</style>
+</helmet>
+<div style="width: 1440px; height: 1920px; box-sizing: border-box; background: #F3F0E8; color: #1C2229; font-family: 'IBM Plex Sans', system-ui, sans-serif; display: flex; flex-direction: column">
+
+<!-- HEADER -->
+<div style="background: #17283C; color: #F3F0E8; padding: 30px 40px 28px; display: flex; flex-direction: column; gap: 14px">
+<div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 40px">
+<div style="display: flex; flex-direction: column; gap: 6px">
+<div style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: 0.12em; color: #C9B98F">MOPS-003 · RCC-004 · MASR REGISTRY &amp; CANDIDATE PIPELINE</div>
+<h1 style="margin: 0; font-family: 'Newsreader', Georgia, serif; font-weight: 600; font-size: 40px; line-height: 1.1">RCC-004 Control Center</h1>
+<div style="font-size: 14px; color: #B9C3CF">Founders Edition v1.0 — Construction Candidate · Workbook snapshot v0.4</div>
+</div>
+<div style="display: flex; flex-direction: column; align-items: flex-end; gap: 8px">
+<div style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #B9C3CF">AS OF {{asOf}}</div>
+<div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; font-weight: 500; padding: 7px 14px; border-radius: 4px; background: {{readiness.bg}}; color: {{readiness.fg}}">{{readiness.label}}</div>
+</div>
+</div>
+<div style="font-size: 14px; line-height: 1.55; color: #D5DBE3; max-width: 1080px">RCC-004 governs canonical MASR identity, approved and conditional non-holdings, candidate stage gates, external-research exceptions, committee disposition and controlled referral to PEW-004. Research recommends; it does not change allocations, authorize trading or admit a security to the certified portfolio.</div>
+</div>
+
+<div style="padding: 28px 40px 32px; display: flex; flex-direction: column; gap: 24px; flex-grow: 1">
+
+<!-- KPI ROW -->
+<div style="display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 16px">
+<sc-for list="{{ kpis }}" as="k" hint-placeholder-count="6">
+<div style="background: #FBFAF6; border: 1px solid #D9D3C4; border-radius: 6px; padding: 16px 18px; display: flex; flex-direction: column; gap: 8px; height: 112px; box-sizing: border-box">
+<div style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.08em; color: #5B6470">{{ k.label }}</div>
+<div style="font-family: 'Newsreader', Georgia, serif; font-size: 44px; font-weight: 600; line-height: 1; color: {{ k.color }}">{{ k.value }}</div>
+<div style="font-size: 12px; color: #5B6470">{{ k.note }}</div>
+</div>
+</sc-for>
+</div>
+
+<!-- READINESS STRIP -->
+<div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px">
+<div style="background: #FBFAF6; border: 1px solid #D9D3C4; border-radius: 6px; padding: 14px 18px; display: flex; flex-direction: column; gap: 6px; height: 84px; box-sizing: border-box">
+<div style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.08em; color: #5B6470">RCC-004 READINESS</div>
+<div style="font-size: 15px; font-weight: 600">{{ readiness.label }}</div>
+</div>
+<div style="background: #FBFAF6; border: 1px solid #D9D3C4; border-radius: 6px; padding: 14px 18px; display: flex; flex-direction: column; gap: 8px; height: 84px; box-sizing: border-box">
+<div style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.08em; color: #5B6470">MASR CONTROLLED CAPACITY</div>
+<div style="font-size: 15px; font-weight: 600">{{ capacityText }}</div>
+<div style="height: 6px; background: #E4DFD1; border-radius: 3px"><div style="height: 6px; border-radius: 3px; background: #17283C; width: {{ capacityPct }}"></div></div>
+</div>
+<div style="background: #FBFAF6; border: 1px solid #D9D3C4; border-radius: 6px; padding: 14px 18px; display: flex; flex-direction: column; gap: 6px; height: 84px; box-sizing: border-box">
+<div style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.08em; color: #5B6470">CANDIDATE STAGE GATES</div>
+<div style="font-size: 15px; font-weight: 600">{{ gatesText }}</div>
+</div>
+<div style="background: #FBFAF6; border: 1px solid #D9D3C4; border-radius: 6px; padding: 14px 18px; display: flex; flex-direction: column; gap: 6px; height: 84px; box-sizing: border-box">
+<div style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.08em; color: #5B6470">COMMITTEE / PEW ROUTING</div>
+<div style="font-size: 15px; font-weight: 600">{{ routingText }}</div>
+</div>
+</div>
+
+<!-- MIDDLE: EXCEPTIONS / COMPOSITION / STAGES -->
+<div style="display: grid; grid-template-columns: 700px minmax(0, 1fr) minmax(0, 1fr); gap: 24px; height: 520px">
+
+<div style="background: #FBFAF6; border: 1px solid #D9D3C4; border-radius: 6px; padding: 20px 22px; display: flex; flex-direction: column; gap: 12px; box-sizing: border-box">
+<h2 style="margin: 0; font-family: 'Newsreader', Georgia, serif; font-weight: 600; font-size: 22px">MASR &amp; candidate control exceptions</h2>
+<div style="display: grid; grid-template-columns: 28px minmax(0, 1fr) 52px 128px; gap: 12px; font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.06em; color: #5B6470; padding-bottom: 8px; border-bottom: 1px solid #D9D3C4">
+<div>#</div><div>CONTROL · REQUIRED ACTION</div><div style="text-align: right">COUNT</div><div>STATE</div>
+</div>
+<sc-for list="{{ exceptions }}" as="e" hint-placeholder-count="8">
+<div style="display: grid; grid-template-columns: 28px minmax(0, 1fr) 52px 128px; gap: 12px; align-items: start; padding-bottom: 10px; border-bottom: 1px solid #ECE7DA">
+<div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: #5B6470">{{ e.n }}</div>
+<div style="display: flex; flex-direction: column; gap: 3px">
+<div style="font-size: 14px; font-weight: 600">{{ e.control }}</div>
+<div style="font-size: 12.5px; color: #3F4853; line-height: 1.4">{{ e.action }}</div>
+<div style="font-size: 12px; color: #5B6470">{{ e.authority }} → {{ e.dest }}</div>
+</div>
+<div style="font-family: 'IBM Plex Mono', monospace; font-size: 18px; font-weight: 500; text-align: right">{{ e.count }}</div>
+<div><span style="display: inline-block; font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 500; padding: 4px 8px; border-radius: 3px; color: {{ e.fg }}; background: {{ e.bg }}">{{ e.state }}</span></div>
+</div>
+</sc-for>
+</div>
+
+<div style="background: #FBFAF6; border: 1px solid #D9D3C4; border-radius: 6px; padding: 20px 22px; display: flex; flex-direction: column; gap: 12px; box-sizing: border-box">
+<h2 style="margin: 0; font-family: 'Newsreader', Georgia, serif; font-weight: 600; font-size: 22px">Registry composition</h2>
+<div style="display: grid; grid-template-columns: minmax(0, 1fr) 44px 44px; gap: 8px; font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.06em; color: #5B6470; padding-bottom: 8px; border-bottom: 1px solid #D9D3C4">
+<div>CLASS</div><div style="text-align: right">REC</div><div style="text-align: right">EXC</div>
+</div>
+<sc-for list="{{ classes }}" as="c" hint-placeholder-count="8">
+<div style="display: flex; flex-direction: column; gap: 5px">
+<div style="display: grid; grid-template-columns: minmax(0, 1fr) 44px 44px; gap: 8px; font-size: 13px">
+<div style="color: {{ c.color }}">{{ c.name }}</div>
+<div style="font-family: 'IBM Plex Mono', monospace; text-align: right">{{ c.records }}</div>
+<div style="font-family: 'IBM Plex Mono', monospace; text-align: right; color: {{ c.excColor }}">{{ c.exceptions }}</div>
+</div>
+<div style="height: 5px; background: #E9E4D6; border-radius: 2px"><div style="height: 5px; border-radius: 2px; background: #17283C; width: {{ c.pct }}"></div></div>
+</div>
+</sc-for>
+</div>
+
+<div style="background: #FBFAF6; border: 1px solid #D9D3C4; border-radius: 6px; padding: 20px 22px; display: flex; flex-direction: column; gap: 10px; box-sizing: border-box">
+<h2 style="margin: 0; font-family: 'Newsreader', Georgia, serif; font-weight: 600; font-size: 22px">Pipeline by stage</h2>
+<div style="display: grid; grid-template-columns: minmax(0, 1fr) 40px 40px 40px; gap: 8px; font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.06em; color: #5B6470; padding-bottom: 8px; border-bottom: 1px solid #D9D3C4">
+<div>STAGE</div><div style="text-align: right">REC</div><div style="text-align: right">PASS</div><div style="text-align: right">EXC</div>
+</div>
+<sc-for list="{{ stageRows }}" as="s" hint-placeholder-count="12">
+<div style="display: grid; grid-template-columns: minmax(0, 1fr) 40px 40px 40px; gap: 8px; font-size: 13px; padding: 3px 0; border-bottom: 1px solid #F0ECE0">
+<div style="color: {{ s.color }}">{{ s.name }}</div>
+<div style="font-family: 'IBM Plex Mono', monospace; text-align: right">{{ s.records }}</div>
+<div style="font-family: 'IBM Plex Mono', monospace; text-align: right">{{ s.pass }}</div>
+<div style="font-family: 'IBM Plex Mono', monospace; text-align: right; color: {{ s.excColor }}">{{ s.exceptions }}</div>
+</div>
+</sc-for>
+</div>
+</div>
+
+<!-- WORKLIST -->
+<div style="display: grid; grid-template-columns: minmax(0, 1fr) 436px; gap: 24px; height: 640px">
+
+<div style="background: #FBFAF6; border: 1px solid #D9D3C4; border-radius: 6px; padding: 20px 22px; display: flex; flex-direction: column; gap: 14px; box-sizing: border-box; min-width: 0">
+<div style="display: flex; justify-content: space-between; align-items: center; gap: 16px">
+<div style="display: flex; gap: 8px">
+<button type="button" onClick="{{ showPipeline }}" style="min-height: 44px; padding: 0 18px; border-radius: 4px; cursor: pointer; font-size: 14px; font-weight: 600; border: 1px solid #17283C; background: {{ tabPipeBg }}; color: {{ tabPipeFg }}">Candidate pipeline · {{ pipeCount }}</button>
+<button type="button" onClick="{{ showRegistry }}" style="min-height: 44px; padding: 0 18px; border-radius: 4px; cursor: pointer; font-size: 14px; font-weight: 600; border: 1px solid #17283C; background: {{ tabRegBg }}; color: {{ tabRegFg }}">MASR registry · {{ regCount }} of 150</button>
+</div>
+<sc-if value="{{ isRegistry }}" hint-placeholder-val="{{ false }}">
+<div style="display: flex; gap: 8px; align-items: center">
+<label for="q" style="font-size: 12px; color: #5B6470">Search</label>
+<input id="q" type="text" value="{{ q }}" onInput="{{ onSearch }}" placeholder="Ticker or security" style="height: 44px; box-sizing: border-box; width: 190px; padding: 0 12px; border: 1px solid #BDB6A3; border-radius: 4px; background: #FFFFFF; font-family: inherit; font-size: 14px; color: #1C2229">
+<sc-for list="{{ classFilters }}" as="f" hint-placeholder-count="3">
+<button type="button" onClick="{{ f.pick }}" style="min-height: 44px; padding: 0 12px; border-radius: 4px; cursor: pointer; font-size: 13px; border: 1px solid #BDB6A3; background: {{ f.bg }}; color: {{ f.fg }}">{{ f.label }}</button>
+</sc-for>
+</div>
+</sc-if>
+</div>
+
+<sc-if value="{{ isPipeline }}" hint-placeholder-val="{{ true }}">
+<div style="display: flex; flex-direction: column; gap: 0; min-height: 0">
+<div style="display: grid; grid-template-columns: 138px minmax(0, 1fr) 92px 140px 128px 84px; gap: 10px; font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.06em; color: #5B6470; padding: 0 10px 8px; border-bottom: 1px solid #D9D3C4">
+<div>CANDIDATE ID</div><div>SECURITY · TYPE</div><div>STAGE</div><div>GATE</div><div>CONTROL</div><div style="text-align: right">DUE</div>
+</div>
+<sc-for list="{{ pipeRows }}" as="p" hint-placeholder-count="10">
+<button type="button" onClick="{{ p.pick }}" style="display: grid; grid-template-columns: 138px minmax(0, 1fr) 92px 140px 128px 84px; gap: 10px; align-items: center; width: 100%; box-sizing: border-box; text-align: left; padding: 8px 10px; min-height: 52px; border: 0; border-bottom: 1px solid #ECE7DA; border-left: 3px solid {{ p.rail }}; background: {{ p.rowBg }}; cursor: pointer; color: #1C2229">
+<div style="font-family: 'IBM Plex Mono', monospace; font-size: 12px">{{ p.id }}</div>
+<div style="min-width: 0; display: flex; flex-direction: column; gap: 2px">
+<div style="font-size: 14px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis"><span style="font-family: 'IBM Plex Mono', monospace">{{ p.ticker }}</span> · {{ p.name }}</div>
+<div style="font-size: 12px; color: #5B6470">{{ p.type }}</div>
+</div>
+<div style="font-size: 13px">{{ p.stage }}</div>
+<div><span style="display: inline-block; font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; font-weight: 500; padding: 4px 7px; border-radius: 3px; color: {{ p.gateFg }}; background: {{ p.gateBg }}">{{ p.gate }}</span></div>
+<div><span style="display: inline-block; font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; font-weight: 500; padding: 4px 7px; border-radius: 3px; color: {{ p.ctlFg }}; background: {{ p.ctlBg }}">{{ p.control }}</span></div>
+<div style="text-align: right; font-size: 12px; color: {{ p.dueColor }}">{{ p.due }}</div>
+</button>
+</sc-for>
+<div style="font-size: 12px; color: #5B6470; padding: 12px 10px 0; line-height: 1.5">Select a record to inspect its gate checks. {{ pipeCount }} of 200 candidate slots in use. Source for all ten records: Barron's Aug. 21, 2026 manufacturing roundtable — establishes consideration only; no Manifest validation or portfolio action.</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ isRegistry }}" hint-placeholder-val="{{ false }}">
+<div style="display: flex; flex-direction: column; min-height: 0; flex-grow: 1">
+<div style="display: grid; grid-template-columns: 72px minmax(0, 1fr) 120px 170px 60px 128px; gap: 10px; font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.06em; color: #5B6470; padding: 0 10px 8px; border-bottom: 1px solid #D9D3C4">
+<div>TICKER</div><div>SECURITY · ROLE</div><div>CLASS</div><div>SLEEVE</div><div style="text-align: right">WT</div><div>CONTROL</div>
+</div>
+<div style="overflow-y: auto; height: 490px">
+<sc-for list="{{ regRows }}" as="r" hint-placeholder-count="12">
+<div style="display: grid; grid-template-columns: 72px minmax(0, 1fr) 120px 170px 60px 128px; gap: 10px; align-items: center; padding: 7px 10px; min-height: 46px; box-sizing: border-box; border-bottom: 1px solid #ECE7DA">
+<div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; font-weight: 500">{{ r.ticker }}</div>
+<div style="min-width: 0; display: flex; flex-direction: column; gap: 1px">
+<div style="font-size: 13.5px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ r.name }}</div>
+<div style="font-size: 12px; color: #5B6470; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ r.role }}</div>
+</div>
+<div style="font-size: 12.5px">{{ r.cls }}</div>
+<div style="font-size: 12.5px; line-height: 1.3">{{ r.sleeve }}</div>
+<div style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; text-align: right">{{ r.weight }}</div>
+<div><span style="display: inline-block; font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; font-weight: 500; padding: 4px 7px; border-radius: 3px; color: #8A5A12; background: #F7EBD3">{{ r.control }}</span></div>
+</div>
+</sc-for>
+</div>
+<div style="font-size: 12px; color: #5B6470; padding-top: 10px">Showing {{ regShown }} of {{ regCount }} records. Canonical MASR IDs must be entered from the institutional registry — none are invented here, so every record reads SETUP REQUIRED.</div>
+</div>
+</sc-if>
+</div>
+
+<!-- DETAIL -->
+<div style="background: #FBFAF6; border: 1px solid #D9D3C4; border-radius: 6px; padding: 20px 22px; display: flex; flex-direction: column; gap: 14px; box-sizing: border-box; overflow: hidden">
+<div style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.08em; color: #5B6470">CANDIDATE GATE INSPECTOR</div>
+<div style="display: flex; flex-direction: column; gap: 4px">
+<div style="font-family: 'Newsreader', Georgia, serif; font-weight: 600; font-size: 24px; line-height: 1.15">{{ sel.ticker }} · {{ sel.name }}</div>
+<div style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #5B6470">{{ sel.id }} · {{ sel.sleeve }}</div>
+</div>
+<div style="font-size: 13px; line-height: 1.5; color: #3F4853">{{ sel.summary }}</div>
+
+<div style="display: flex; flex-direction: column; gap: 8px">
+<div style="font-size: 12px; color: #5B6470">What-if stage — try advancing this record (not saved)</div>
+<div style="display: flex; flex-wrap: wrap; gap: 6px">
+<sc-for list="{{ stageButtons }}" as="b" hint-placeholder-count="12">
+<button type="button" onClick="{{ b.pick }}" style="min-height: 34px; padding: 0 9px; border-radius: 4px; cursor: pointer; font-size: 12px; border: 1px solid #17283C; background: {{ b.bg }}; color: {{ b.fg }}">{{ b.label }}</button>
+</sc-for>
+</div>
+</div>
+
+<div style="display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 4px; background: {{ gate.bg }}">
+<span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 500; color: {{ gate.fg }}">{{ gate.result }}</span>
+<span style="font-size: 12.5px; color: {{ gate.fg }}">at {{ sel.stage }}</span>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 0">
+<sc-for list="{{ checks }}" as="c" hint-placeholder-count="7">
+<div style="display: grid; grid-template-columns: 14px minmax(0, 1fr) 84px; gap: 10px; align-items: center; padding: 7px 0; border-bottom: 1px solid #ECE7DA">
+<div style="width: 10px; height: 10px; border-radius: 5px; background: {{ c.dot }}"></div>
+<div style="font-size: 13px">{{ c.label }}</div>
+<div style="font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; text-align: right; color: {{ c.fg }}">{{ c.state }}</div>
+</div>
+</sc-for>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 4px">
+<div style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.08em; color: #5B6470">NEXT REQUIRED ACTION</div>
+<div style="font-size: 13.5px; font-weight: 500; line-height: 1.45">{{ gate.action }}</div>
+<div style="font-size: 12px; color: #5B6470">Owner: {{ sel.owner }} · Due {{ sel.due }} · {{ sel.days }} days open</div>
+</div>
+</div>
+</div>
+
+<!-- FOOTER: OPERATING STANDARD -->
+<div style="display: grid; grid-template-columns: minmax(0, 1fr) 420px; gap: 24px; margin-top: auto">
+<div style="background: #FBFAF6; border: 1px solid #D9D3C4; border-radius: 6px; padding: 20px 22px; display: flex; flex-direction: column; gap: 12px">
+<h2 style="margin: 0; font-family: 'Newsreader', Georgia, serif; font-weight: 600; font-size: 22px">RCC-004 operating standard</h2>
+<div style="display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 10px">
+<sc-for list="{{ steps }}" as="t" hint-placeholder-count="7">
+<div style="border-top: 3px solid #17283C; padding-top: 8px; display: flex; flex-direction: column; gap: 5px">
+<div style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 500; letter-spacing: 0.04em">{{ t.step }}</div>
+<div style="font-size: 12px; line-height: 1.4">{{ t.action }}</div>
+<div style="font-size: 11.5px; color: #5B6470">{{ t.authority }}</div>
+</div>
+</sc-for>
+</div>
+</div>
+<div style="background: #17283C; color: #E6E9EE; border-radius: 6px; padding: 20px 22px; display: flex; flex-direction: column; gap: 10px">
+<div style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.08em; color: #C9B98F">NEXT BUILD — RCC-005</div>
+<div style="font-family: 'Newsreader', Georgia, serif; font-size: 20px; font-weight: 600; line-height: 1.2">Zacks / Merrill research crosswalk</div>
+<div style="font-size: 12.5px; line-height: 1.5; color: #C7CFD9">Verified current Zacks and Merrill research records, the 80% Zacks preference for genuinely close decisions, Zacks #4 / #5 exceptions and Merrill No Rating limits — feeding RCC-004 and PEW-004 without creating selection authority.</div>
+</div>
+</div>
+
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1920}}'>
+const REG = [
+["BRK.B","Berkshire Hathaway Inc. Class B","C","Strategic Anchors","Diversified capital-allocation anchor",0.0302],
+["COST","Costco Wholesale Corporation","C","Strategic Anchors","Consumer-resilience anchor",0.0302],
+["JNJ","Johnson & Johnson","C","Strategic Anchors","Healthcare and life-sciences resilience anchor",0.0302],
+["MSFT","Microsoft Corporation","C","Strategic Anchors","Enterprise technology and AI platform anchor",0.0302],
+["V","Visa Inc.","C","Strategic Anchors","Global payments infrastructure anchor",0.0288],
+["GOOGL","Alphabet Inc. Class A","C","Strategic Anchors","Digital platform and AI anchor",0.0284],
+["MA","Mastercard Incorporated","C","Strategic Anchors","Global payments infrastructure anchor",0.016],
+["AAPL","Apple Inc.","C","Strategic Anchors","Consumer technology ecosystem anchor",0.0156],
+["AMZN","Amazon.com, Inc.","C","Strategic Anchors","Cloud, commerce and logistics anchor",0.0155],
+["AVGO","Broadcom Inc.","C","Growth Compounders","Semiconductor and infrastructure-software compounder",0.0302],
+["LLY","Eli Lilly and Company","C","Growth Compounders","Healthcare innovation compounder",0.0302],
+["NVDA","NVIDIA Corporation","C","Growth Compounders","AI compute growth engine",0.0268],
+["HD","The Home Depot, Inc.","C","Growth Compounders","Housing and professional distribution compounder",0.0156],
+["META","Meta Platforms, Inc.","C","Growth Compounders","Digital platform and AI compounder",0.0156],
+["ANET","Arista Networks, Inc.","C","Growth Compounders","AI networking compounder",0.0155],
+["PANW","Palo Alto Networks, Inc.","C","Digital Infrastructure & AI","Cybersecurity infrastructure leader",0.0199],
+["AMAT","Applied Materials, Inc.","C","Digital Infrastructure & AI","Semiconductor equipment enabler",0.0156],
+["CSCO","Cisco Systems, Inc.","C","Digital Infrastructure & AI","Enterprise networking and secure infrastructure",0.0156],
+["KLAC","KLA Corporation","C","Digital Infrastructure & AI","Semiconductor process-control enabler",0.0156],
+["MU","Micron Technology, Inc.","C","Digital Infrastructure & AI","Memory and AI data-cycle enabler",0.0156],
+["ORCL","Oracle Corporation","C","Digital Infrastructure & AI","Enterprise cloud and database platform",0.0156],
+["TXN","Texas Instruments Incorporated","C","Digital Infrastructure & AI","Analog semiconductor infrastructure",0.0156],
+["VRT","Vertiv Holdings Co.","C","Digital Infrastructure & AI","Critical data-center infrastructure",0.0155],
+["DHR","Danaher Corporation","C","Industrials & Infrastructure","Life-science tools and industrial quality",0.03],
+["RTX","RTX Corporation","C","Industrials & Infrastructure","Aerospace and defense systems leader",0.0299],
+["DE","Deere & Company","C","Industrials & Infrastructure","Precision agriculture and equipment leader",0.0177],
+["CAT","Caterpillar Inc.","C","Industrials & Infrastructure","Heavy equipment and infrastructure leader",0.0156],
+["ETN","Eaton Corporation plc","C","Industrials & Infrastructure","Electrification and power-management leader",0.0156],
+["GE","GE Aerospace","C","Industrials & Infrastructure","Aerospace propulsion leader",0.0156],
+["PH","Parker-Hannifin Corporation","C","Industrials & Infrastructure","Motion and control systems leader",0.0156],
+["TT","Trane Technologies plc","C","Industrials & Infrastructure","Climate and building efficiency leader",0.0156],
+["UNP","Union Pacific Corporation","C","Industrials & Infrastructure","Freight rail infrastructure",0.0155],
+["CME","CME Group Inc.","C","Financial Infrastructure","Market infrastructure and derivatives exchange",0.0302],
+["MMC","Marsh & McLennan Companies, Inc.","C","Financial Infrastructure","Risk, insurance and advisory infrastructure",0.02],
+["GS","The Goldman Sachs Group, Inc.","C","Financial Infrastructure","Investment banking and capital markets",0.0156],
+["JPM","JPMorgan Chase & Co.","C","Financial Infrastructure","Diversified banking and capital markets anchor",0.0156],
+["VFH","Vanguard Financials ETF","C","Financial Infrastructure","Diversified financial-sector implementation ETF",0.0156],
+["VHT","Vanguard Health Care ETF","C","Healthcare Leadership","Diversified healthcare implementation ETF",0.0206],
+["SYK","Stryker Corporation","C","Healthcare Leadership","Medical technology leader",0.0155],
+["LNG","Cheniere Energy, Inc.","C","Energy & Natural Resources","LNG export infrastructure",0.0302],
+["VPU","Vanguard Utilities ETF","C","Energy & Natural Resources","Utilities and defensive infrastructure ETF",0.0302],
+["XOM","Exxon Mobil Corporation","C","Energy & Natural Resources","Integrated energy leader",0.0256],
+["CVX","Chevron Corporation","C","Energy & Natural Resources","Integrated energy leader",0.0156],
+["VDE","Vanguard Energy ETF","C","Energy & Natural Resources","Diversified energy implementation ETF",0.0156],
+["JEPI","JPMorgan Equity Premium Income ETF","C","Income & Risk Management","Diversified equity income and volatility moderation",0.0302],
+["JEPQ","JPMorgan Nasdaq Equity Premium Income ETF","C","Income & Risk Management","Technology equity income implementation",0.0302],
+["PFF","iShares Preferred and Income Securities ETF","C","Income & Risk Management","Preferred securities income diversification",0.0302],
+["EMR","Emerson Electric Co.","R","Industrials & Infrastructure","Industrial automation and control-systems candidate",null],
+["BA","The Boeing Company","R","Industrials & Infrastructure","Commercial aerospace manufacturing recovery candidate",null],
+["HXL","Hexcel Corporation","R","Industrials & Infrastructure","Advanced composites and widebody aerospace supplier candidate",null],
+["HUBB","Hubbell Incorporated","R","Digital Infrastructure & AI","Grid connection and electrical infrastructure candidate",null],
+["RRX","Regal Rexnord Corporation","R","Industrials & Infrastructure","Industrial power-transmission and automation candidate",null],
+["BKR","Baker Hughes Company","R","Energy & Natural Resources","Energy infrastructure and power-demand enabler candidate",null],
+["LMT","Lockheed Martin Corporation","R","Industrials & Infrastructure","Defense manufacturing scarcity and backlog candidate",null],
+["SWK","Stanley Black & Decker, Inc.","R","Industrials & Infrastructure","Manufacturing recovery and tools-cycle candidate",null],
+["XYL","Xylem Inc.","R","Industrials & Infrastructure","Water infrastructure and scarcity-management candidate",null]
+];
+
+const PIPE = [
+["MCP-20260824-001","VRT","Retention Review","Digital infrastructure power and thermal-management leadership; reassess valuation, growth durability, and portfolio overlap."],
+["MCP-20260824-002","EMR","Research Candidate","Automation exposure across utilities, life sciences, and energy; assess quality, valuation, and sleeve role."],
+["MCP-20260824-003","HUBB","Research Candidate","Grid picks-and-shovels candidate tied to data-center load interconnection and utility investment."],
+["MCP-20260824-004","RRX","Research Candidate","Specialist industrial and data-center infrastructure candidate requiring full quality and valuation review."],
+["MCP-20260824-005","XYL","Research Candidate","Water infrastructure candidate; Merrill coverage/status exception must be resolved before eligibility."],
+["MCP-20260824-006","BKR","Research Candidate","Energy infrastructure candidate linked to power demand and energy-security capital spending."],
+["MCP-20260824-007","LMT","Research Candidate","Defense manufacturing scarcity and long-duration backlog thesis; assess valuation and program concentration."],
+["MCP-20260824-008","BA","Research Candidate","Commercial aerospace recovery candidate contingent on execution, certification, cash flow, and balance-sheet diligence."],
+["MCP-20260824-009","HXL","Research Candidate","Widebody production-ramp supplier candidate; requires size, cyclicality, customer concentration, and Merrill review."],
+["MCP-20260824-010","SWK","Research Candidate","Manufacturing-cycle recovery candidate requiring evidence on margins, balance sheet, demand, and competitive position."]
+];
+const INTAKE = '2026-08-24', DUE = '2026-09-23', OWNER = 'Research Committee';
+
+const STAGES = ['Intake','Evidence Gathering','MIAR Review','Eligibility Review','Candidate Comparison','Committee Review','Approved for MASR','Referred to PEW-004','On Watch','Rejected','Closed','Removed'];
+const CLASSES = ['Certified Portfolio Holding','MASR Approved Non-Holding','Conditional Candidate','Research Candidate','Replacement Candidate','Rejected Candidate','Removed Security','Archived Record'];
+const ACTIONS = {
+  'PASS — STAGE GATE':'Continue current stage and meet due date',
+  'FAIL — INCOMPLETE':'Complete required candidate intake fields',
+  'FAIL — MASR RECORD REQUIRED':'Create or reconcile the RCC-004 MASR registry record',
+  'FAIL — ELIGIBILITY':'Resolve eligibility gate or close candidate',
+  'FAIL — EVIDENCE':'Add verified RCC-002 evidence before advancement',
+  'FAIL — MIAR GATE':'Complete RCC-003 dossier and research-freshness controls',
+  'FAIL — COMMITTEE DISPOSITION':'Record formal committee disposition',
+  'FAIL — PEW REFERRAL':'Complete PEW-004 referral and candidate linkage',
+  'OVERDUE':'Complete or formally extend the overdue review'
+};
+const TONE = {
+  ok:{fg:'#1D6B57',bg:'#E1F0EA'}, warn:{fg:'#8A5A12',bg:'#F7EBD3'}, bad:{fg:'#A3321F',bg:'#F6E3DF'}, neutral:{fg:'#4A5461',bg:'#E9E5D8'}
+};
+const DAY = 86400000;
+
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { tab:'pipeline', q:'', clsFilter:'all', sel:'MCP-20260824-001', stageBy:{} };
+  }
+
+  gateFor(rec, stage) {
+    const late = ['MIAR Review','Eligibility Review','Candidate Comparison','Committee Review','Approved for MASR','Referred to PEW-004','On Watch','Rejected','Closed','Removed'];
+    const eligSet = ['Eligibility Review','Candidate Comparison','Committee Review','Approved for MASR','Referred to PEW-004','On Watch'];
+    const evSet = ['Candidate Comparison','Committee Review','Approved for MASR','Referred to PEW-004','On Watch'];
+    const discSet = ['Approved for MASR','Referred to PEW-004','On Watch','Rejected','Closed','Removed'];
+    const eligible = rec.elig === 'ELIGIBLE' || rec.elig === 'ELIGIBLE WITH EXCEPTION' || rec.elig === 'CERTIFIED HOLDING';
+    const rows = [
+      { label:'Intake fields complete (date, ticker, type, source, owner, due)', need:true, ok:true },
+      { label:'RCC-004 MASR registry record exists', need:late.includes(stage), ok:true, result:'FAIL — MASR RECORD REQUIRED' },
+      { label:'Eligibility gate: '+rec.elig, need:eligSet.includes(stage), ok:eligible, result:'FAIL — ELIGIBILITY' },
+      { label:'Supporting RCC-002 evidence records (0 linked)', need:evSet.includes(stage), ok:false, result:'FAIL — EVIDENCE' },
+      { label:'Active MIAR dossier, research CURRENT', need:evSet.includes(stage), ok:false, result:'FAIL — MIAR GATE' },
+      { label:'Committee disposition recorded', need:discSet.includes(stage), ok:false, result:'FAIL — COMMITTEE DISPOSITION' },
+      { label:'PEW-004 referral flag, candidate ID and linkage', need:stage === 'Referred to PEW-004', ok:false, result:'FAIL — PEW REFERRAL' }
+    ];
+    let result = 'PASS — STAGE GATE';
+    for (const r of rows) { if (r.need && !r.ok) { result = r.result || 'FAIL — INCOMPLETE'; break; } }
+    return { result, rows };
+  }
+
+  renderVals() {
+    const now = new Date();
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+    const dayOf = (s) => new Date(s + 'T00:00:00').getTime();
+    const asOf = now.getFullYear() + '-' + String(now.getMonth()+1).padStart(2,'0') + '-' + String(now.getDate()).padStart(2,'0');
+    const st = this.state;
+    const byTicker = {};
+    REG.forEach((r) => { byTicker[r[0]] = r; });
+
+    // pipeline records
+    const closed = ['Rejected','Closed','Removed'];
+    const pipe = PIPE.map((p) => {
+      const reg = byTicker[p[1]];
+      const stage = st.stageBy[p[0]] || 'Intake';
+      const cert = reg[2] === 'C';
+      const rec = { elig: cert ? 'CERTIFIED HOLDING' : 'NOT ASSESSED' };
+      const g = this.gateFor(rec, stage);
+      let control;
+      if (g.result !== 'PASS — STAGE GATE') control = g.result.replace('FAIL — ','').replace('COMMITTEE DISPOSITION','COMMITTEE DECISION REQUIRED').replace('PEW REFERRAL','PEW REFERRAL INCOMPLETE').replace('EVIDENCE','EVIDENCE REQUIRED').replace('MIAR GATE','MIAR GATE BLOCK').replace('ELIGIBILITY','ELIGIBILITY BLOCK').replace('MASR RECORD REQUIRED','MASR RECORD REQUIRED');
+      else if (closed.includes(stage)) control = 'CLOSURE REQUIRED';
+      else if (dayOf(DUE) < today) control = 'OVERDUE';
+      else control = 'OPEN — ON TRACK';
+      const days = Math.max(0, Math.floor((today - dayOf(INTAKE)) / DAY));
+      const overdueDays = Math.floor((today - dayOf(DUE)) / DAY);
+      return { id:p[0], reg, ticker:p[1], name:reg[1], type:p[2], summary:p[3], sleeve:reg[3], stage, rec, gate:g, control, days, overdueDays };
+    });
+
+    // registry rows
+    const regAll = REG.map((r) => ({ ticker:r[0], name:r[1], cls:r[2] === 'C' ? 'Certified holding' : 'Research candidate', clsKey:r[2], sleeve:r[3], role:r[4], weight:r[5] == null ? '—' : (r[5]*100).toFixed(2)+'%', control:'SETUP REQUIRED' }));
+    const q = st.q.trim().toLowerCase();
+    const regShownRows = regAll.filter((r) => (st.clsFilter === 'all' || r.clsKey === st.clsFilter) && (!q || r.ticker.toLowerCase().includes(q) || r.name.toLowerCase().includes(q)));
+
+    // counts
+    const certCount = REG.filter((r) => r[2] === 'C').length;
+    const regExc = regAll.filter((r) => r.control !== 'CONTROL CLEAR').length;
+    const pipeExc = pipe.filter((p) => p.control !== 'OPEN — ON TRACK' && p.control !== 'CLOSED').length;
+    const totalExc = regExc + pipeExc;
+    const gatePass = pipe.filter((p) => p.gate.result === 'PASS — STAGE GATE').length;
+    const committee = pipe.filter((p) => p.control === 'COMMITTEE DECISION REQUIRED').length;
+    const pewBlocks = pipe.filter((p) => p.control === 'PEW REFERRAL INCOMPLETE').length;
+    const active = pipe.filter((p) => !closed.includes(p.stage)).length;
+
+    const readiness = totalExc > 0 || regAll.length === 0
+      ? { label: regAll.length === 0 ? 'NOT INITIALIZED' : 'SETUP / CONTROL EXCEPTIONS OPEN', fg:'#7A4A08', bg:'#F3DFB4' }
+      : { label:'ACTIVE', fg:'#1D6B57', bg:'#DDEFE8' };
+
+    const kpis = [
+      { label:'MASR RECORDS LOADED', value:regAll.length, note:'of 150 controlled slots', color:'#17283C' },
+      { label:'CERTIFIED HOLDINGS', value:certCount, note:'MFPDF Portfolio B', color:'#17283C' },
+      { label:'APPROVED NON-HOLDINGS', value:0, note:'awaiting canonical registry source', color:'#17283C' },
+      { label:'ACTIVE CANDIDATES', value:active, note:'of 200 pipeline slots', color:'#17283C' },
+      { label:'PEW-004 REFERRALS', value:0, note:'committee-approved and linked', color:'#17283C' },
+      { label:'CONTROL EXCEPTIONS', value:totalExc, note:regExc + ' registry · ' + pipeExc + ' pipeline', color: totalExc > 0 ? '#A3321F' : '#1D6B57' }
+    ];
+
+    // exceptions table
+    const ex = (n, control, count, action, authority, dest) => {
+      const t = count === 0 ? TONE.ok : TONE.bad;
+      return { n, control, count, action, authority, dest, state: count === 0 ? 'PASS' : 'ACTION REQUIRED', fg:t.fg, bg:t.bg };
+    };
+    const exceptions = [
+      ex(1,'Canonical MASR IDs missing', regAll.length, 'Assign the existing canonical MASR identifier to every active registry record','Research Operations','MASR Registry'),
+      ex(2,'Duplicate MASR IDs or tickers', 0, 'Resolve duplicate identity before any admission or referral','Research Operations','MASR Registry'),
+      ex(3,'Registry classification incomplete', 0, 'Complete record class, status, admission basis, sleeve, role and security type','Research Committee','MASR Registry'),
+      ex(4,'MIAR / dossier gate exceptions', regAll.length, 'Complete RCC-003 MIAR identity and research controls','Research Operations','MIAR Registry'),
+      ex(5,'Eligibility or external-research exceptions', 0, 'Resolve market-cap, Zacks, Merrill or eligibility exception','Research Committee','RCC-005 / Committee'),
+      ex(6,'Candidate pipeline control exceptions', pipeExc, 'Resolve incomplete, overdue or blocked candidate stage gates','Research Committee','Candidate Pipeline'),
+      ex(7,'Committee dispositions pending', committee, 'Record formal committee disposition and decision date','Stewardship Committee','Candidate Pipeline'),
+      ex(8,'PEW-004 referral blocks', pewBlocks, 'Complete referral flag, PEW candidate ID and PEW linkage','Portfolio Engineering','Candidate Comparison')
+    ];
+
+    // composition
+    const classes = CLASSES.map((name) => {
+      let records = 0;
+      if (name === 'Certified Portfolio Holding') records = certCount;
+      if (name === 'Research Candidate') records = REG.length - certCount;
+      return { name, records, exceptions: records, pct: (records / REG.length * 100).toFixed(1) + '%', color: records ? '#1C2229' : '#7A828D', excColor: records ? '#A3321F' : '#7A828D' };
+    });
+
+    // stage table
+    const stageRows = STAGES.map((name) => {
+      const inStage = pipe.filter((p) => p.stage === name);
+      const pass = inStage.filter((p) => p.gate.result === 'PASS — STAGE GATE').length;
+      const exc = inStage.filter((p) => p.control !== 'OPEN — ON TRACK' && p.control !== 'CLOSED').length;
+      return { name, records: inStage.length, pass, exceptions: exc, color: inStage.length ? '#1C2229' : '#7A828D', excColor: exc ? '#A3321F' : '#7A828D' };
+    });
+
+    // pipeline rows
+    const pipeRows = pipe.map((p) => {
+      const gt = p.gate.result === 'PASS — STAGE GATE' ? TONE.ok : TONE.bad;
+      const ct = p.control === 'OPEN — ON TRACK' || p.control === 'CLOSED' ? TONE.ok : (p.control === 'OVERDUE' ? TONE.warn : TONE.bad);
+      const late = p.overdueDays > 0;
+      return {
+        id:p.id, ticker:p.ticker, name:p.name, type:p.type, stage:p.stage,
+        gate:p.gate.result.replace(' — ',' · '), gateFg:gt.fg, gateBg:gt.bg,
+        control:p.control, ctlFg:ct.fg, ctlBg:ct.bg,
+        due: late ? p.overdueDays + 'd late' : 'Sep 23', dueColor: late ? '#A3321F' : '#3F4853',
+        rail: st.sel === p.id ? '#17283C' : 'transparent',
+        rowBg: st.sel === p.id ? '#EDE8DA' : 'transparent',
+        pick: () => this.setState({ sel: p.id })
+      };
+    });
+
+    // selected candidate
+    const sp = pipe.find((p) => p.id === st.sel) || pipe[0];
+    const gt = sp.gate.result === 'PASS — STAGE GATE' ? TONE.ok : TONE.bad;
+    let action = ACTIONS[sp.gate.result];
+    if (sp.gate.result === 'PASS — STAGE GATE' && sp.control === 'OVERDUE') action = ACTIONS.OVERDUE;
+    const checks = sp.gate.rows.map((r) => {
+      let state, dot, fg;
+      if (!r.need) { state = 'NOT REQUIRED'; dot = '#C9C3B1'; fg = '#7A828D'; }
+      else if (r.ok) { state = 'PASS'; dot = '#1D6B57'; fg = '#1D6B57'; }
+      else { state = 'BLOCKED'; dot = '#A3321F'; fg = '#A3321F'; }
+      return { label:r.label, state, dot, fg };
+    });
+    const stageButtons = STAGES.map((s) => ({
+      label: s,
+      bg: sp.stage === s ? '#17283C' : '#FFFFFF',
+      fg: sp.stage === s ? '#F3F0E8' : '#17283C',
+      pick: () => this.setState({ stageBy: Object.assign({}, st.stageBy, { [sp.id]: s }) })
+    }));
+
+    const classFilters = [['all','All'],['C','Certified'],['R','Candidates']].map((f) => ({
+      label: f[1],
+      bg: st.clsFilter === f[0] ? '#17283C' : '#FFFFFF',
+      fg: st.clsFilter === f[0] ? '#F3F0E8' : '#17283C',
+      pick: () => this.setState({ clsFilter: f[0] })
+    }));
+
+    const steps = [
+      { step:'1 — Register', action:'Assign canonical MASR identity and record class', authority:'Research Operations' },
+      { step:'2 — Classify', action:'Record admission basis, sleeve, role and security type', authority:'Research Committee' },
+      { step:'3 — Evidence', action:'Complete MIAR, Integrity, MICS, empirical and evidence controls', authority:'Assigned Reviewer' },
+      { step:'4 — Test', action:'Apply eligibility, market-cap and external-research exception gates', authority:'Research Committee' },
+      { step:'5 — Advance', action:'Move the candidate through controlled stage gates', authority:'Research Operations' },
+      { step:'6 — Decide', action:'Record committee disposition and decision date', authority:'Stewardship Committee' },
+      { step:'7 — Refer', action:'Link qualified candidates to PEW-004 Candidate Comparison', authority:'Portfolio Engineering' }
+    ];
+
+    const isPipeline = st.tab === 'pipeline';
+    return {
+      asOf, readiness, kpis, exceptions, classes, stageRows, pipeRows, steps, checks, stageButtons, classFilters,
+      capacityText: regAll.length + ' OF 150 SLOTS LOADED',
+      capacityPct: (regAll.length / 150 * 100).toFixed(1) + '%',
+      gatesText: gatePass + ' PASS / ' + (pipe.length - gatePass) + ' BLOCKED',
+      routingText: committee + ' COMMITTEE / ' + pewBlocks + ' PEW BLOCKS',
+      pipeCount: pipe.length, regCount: regAll.length, regShown: regShownRows.length,
+      regRows: regShownRows,
+      isPipeline, isRegistry: !isPipeline,
+      tabPipeBg: isPipeline ? '#17283C' : '#FFFFFF', tabPipeFg: isPipeline ? '#F3F0E8' : '#17283C',
+      tabRegBg: isPipeline ? '#FFFFFF' : '#17283C', tabRegFg: isPipeline ? '#17283C' : '#F3F0E8',
+      showPipeline: () => this.setState({ tab:'pipeline' }),
+      showRegistry: () => this.setState({ tab:'registry' }),
+      q: st.q,
+      onSearch: (e) => this.setState({ q: e.target.value }),
+      sel: { id:sp.id, ticker:sp.ticker, name:sp.name, sleeve:sp.sleeve, summary:sp.summary, stage:sp.stage, owner:OWNER, due:DUE, days:sp.days },
+      gate: { result:sp.gate.result.replace(' — ',' · '), fg:gt.fg, bg:gt.bg, action }
+    };
+  }
+}
+</script>
+</body>
+</html>
